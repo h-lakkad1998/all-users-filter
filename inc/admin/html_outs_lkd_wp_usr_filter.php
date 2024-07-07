@@ -1,10 +1,11 @@
 <?php
 /* 
-      this files is used for data sanitization and GET varibles from url query parameters for filteration
-     */
+this files is used for data sanitization and GET varibles from url query parameters for filteration
+*/
 
 include LKD_WP_USR_FLTR_DIR . '/inc/admin/query_get_paras.' . LKD_WP_USR_FLTR_PREFIX . '.php';
-global $pagenow;
+global $pagenow, $wp_roles;
+$roles = $wp_roles->get_names();
 ?>
 <div class="alignleft actions">
     <button id="lkd_wp_usr_fltr_pop_up_btn" class="button lkd_usr_fltr_animated-btn" type="button"><?php _e("Filter Users", LKD_WP_USR_TEXT_DOMAIN); ?>
@@ -97,12 +98,15 @@ global $pagenow;
                         <div class="form-field pad-top-40">
                             <label><b><?php _e("Exclude roles:", LKD_WP_USR_TEXT_DOMAIN) ?></b></label>
                             <div class="exclude-roles pad-top-10">
-                                <?php foreach ($roles as $role_slug => $role_name) : ?>
+                                <?php
+                                    if( ! empty( $roles ) ):
+                                        foreach ($roles as $role_slug => $role_name) : ?>
                                     <label class="fancy-check">
                                         <input type="checkbox" name="rl-excld[]" value="<?php echo esc_attr($role_slug); ?>" <?php echo (in_array($role_slug, $exlude_roles)) ? " checked" : ""; ?>> <?php echo esc_html($role_name); ?>
                                         <span class="fancy-checkmark button"></span>
                                     </label>
-                                <?php endforeach; ?>
+                                <?php endforeach;
+                                    endif; ?>
                             </div>
                         </div>
                     </div>
