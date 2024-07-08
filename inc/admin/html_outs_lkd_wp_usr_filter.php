@@ -1,7 +1,10 @@
 <?php
 /* 
-this files is used for data sanitization and GET varibles from url query parameters for filteration
+this files is used for data sanitization and GET variables from url query parameters for filtration
 */
+
+// Exit if accessed directly
+if ( !defined('ABSPATH') ) exit;
 
 include LKD_WP_USR_FLTR_DIR . '/inc/admin/query_get_paras.' . LKD_WP_USR_FLTR_PREFIX . '.php';
 global $pagenow, $wp_roles;
@@ -56,8 +59,7 @@ $roles = $wp_roles->get_names();
                             <label><b><?php _e("Order By:", LKD_WP_USR_TEXT_DOMAIN); ?></b></label>
                             <div class="form-order">
                                 <label class="fancy-radio">
-                                    <input type="radio" name="ordr-by" value="1" <?php echo ($ordr_by ===  "1" || $ordr_by == "") ? " checked" : ""; ?>><?php _e("ASCENDING", LKD_WP_USR_TEXT_DOMAIN);
-                                                                                                                                                            echo "    "; ?>
+                                    <input type="radio" name="ordr-by" value="1" <?php echo ($ordr_by ===  "1" || $ordr_by == "") ? " checked" : ""; ?>><?php _e("ASCENDING", LKD_WP_USR_TEXT_DOMAIN); ?>
                                     <span class="fancy-select button-primary"></span>
                                 </label> <br> <br>
                                 <label class="fancy-radio">

@@ -1,4 +1,10 @@
 <?php
+
+/*Main class that is made for declaring the functions, actions, filters */
+// Exit if accessed directly
+if ( !defined('ABSPATH') ) exit;
+
+
 class LKD_USERS_FILTER
 {
     function __construct()

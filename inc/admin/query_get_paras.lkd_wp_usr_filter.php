@@ -1,7 +1,12 @@
 <?php
 /* 
-this files is used for data sanitization and GET variables from url query parameters for filtration
+this files is used for data sanitization and process GET variables from url query parameters for the user filtration
 */
+
+// Exit if accessed directly
+if ( !defined('ABSPATH') ) exit;
+
+
 $excl_ids = ( isset( $_REQUEST["excl-ids"]) && !empty(trim($_REQUEST["excl-ids"]) ) ) ? sanitize_text_field($_REQUEST["excl-ids"]) : false;
 if ( $excl_ids ) {
      $excl_ids = explode("-", $excl_ids);

@@ -1,4 +1,9 @@
 <?php
+
+// Exit if accessed directly
+if ( !defined('ABSPATH') ) exit;
+
+
 include LKD_WP_USR_FLTR_DIR . '/inc/admin/query_get_paras.' . LKD_WP_USR_FLTR_PREFIX . '.php';
 if ($ordr_by == "1") $query->set('order', 'ASC');
 else $query->set('order', 'DESC');
