@@ -1,13 +1,13 @@
 <?php
 /* 
-this files is used for data sanitization and process GET/REQUEST variables from url query parameters for the user filtration
+This files is used for data sanitization and process GET/REQUEST variables from url query parameters for the user filtration
 */
 
 // Exit if accessed directly
 if ( !defined('ABSPATH') ) exit;
 
-// check security nonce
-if( ! isset( $_REQUEST['lkd_usr_filter_secure'] ) && ( isset( $_REQUEST['lkd_usr_filter_secure'] ) && wp_verify_nonce($_REQUEST['lkd_usr_filter_secure'], 'lkd_usr_filter_secure') ) ){
+// Check security nonce
+if( $filtr_sbmt && ! isset( $_REQUEST['lkd_usr_filter_secure'] ) && ( isset( $_REQUEST['lkd_usr_filter_secure'] ) && wp_verify_nonce($_REQUEST['lkd_usr_filter_secure'], 'lkd_usr_filter_secure') ) ){
      wp_die('Security check failed');
 }
 
