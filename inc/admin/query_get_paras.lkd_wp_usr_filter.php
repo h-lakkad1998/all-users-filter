@@ -1,11 +1,15 @@
 <?php
 /* 
-this files is used for data sanitization and process GET variables from url query parameters for the user filtration
+this files is used for data sanitization and process GET/REQUEST variables from url query parameters for the user filtration
 */
 
 // Exit if accessed directly
 if ( !defined('ABSPATH') ) exit;
 
+// check security nonce
+if( ! isset( $_REQUEST['lkd_usr_filter_secure'] ) && ( isset( $_REQUEST['lkd_usr_filter_secure'] ) && wp_verify_nonce($_REQUEST['lkd_usr_filter_secure'], 'lkd_usr_filter_secure') ) ){
+     wp_die('Security check failed');
+}
 
 $excl_ids = ( isset( $_REQUEST["excl-ids"]) && !empty(trim($_REQUEST["excl-ids"]) ) ) ? sanitize_text_field($_REQUEST["excl-ids"]) : false;
 if ( $excl_ids ) {

@@ -3,19 +3,24 @@
 // Exit if accessed directly
 if ( !defined('ABSPATH') ) exit;
 
-
 include LKD_WP_USR_FLTR_DIR . '/inc/admin/query_get_paras.' . LKD_WP_USR_FLTR_PREFIX . '.php';
+
+// check security nonce
+if( $filtr_sbmt && ! isset( $_REQUEST['lkd_usr_filter_secure'] ) && ! wp_verify_nonce($_REQUEST['lkd_usr_filter_secure'], 'lkd_usr_filter_secure') ){
+    wp_die('Security check failed');
+}
+
 if ($ordr_by == "1") $query->set('order', 'ASC');
 else $query->set('order', 'DESC');
 if ($usr_sort !== "") {
     switch ($usr_sort) {
         case 'f-nm':
             $query->set('meta_key', 'first_name');
-            $query->set('orderby', 'meta_value ID');
+            $query->set('orderby', 'meta_value');
             break;
         case 'l-nm':
             $query->set('meta_key', 'last_name');
-            $query->set('orderby', 'meta_value ID');
+            $query->set('orderby', 'meta_value');
             break;
         case 'usr-id':
             $query->set('orderby', 'ID');
@@ -24,13 +29,13 @@ if ($usr_sort !== "") {
             $query->set('orderby', 'user_login');
             break;
         case 'dis-nm':
-            $query->set('orderby', 'display_name ID');
+            $query->set('orderby', 'display_name');
             break;
         case 'reg-dt':
-            $query->set('orderby', 'registered ID');
+            $query->set('orderby', 'registered');
             break;
         case 'pst-cnt':
-            $query->set('orderby', 'post_count  ID');
+            $query->set('orderby', 'post_count');
             break;
     }
 }
@@ -66,43 +71,53 @@ if (!empty($multi_from_date) && !empty($multi_to_date)) {
         $query->set('date_query',  $date_args);
     }
 }
-if (!empty($meta_keys)  && !empty($meta_vals) && !empty($meta_ops)) {
+if (!empty( $meta_keys )  && !empty( $meta_vals ) && !empty( $meta_ops ) && ! empty( $meta_tp ) ) {
     $meta_query_args = array(
-        'relation' => ($relation === "or") ? "OR" : "AND"
+        'relation' => ( "or" === $relation ) ? "OR" : "AND",
     );
     $cnt_len = (!empty($meta_ops) && is_array($meta_ops)) ? count($meta_ops)   :  false;
     if ($cnt_len !== false) {
         for ($i = 0; $i < $cnt_len; $i++) {
+            // Extending functionalities for between operator.
+            $change_meta_vals = ( empty( $meta_vals[$i] ) ) ? '' : $meta_vals[$i] ;
+            if( 'BETWEEN' === $meta_ops[$i] && false !== strpos( $change_meta_vals , ',' ) ){
+                $temp_array = explode(',', $change_meta_vals);
+                if( isset( $temp_array[0] ) && isset( $temp_array[1] ) ){
+                    $change_meta_vals = array();
+                    $change_meta_vals[] = $temp_array[0]; 
+                    $change_meta_vals[] = $temp_array[1]; 
+                }
+            }
             $meta_query_args[$i]['key']  = $meta_keys[$i];
-            $meta_query_args[$i]['value'] = (empty(trim($meta_vals[$i]))) ? "" : $meta_vals[$i];
-            $meta_query_args[$i]['compare']  = $meta_ops[$i];
+            $meta_query_args[$i]['value'] = $change_meta_vals; 
             $meta_query_args[$i]['type']    = $meta_tp[$i];
+            $meta_query_args[$i]['compare']  = $meta_ops[$i];
         }
     }
     $query->set('meta_query',  $meta_query_args);
 }
-$is_export  = (isset($_GET['exp-csv']) && $_GET['exp-csv'] === '1') ? true : false;
+$is_export  = (isset($_REQUEST['exp-csv']) && $_REQUEST['exp-csv'] === '1') ? true : false;
 $queried_variables = $query->query_vars;
 $queried_variables['number'] = "-1";
 $user_query = new WP_User_Query($queried_variables);
-$data_array = $this->object_to_array($user_query->results);
 if ($is_export === true) {
+    $data_array = $this->object_to_array($user_query->results);
     $column_nm  = array("User ID", "User Login", "User Email", "User Nicename", "Display Name", "User Role", "Registration Date");
     $user_array = [];
     if (!empty($data_array)) {
-        $user_array[] = (!empty($meta_keys)) ? array_merge($column_nm, $meta_keys) : $column_nm;
-        foreach ($data_array  as $single_user) {
+        $user_array[] = ( !empty($meta_keys) ) ? array_merge( $column_nm, $meta_keys ) : $column_nm;
+        foreach ( $data_array  as $single_user ) {
             $su_data = $single_user["data"];
             $main_data =  array(
                 $su_data['ID'], $su_data['user_login'], $su_data['user_email'],
                 $su_data['user_nicename'], $su_data['display_name'],
                 $single_user["roles"][0], $su_data['user_registered']
             );
-            if (!empty($meta_keys)) {
+            if ( !empty($meta_keys) ) {
                 $user_meta_vals  = [];
                 foreach ($meta_keys as $single_key) {
-                    $m_val = get_user_meta($su_data['ID'], $single_key, true);
-                    $m_val =  (is_array($m_val)) ? serialize($m_val) : $m_val;
+                    $m_val = get_user_meta($su_data['ID'], $single_key);
+                    $m_val =  ( is_array($m_val) ) ? serialize($m_val) : $m_val;
                     $user_meta_vals[] = $m_val;
                 }
             }
