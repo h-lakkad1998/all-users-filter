@@ -80,7 +80,7 @@ $roles = $wp_roles->get_names();
                     </div>
                     <div class="child-col between-two-dates">
                         <div class="form-field  pad-top-40">
-                            <label><b><?php esc_html_e("Filter users by date : ", 'all-users-filter') ?></b></label>
+                            <label><b><?php esc_html_e("Filter users by date of registration : ", 'all-users-filter') ?></b></label>
                             <div class="pad-top-10">
                                 <input type="date" name="one-dt" <?php echo ($one_date) ? " value='" . esc_attr($one_date) . "'" : ""; ?>>
                                 <button type="button" class="button rst_single_dt"> <?php esc_html_e("Reset", 'all-users-filter'); ?> </button>
@@ -89,7 +89,7 @@ $roles = $wp_roles->get_names();
                         <div class="form-field  pad-top-40">
                             <label><b><?php esc_html_e('Write something like  "12 Hours ago" : ', 'all-users-filter') ?></b></label>
                             <div class="tooltip"> ?
-                                <span class="tooltiptext"><?php esc_html_e("Find registered users with <br/>(E.g. 12 hours ago, <br/> 1 month ago): ", 'all-users-filter'); ?></span>
+                                <span class="tooltiptext"><?php echo wp_kses_post("Find registered users with <br/>(E.g. 12 hours ago, <br/> 1 month ago): ", 'all-users-filter'); ?></span>
                             </div>
                             <div class="pad-top-10">
                                 <input placeholder="E.g. 12 Hours ago" type="text" name="cstm-dt" <?php echo ($cstm_dt) ? " value='" . esc_attr($cstm_dt) . "'" : ""; ?>>

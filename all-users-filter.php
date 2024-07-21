@@ -9,10 +9,9 @@
  * Author URI: https://in.linkedin.com/in/hardik-lakkad-097b12147
  * Developer: Hardik Patel
  * Developer E-Mail: hardiklakkad2@gmail.com
- * Text Domain: all-users-filter
- * Domain Path: /languages
+ * Text Domain: all-users-filters
  *
- * Copyright: © 2009-2019 Hardik S Lakkad.
+ * Copyright: © 2024 Hardik S Lakkad.
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  */
