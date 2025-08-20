@@ -3,7 +3,7 @@ Contributors: Hardik Patel
 Tags: filter-users, users-filter, wp-users-filter, users-export, export-user
 Donate link: 
 Requires at least: 3.0
-Tested up to: 6.6
+Tested up to: 6.8
 Requires PHP: 5.6
 License: GPL-3.0-or-later
 License URI: https://opensource.org/licenses/GPL-3.0

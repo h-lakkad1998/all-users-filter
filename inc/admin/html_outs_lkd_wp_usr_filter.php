@@ -9,6 +9,7 @@ if ( !defined('ABSPATH') ) exit;
 include LKD_WP_USR_FLTR_DIR . '/inc/admin/query_get_paras.' . LKD_WP_USR_FLTR_PREFIX . '.php';
 global $pagenow, $wp_roles;
 $roles = $wp_roles->get_names();
+$compatible_compares = array('=', "!=", 'IN', 'BETWEEN', 'LIKE', 'REGEXP', 'RLIKE', '>', '>=', '<', '<=', 'NOT EXISTS', 'NOT REGEXP');
 ?>
 <div class="alignleft actions">
     <button id="lkd_wp_usr_fltr_pop_up_btn" class="button lkd_usr_fltr_animated-btn" type="button"><?php esc_html_e("Filter Users", 'all-users-filter'); ?>
@@ -227,8 +228,7 @@ $roles = $wp_roles->get_names();
                                             <th><?php esc_html_e("Value", 'all-users-filter'); ?></th>
                                         </tr>
                                         <?php if ($meta_keys) {
-                                            foreach ($meta_keys as $index => $single_val) {
-                                                $compatible_compares = array('=', "!=", 'IN', 'BETWEEN', 'LIKE', 'REGEXP', 'RLIKE', '>', '>=', '<', '<=', 'NOT EXISTS', 'NOT REGEXP');  ?>
+                                            foreach ($meta_keys as $index => $single_val) { ?>
                                                 <tr>
                                                     <td>
                                                         <input type="text" name="mta-ky[]" value="<?php echo esc_attr($meta_keys[$index]); ?>" placeholder="Add meta key like: monthly_salary">

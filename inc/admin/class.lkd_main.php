@@ -99,6 +99,6 @@ class LKD_USERS_FILTER {
 
 add_action('plugins_loaded', function () {
     if (current_user_can('administrator')) {
-        $lkd_user_obj = new LKD_USERS_FILTER();
+        new LKD_USERS_FILTER();
     }
 });
