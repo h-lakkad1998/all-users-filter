@@ -5,8 +5,8 @@
  * Plugin URL: 
  * Description: This plugin helps the admin to filter the users with various ranges of filters.
  * Version: 1.0
- * Author: Hardik Lakkad/Hardik Patel
- * Author URI: https://in.linkedin.com/in/hardik-lakkad-097b12147
+ * Author: Hardik Lakkad/Patel
+ * Author URI: https://www.linkedin.com/in/hardik-patel-lakkad-097b12147/
  * Developer: Hardik Patel
  * Developer E-Mail: hardiklakkad2@gmail.com
  * Text Domain: all-users-filter

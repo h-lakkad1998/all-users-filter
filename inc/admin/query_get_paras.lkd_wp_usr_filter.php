@@ -7,7 +7,8 @@ This files is used for data sanitization and process GET/REQUEST variables from 
 if ( !defined('ABSPATH') ) exit;
 
 // Check security nonce
-if( $filtr_sbmt && ! isset( $_REQUEST['lkd_usr_filter_secure'] ) && ( isset( $_REQUEST['lkd_usr_filter_secure'] ) && wp_verify_nonce($_REQUEST['lkd_usr_filter_secure'], 'lkd_usr_filter_secure') ) ){
+$filtr_sbmt = false;
+if( ! $filtr_sbmt && ! isset( $_REQUEST['lkd_usr_filter_secure'] ) && ( isset( $_REQUEST['lkd_usr_filter_secure'] ) && wp_verify_nonce($_REQUEST['lkd_usr_filter_secure'], 'lkd_usr_filter_secure') ) ){
      wp_die('Security check failed');
 }
 

@@ -282,7 +282,7 @@ $roles = $wp_roles->get_names();
             <div class="pop-up-footer">
                 <div style="display: inline-block;">
                     <p> Made with <span class="heart"></span> By <a target="_blank" style="color: #5dacec;" href="https://www.instagram.com/hlakkad/">Hardik Patel/Hardik Lakkad</a> </p>
-                    <p> Need more plugins customiation? <a href="https://in.linkedin.com/in/hardik-lakkad-097b12147" target="_blank" style="color: #5dacec;">Contact me</a> &#128104;&#8205;&#128187;</p>
+                    <p> Need more plugins customiation? <a href="https://www.linkedin.com/in/hardik-patel-lakkad-097b12147/" target="_blank" style="color: #5dacec;">Contact me</a> &#128104;&#8205;&#128187;</p>
                 </div>
                 <div class="txt-right lkd-sbmit-actions">
                     <?php wp_nonce_field('lkd_usr_filter_secure','lkd_usr_filter_secure') ?>
