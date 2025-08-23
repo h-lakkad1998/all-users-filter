@@ -4,7 +4,7 @@ this files is used for data sanitization and GET variables from url query parame
 */
 
 // Exit if accessed directly
-if ( !defined('ABSPATH') ) exit;
+if (!defined('ABSPATH')) exit;
 
 include LKD_WP_USR_FLTR_DIR . '/inc/admin/query_get_paras.' . LKD_WP_USR_FLTR_PREFIX . '.php';
 global $pagenow, $wp_roles;
@@ -22,7 +22,7 @@ $compatible_compares = array('=', "!=", 'IN', 'BETWEEN', 'LIKE', 'REGEXP', 'RLIK
 <!-- Trigger/Open The Modal -->
 
 <!-- The Modal wrapper starts -->
-<div id="lkd_wp_usr_fltr_model_options" class="lkd_wp_usr_fltr_modal">
+<div id="lkd_wp_usr_fltr_model_options" class="lkd_wp_usr_fltr_modal" style="display: none;">
     <!-- Modal content start -->
     <div class="lkd_wp_usr_fltr_modal-content">
         <div class="close-popup-btn">
@@ -102,14 +102,14 @@ $compatible_compares = array('=', "!=", 'IN', 'BETWEEN', 'LIKE', 'REGEXP', 'RLIK
                             <label><b><?php esc_html_e("Exclude roles:", 'all-users-filter') ?></b></label>
                             <div class="exclude-roles pad-top-10">
                                 <?php
-                                    if( ! empty( $roles ) ):
-                                        foreach ($roles as $role_slug => $role_name) : ?>
-                                    <label class="fancy-check">
-                                        <input type="checkbox" name="rl-excld[]" value="<?php echo esc_attr($role_slug); ?>" <?php echo (in_array($role_slug, $exlude_roles)) ? " checked" : ""; ?>> <?php echo esc_html($role_name); ?>
-                                        <span class="fancy-checkmark button"></span>
-                                    </label>
+                                if (! empty($roles)):
+                                    foreach ($roles as $role_slug => $role_name) : ?>
+                                        <label class="fancy-check">
+                                            <input type="checkbox" name="rl-excld[]" value="<?php echo esc_attr($role_slug); ?>" <?php echo (in_array($role_slug, $exlude_roles)) ? " checked" : ""; ?>> <?php echo esc_html($role_name); ?>
+                                            <span class="fancy-checkmark button"></span>
+                                        </label>
                                 <?php endforeach;
-                                    endif; ?>
+                                endif; ?>
                             </div>
                         </div>
                     </div>
@@ -275,9 +275,19 @@ $compatible_compares = array('=', "!=", 'IN', 'BETWEEN', 'LIKE', 'REGEXP', 'RLIK
                         <mark><?php esc_html_e("Note: If filtered with meta key/s(advance filter), meta value/s will be included.",  'all-users-filter'); ?> </mark>
                     </p>
                     <br>
-                    <button id="lkd_EXP-csv-BTN" class="button glow-on-hover" name="exp-csv" type="button"><?php esc_html_e("CLICK HERE TO EXPORT CSV &#8681;", 'all-users-filter'); ?></button>
+                    <button id="lkd_EXP-csv-BTN" class="button glow-on-hover" type="button">
+                        <?php esc_html_e("CLICK HERE TO EXPORT CSV ⬇", 'all-users-filter'); ?>
+                    </button>
+                    <div id="lkd_export_progress" style="margin-top:15px;">
+                        <div id="lkd_export_progress_text" style="margin-bottom:5px;font-weight:bold;"></div>
+                        <div style="background:#eee;width:100%;height:18px;border-radius:4px;overflow:hidden;">
+                            <div id="lkd_export_progress_bar" style="background:#4caf50;width:0%;height:100%;transition:width 0.4s;"></div>
+                        </div>
+                    </div>
+                    <input type="hidden" name="action" value="lkd_wp_usr_export_csv">
                 </div>
             </div>
+
             <!-- tab content of export setting ends -->
             <div class="pop-up-footer">
                 <div style="display: inline-block;">
@@ -285,7 +295,7 @@ $compatible_compares = array('=', "!=", 'IN', 'BETWEEN', 'LIKE', 'REGEXP', 'RLIK
                     <p> Need more plugins customiation? <a href="https://www.linkedin.com/in/hardik-patel-lakkad-097b12147/" target="_blank" style="color: #5dacec;">Contact me</a> &#128104;&#8205;&#128187;</p>
                 </div>
                 <div class="txt-right lkd-sbmit-actions">
-                    <?php wp_nonce_field('lkd_usr_filter_secure','lkd_usr_filter_secure') ?>
+                    <?php wp_nonce_field('lkd_usr_filter_secure', 'lkd_usr_filter_secure') ?>
                     <button class="button button-primary" type="submit" name="fltr-sbmt" value="1"><?php esc_html_e("Filter Users", 'all-users-filter'); ?></button>
                 </div>
                 <div id="pop-pop"></div>

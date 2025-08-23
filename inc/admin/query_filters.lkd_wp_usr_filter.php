@@ -6,7 +6,6 @@ if (!defined('ABSPATH')) exit;
 include LKD_WP_USR_FLTR_DIR . '/inc/admin/query_get_paras.' . LKD_WP_USR_FLTR_PREFIX . '.php';
 
 if ($lkd_usr_filter_secure) {
-
     if ($ordr_by == "1") $query->set('order', 'ASC');
     else $query->set('order', 'DESC');
     if ($usr_sort !== "") {
@@ -100,41 +99,5 @@ if ($lkd_usr_filter_secure) {
             }
         }
         $query->set('meta_query',  $meta_query_args);
-    }
-    $is_export  = (isset($_REQUEST['exp-csv']) && $_REQUEST['exp-csv'] === '1') ? true : false;
-    $queried_variables = $query->query_vars;
-    $queried_variables['number'] = "-1";
-    $user_query = new WP_User_Query($queried_variables);
-    if ($is_export === true) {
-        $data_array = $this->object_to_array($user_query->results);
-        $column_nm  = array("User ID", "User Login", "User Email", "User Nicename", "Display Name", "User Role", "Registration Date");
-        $user_array = [];
-        if (!empty($data_array)) {
-            $user_array[] = (!empty($meta_keys)) ? array_merge($column_nm, $meta_keys) : $column_nm;
-            foreach ($data_array  as $single_user) {
-                $su_data = $single_user["data"];
-                $main_data =  array(
-                    $su_data['ID'],
-                    $su_data['user_login'],
-                    $su_data['user_email'],
-                    $su_data['user_nicename'],
-                    $su_data['display_name'],
-                    $single_user["roles"][0],
-                    $su_data['user_registered']
-                );
-                if (!empty($meta_keys)) {
-                    $user_meta_vals  = [];
-                    foreach ($meta_keys as $single_key) {
-                        $m_val = get_user_meta($su_data['ID'], $single_key);
-                        $m_val =  (is_array($m_val)) ? serialize($m_val) : $m_val;
-                        $user_meta_vals[] = $m_val;
-                    }
-                }
-                $user_array[] = (!empty($meta_keys)) ? array_merge($main_data, $user_meta_vals) : $main_data;
-            }
-        } else {
-            $user_array[] = $data_array;
-        }
-        $this->array_to_csv_download($user_array);
     }
 }

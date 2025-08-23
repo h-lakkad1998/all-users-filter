@@ -17,7 +17,7 @@
  */
 
 // Exit if accessed directly
-if ( !defined('ABSPATH') ) exit;
+if (!defined('ABSPATH')) exit;
 
 /**
  * Basic plugin definitions
@@ -25,19 +25,19 @@ if ( !defined('ABSPATH') ) exit;
  */
 
 if (!defined('LKD_WP_USR_FLTR_VERSION')) {
-	define('LKD_WP_USR_FLTR_VERSION', '1.0'); 
+	define('LKD_WP_USR_FLTR_VERSION', '1.0');
 }
 
 if (!defined('LKD_WP_USR_FLTR_FILE')) {
-	define('LKD_WP_USR_FLTR_FILE', __FILE__); 
+	define('LKD_WP_USR_FLTR_FILE', __FILE__);
 }
 
 if (!defined('LKD_WP_USR_FLTR_DIR')) {
-	define('LKD_WP_USR_FLTR_DIR', dirname(__FILE__)); 
+	define('LKD_WP_USR_FLTR_DIR', dirname(__FILE__));
 }
 
 if (!defined('LKD_WP_USR_FLTR_URL')) {
-	define('LKD_WP_USR_FLTR_URL', plugin_dir_url(__FILE__)); 
+	define('LKD_WP_USR_FLTR_URL', plugin_dir_url(__FILE__));
 }
 
 if (!defined('LKD_WP_USR_FLTR_PREFIX')) {
@@ -50,8 +50,9 @@ if (!defined('LKD_WP_USR_FLTR_PREFIX')) {
  * 
  */
 global $pagenow;
-if ( is_admin() && $pagenow == "users.php") {
-	if (!class_exists('LKD_USERS_FILTER')) {
+if (is_admin()) {
+	if (!class_exists('LKD_USERS_FILTER') && $pagenow == "users.php") {
 		require_once LKD_WP_USR_FLTR_DIR . '/inc/admin/class.lkd_main.php';
 	}
+	require_once LKD_WP_USR_FLTR_DIR . '/inc/admin/admin_ajax_handler.php';
 }
