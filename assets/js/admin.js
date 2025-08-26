@@ -41,14 +41,15 @@ jQuery(document).ready(function ($) {
     let metaKeys = [];
 
     function fetchBatch(page, queryVars) {
+        let lkd_searched = $('#user-search-input').val();
         $.ajax({
             type: "POST",
             url: lkd_usr_fltr_obj.ajax_url,
-            data: queryVars += `&paged=${page}` ,
+            data: queryVars += `&paged=${page}&s=${lkd_searched}` ,
             success: function(res) {
                 if (!res.success) {
-                    alert('Error: ' + (res.data ? res.data.msg : 'unknown'));
-                    $('#lkd_EXP-csv-BTN').prop('disabled', false).text("CLICK HERE TO EXPORT CSV ⬇");
+                    console.log('Error: ' + (res.data ? res.data.msg : 'unknown'));
+                    $('#lkd_EXP-csv-BTN').prop('disabled', false).html("CLICK HERE TO EXPORT CSV <span class='dashicons dashicons-download'></span>");
                     return;
                 }
 
@@ -76,8 +77,8 @@ jQuery(document).ready(function ($) {
             },
             error: function(xhr) {
                 console.error(xhr.responseText);
-                alert("AJAX failed. See console.");
-                $('#lkd_EXP-csv-BTN').prop('disabled', false).text("CLICK HERE TO EXPORT CSV ⬇");
+                console.log("AJAX failed. See console.");
+                $('#lkd_EXP-csv-BTN').prop('disabled', false).html("CLICK HERE TO EXPORT CSV <span class='dashicons dashicons-download'></span>");
             }
         });
     }
@@ -97,8 +98,8 @@ jQuery(document).ready(function ($) {
         a.click();
         document.body.removeChild(a);
 
-        $('#lkd_export_progress_text').text("✅ Export complete");
-        $('#lkd_EXP-csv-BTN').prop('disabled', false).text("CLICK HERE TO EXPORT CSV ⬇");
+        $('#lkd_export_progress_text').html(`<span class="dashicons dashicons-yes-alt"></span> Export complete`);
+        $('#lkd_EXP-csv-BTN').prop('disabled', false).html("CLICK HERE TO EXPORT CSV <span class='dashicons dashicons-download'></span>");
     }
 
     $('body').on('click', '#lkd_EXP-csv-BTN', function (e) {

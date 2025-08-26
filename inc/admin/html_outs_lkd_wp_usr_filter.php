@@ -9,7 +9,7 @@ if (!defined('ABSPATH')) exit;
 include LKD_WP_USR_FLTR_DIR . '/inc/admin/query_get_paras.' . LKD_WP_USR_FLTR_PREFIX . '.php';
 global $pagenow, $wp_roles;
 $roles = $wp_roles->get_names();
-$compatible_compares = array('=', "!=", 'IN', 'BETWEEN', 'LIKE', 'REGEXP', 'RLIKE', '>', '>=', '<', '<=', 'NOT EXISTS', 'NOT REGEXP');
+$lkd_html_compatible_compares = array('=', "!=", 'IN', 'BETWEEN', 'LIKE', 'REGEXP', 'RLIKE', '>', '>=', '<', '<=', 'NOT EXISTS', 'NOT REGEXP');
 ?>
 <div class="alignleft actions">
     <button id="lkd_wp_usr_fltr_pop_up_btn" class="button lkd_usr_fltr_animated-btn" type="button"><?php esc_html_e("Filter Users", 'all-users-filter'); ?>
@@ -192,8 +192,8 @@ $compatible_compares = array('=', "!=", 'IN', 'BETWEEN', 'LIKE', 'REGEXP', 'RLIK
                                     <td>
                                         <select name="mta-op[]">
                                             <?php
-                                            if (!empty($compatible_compares)) {
-                                                foreach ($compatible_compares as $single_op) {
+                                            if (!empty($lkd_html_compatible_compares)) {
+                                                foreach ($lkd_html_compatible_compares as $single_op) {
                                                     echo "<option value='" . esc_attr($single_op) . "' >" . esc_html($single_op) . "</option>";
                                                 }
                                             }
@@ -236,7 +236,7 @@ $compatible_compares = array('=', "!=", 'IN', 'BETWEEN', 'LIKE', 'REGEXP', 'RLIK
                                                     <td>
                                                         <select name="mta-op[]">
                                                             <?php
-                                                            foreach ($compatible_compares as $single_op)
+                                                            foreach ($lkd_html_compatible_compares as $single_op)
                                                                 echo "<option value='" . esc_attr($single_op) . "'" . ($single_op === $meta_ops[$index]  ?  " selected " : "")  . " >" . esc_html($single_op) . '</option>';
                                                             ?>
                                                         </select>
@@ -276,7 +276,8 @@ $compatible_compares = array('=', "!=", 'IN', 'BETWEEN', 'LIKE', 'REGEXP', 'RLIK
                     </p>
                     <br>
                     <button id="lkd_EXP-csv-BTN" class="button glow-on-hover" type="button">
-                        <?php esc_html_e("CLICK HERE TO EXPORT CSV ⬇", 'all-users-filter'); ?>
+                        <?php esc_html_e("CLICK HERE TO EXPORT CSV", 'all-users-filter'); ?>
+                        <span class="dashicons dashicons-download"></span>
                     </button>
                     <div id="lkd_export_progress" style="margin-top:15px;">
                         <div id="lkd_export_progress_text" style="margin-bottom:5px;font-weight:bold;"></div>
@@ -291,7 +292,7 @@ $compatible_compares = array('=', "!=", 'IN', 'BETWEEN', 'LIKE', 'REGEXP', 'RLIK
             <!-- tab content of export setting ends -->
             <div class="pop-up-footer">
                 <div style="display: inline-block;">
-                    <p> Made with <span class="heart"></span> By <a target="_blank" style="color: #5dacec;" href="https://www.instagram.com/hlakkad/">Hardik Patel/Hardik Lakkad</a> </p>
+                    <p> Made with <span class="heart"></span> By <a target="_blank" style="color: #5dacec;" href="https://www.instagram.com/hlakkad/">Hardik Patel(Lakkad)</a> </p>
                     <p> Need more plugins customiation? <a href="https://www.linkedin.com/in/hardik-patel-lakkad-097b12147/" target="_blank" style="color: #5dacec;">Contact me</a> &#128104;&#8205;&#128187;</p>
                 </div>
                 <div class="txt-right lkd-sbmit-actions">

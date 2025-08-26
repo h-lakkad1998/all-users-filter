@@ -39,7 +39,7 @@ function lkd_wp_usr_export_csv_fun()
         $meta_tp = (isset($_REQUEST["mta-tp"]) && is_array($_REQUEST["mta-tp"])  && !empty($_REQUEST["mta-tp"])) ? array_map("sanitize_textarea_field", wp_unslash($_REQUEST["mta-tp"])) : $meta_tp;
         $compatible_compares = array('=', "!=", 'IN', 'BETWEEN', 'LIKE', 'REGEXP', 'RLIKE', '>', '>=', '<', '<=', 'NOT EXISTS', 'NOT REGEXP');
         if (isset($_REQUEST["mta-op"]) && !empty($_REQUEST["mta-op"])) {
-            $meta_ops = (isset($_REQUEST["mta-op"]) && is_array($_REQUEST["mta-op"]) && !empty($_REQUEST["mta-op"])) ? array_map("sanitize_textarea_field", wp_unslash($_REQUEST["mta-op"])) : $meta_ops;
+            $meta_ops = (isset($_REQUEST["mta-op"]) && is_array($_REQUEST["mta-op"]) && !empty($_REQUEST["mta-op"])) ? array_map("lkd_sanitize_operator", wp_unslash($_REQUEST["mta-op"])) : $meta_ops;
             if (! empty($meta_ops) && is_array($meta_ops)) {
                 foreach ($meta_ops as $index => $value) {
                     $meta_ops[$index] = (!in_array($value, $compatible_compares)) ? "=" : $value;
@@ -48,7 +48,7 @@ function lkd_wp_usr_export_csv_fun()
             }
         }
         $paged = (isset($_REQUEST["paged"])) ? (int) sanitize_textarea_field(wp_unslash($_REQUEST["paged"]))  : "";
-
+        $lkd_searched = (isset($_REQUEST["s"])) ? sanitize_textarea_field(wp_unslash($_REQUEST["s"]))  : "";
         // this is setting up query vars in ajax
         $lkd_ajx_query = new WP_User_Query();
         if ($ordr_by == "1") $lkd_ajx_query->set('order', 'ASC');
@@ -80,8 +80,11 @@ function lkd_wp_usr_export_csv_fun()
                     break;
             }
         }
+        if (!empty($lkd_searched)) {
+            $lkd_ajx_query->set('search', $lkd_searched);
+        }
         // prevent particular roles
-        if (!empty($exlude_roles)) {
+        if (! empty($exlude_roles)) {
             $lkd_ajx_query->set('role__not_in', $exlude_roles);
         }
         // prevent id to be displayed in the user listing - Number and "-" are allowed 
@@ -147,7 +150,7 @@ function lkd_wp_usr_export_csv_fun()
         }
         $queried_variables = $lkd_ajx_query->query_vars;
         $queried_variables['paged'] = $paged;
-        $queried_variables['number'] = 20;
+        $queried_variables['number'] = 999;
 
         $user_query = new WP_User_Query($queried_variables);
         $users  = $user_query->get_results();
@@ -194,5 +197,10 @@ function lkd_wp_usr_export_csv_fun()
             'paged' => $paged,
             'count' => count($rows),
         ]);
+    }else{
+        wp_send_json_error( [
+            'status'    => 'failed',
+            'msg'       => esc_html__( 'Security check failed', 'all-users-filter' ) 
+        ] );
     }
 }

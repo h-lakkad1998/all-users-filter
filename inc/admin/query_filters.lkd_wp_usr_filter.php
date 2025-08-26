@@ -84,7 +84,7 @@ if ($lkd_usr_filter_secure) {
             for ($i = 0; $i < $cnt_len; $i++) {
                 // Extending functionalities for between operator.
                 $change_meta_vals = (empty($meta_vals[$i])) ? '' : $meta_vals[$i];
-                if ('BETWEEN' === $meta_ops[$i] && false !== strpos($change_meta_vals, ',')) {
+                if ( ('BETWEEN' === $meta_ops[$i] || 'IN' === $meta_ops[$i] ) && false !== strpos($change_meta_vals, ',')) {
                     $temp_array = explode(',', $change_meta_vals);
                     if (isset($temp_array[0]) && isset($temp_array[1])) {
                         $change_meta_vals = array();

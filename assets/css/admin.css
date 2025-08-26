@@ -264,6 +264,10 @@ The Modal (background)
   padding: 10px 20px;
 }
 
+.lkd_wp_usr_fltr_modal-content .export-btn button span{
+  margin-top: 5px;
+}
+
 .lkd_wp_usr_fltr_modal-content #LETS-make-POST-Form {
   cursor: pointer;
   -webkit-user-select: none;
@@ -706,5 +710,29 @@ The Modal (background)
 
   .lkd_wp_usr_fltr_modal-content .fancy-radio {
     margin-top: 25px;
+  }
+}
+
+/* Tablet (768px and below) */
+@media screen and (max-width: 768px) {
+  .lkd_wp_usr_fltr_modal {
+    width: 90%;
+    padding: 16px;
+  }
+}
+
+/* Mobile (480px and below) */
+@media screen and (max-width: 480px) {
+  .lkd_wp_usr_fltr_modal {
+    padding-top: 200px;
+  }
+  
+  .lkd_wp_usr_fltr_modal-content {
+    width: 95%;
+    padding: 12px;
+    font-size: 14px;
+  }
+  .lkd_wp_usr_fltr-tabs button.tablinks{
+    width: 100%;
   }
 }

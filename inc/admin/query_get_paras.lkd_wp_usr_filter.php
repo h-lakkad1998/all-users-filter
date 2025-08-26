@@ -37,7 +37,7 @@ if ($lkd_usr_filter_secure) {
      $meta_tp = (isset($_REQUEST["mta-tp"]) && is_array($_REQUEST["mta-tp"])  && !empty($_REQUEST["mta-tp"])) ? array_map("sanitize_textarea_field", wp_unslash($_REQUEST["mta-tp"])) : $meta_tp;
      $compatible_compares = array('=', "!=", 'IN', 'BETWEEN', 'LIKE', 'REGEXP', 'RLIKE', '>', '>=', '<', '<=', 'NOT EXISTS', 'NOT REGEXP');
      if (isset($_REQUEST["mta-op"]) && !empty($_REQUEST["mta-op"])) {
-          $meta_ops = (isset($_REQUEST["mta-op"]) && is_array($_REQUEST["mta-op"]) && !empty($_REQUEST["mta-op"])) ? array_map("sanitize_textarea_field", wp_unslash($_REQUEST["mta-op"])) : $meta_ops;
+          $meta_ops = (isset($_REQUEST["mta-op"]) && is_array($_REQUEST["mta-op"]) && !empty($_REQUEST["mta-op"])) ? array_map("lkd_sanitize_operator", wp_unslash($_REQUEST["mta-op"])) : $meta_ops;
           if (! empty($meta_ops) && is_array($meta_ops)) {
                foreach ($meta_ops as $index => $value) {
                     $meta_ops[$index] = (!in_array($value, $compatible_compares)) ? "=" : $value;
