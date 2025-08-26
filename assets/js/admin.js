@@ -38,9 +38,67 @@ jQuery(document).ready(function ($) {
 	let csvRows = [];
     let totalUsers = 0;
     let processed = 0;
-    let metaKeys = [];
 
-    function fetchBatch(page, queryVars) {
+    $('body').on('click', '#lkd_EXP-csv-BTN', function (e) {
+        e.preventDefault();
+
+        // Disable button
+        $(this).prop('disabled', true).text("Exporting...");
+
+        // Reset vars
+        csvRows = [];
+        processed = 0;
+        totalUsers = 0;
+
+        // Collect form data (filters already used in your existing code)
+        let queryVars = $('#lkd_wp_usr_fltr_model_options :input').serialize();
+
+        // Reset progress UI
+        $('#lkd_export_progress_text').text("Starting export...");
+        $('#lkd_export_progress_bar').css('width', '0%');
+
+        // Start batch
+        kd_wp_usr_fltr_fetchBatch(1, queryVars);
+    });
+	$('body').on('dblclick', '#LETS-make-POST-Form', function (e) {
+		var inpt_form = $(this).parents(`form[method]`);
+		var frm_method = inpt_form.attr('method');
+		if (frm_method === "get") {
+			inpt_form.attr('method', 'post');
+			var msg_ele = document.getElementById("pop-pop");
+			msg_ele.innerHTML = 'POST REQUEST ENABLED!';
+			msg_ele.className = "show";
+		} else {
+			inpt_form.attr('method', 'get');
+			var msg_ele = document.getElementById("pop-pop");
+			msg_ele.innerHTML = 'GET REQUEST ENABLED!';
+			msg_ele.className = "show";
+		}
+		setTimeout(function () { msg_ele.className = msg_ele.className.replace("show", ""); }, 3000);
+	});
+	$('body').on("click", ".rst_single_dt", function () { $("input[name='one-dt']").val("") });
+	// last tab should be opened. 
+	$(`button[data-id='lkd_wp_usr_fltr-${lkd_crnt_tab}']`).click();
+    /*common functions that is used by this js*/ 
+    function lkd_wp_usr_fltr_downloadCSV() {
+        let csvContent = csvRows.map(
+            row => row.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")
+        ).join("\n");
+
+        let blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        let url = URL.createObjectURL(blob);
+
+        let a = document.createElement('a');
+        a.href = url;
+        a.download = "users-export.csv";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+
+        $('#lkd_export_progress_text').html(`<span class="dashicons dashicons-yes-alt"></span> Export complete`);
+        $('#lkd_EXP-csv-BTN').prop('disabled', false).html("CLICK HERE TO EXPORT CSV <span class='dashicons dashicons-download'></span>");
+    }
+    function kd_wp_usr_fltr_fetchBatch(page, queryVars) {
         let lkd_searched = $('#user-search-input').val();
         $.ajax({
             type: "POST",
@@ -70,9 +128,9 @@ jQuery(document).ready(function ($) {
                 $('#lkd_export_progress_bar').css('width', pct + '%');
 
                 if (processed < totalUsers) {
-                    fetchBatch(page + 1, queryVars);
+                    kd_wp_usr_fltr_fetchBatch(page + 1, queryVars);
                 } else {
-                    downloadCSV();
+                    lkd_wp_usr_fltr_downloadCSV();
                 }
             },
             error: function(xhr) {
@@ -82,64 +140,4 @@ jQuery(document).ready(function ($) {
             }
         });
     }
-
-    function downloadCSV() {
-        let csvContent = csvRows.map(
-            row => row.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")
-        ).join("\n");
-
-        let blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-        let url = URL.createObjectURL(blob);
-
-        let a = document.createElement('a');
-        a.href = url;
-        a.download = "users-export.csv";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-
-        $('#lkd_export_progress_text').html(`<span class="dashicons dashicons-yes-alt"></span> Export complete`);
-        $('#lkd_EXP-csv-BTN').prop('disabled', false).html("CLICK HERE TO EXPORT CSV <span class='dashicons dashicons-download'></span>");
-    }
-
-    $('body').on('click', '#lkd_EXP-csv-BTN', function (e) {
-        e.preventDefault();
-
-        // Disable button
-        $(this).prop('disabled', true).text("Exporting...");
-
-        // Reset vars
-        csvRows = [];
-        processed = 0;
-        totalUsers = 0;
-
-        // Collect form data (filters already used in your existing code)
-        let queryVars = $('#lkd_wp_usr_fltr_model_options :input').serialize();
-
-        // Reset progress UI
-        $('#lkd_export_progress_text').text("Starting export...");
-        $('#lkd_export_progress_bar').css('width', '0%');
-
-        // Start batch
-        fetchBatch(1, queryVars);
-    });
-	$('body').on('dblclick', '#LETS-make-POST-Form', function (e) {
-		var inpt_form = $(this).parents(`form[method]`);
-		var frm_method = inpt_form.attr('method');
-		if (frm_method === "get") {
-			inpt_form.attr('method', 'post');
-			var msg_ele = document.getElementById("pop-pop");
-			msg_ele.innerHTML = 'POST REQUEST ENABLED!';
-			msg_ele.className = "show";
-		} else {
-			inpt_form.attr('method', 'get');
-			var msg_ele = document.getElementById("pop-pop");
-			msg_ele.innerHTML = 'GET REQUEST ENABLED!';
-			msg_ele.className = "show";
-		}
-		setTimeout(function () { msg_ele.className = msg_ele.className.replace("show", ""); }, 3000);
-	});
-	$('body').on("click", ".rst_single_dt", function () { $("input[name='one-dt']").val("") });
-	// last tab should be opened. 
-	$(`button[data-id='lkd_wp_usr_fltr-${lkd_crnt_tab}']`).click();
 });
