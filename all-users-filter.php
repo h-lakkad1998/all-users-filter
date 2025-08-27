@@ -24,24 +24,24 @@ if (!defined('ABSPATH')) exit;
  *
  */
 
-if (!defined('LKD_WP_USR_FLTR_VERSION')) {
-	define('LKD_WP_USR_FLTR_VERSION', '1.0');
+if (!defined('ALLUSFI_VERSION')) {
+	define('ALLUSFI_VERSION', '1.0');
 }
 
-if (!defined('LKD_WP_USR_FLTR_FILE')) {
-	define('LKD_WP_USR_FLTR_FILE', __FILE__);
+if (!defined('ALLUSFI_FILE')) {
+	define('ALLUSFI_FILE', __FILE__);
 }
 
-if (!defined('LKD_WP_USR_FLTR_DIR')) {
-	define('LKD_WP_USR_FLTR_DIR', dirname(__FILE__));
+if (!defined('ALLUSFI_DIR')) {
+	define('ALLUSFI_DIR', dirname(__FILE__));
 }
 
-if (!defined('LKD_WP_USR_FLTR_URL')) {
-	define('LKD_WP_USR_FLTR_URL', plugin_dir_url(__FILE__));
+if (!defined('ALLUSFI_URL')) {
+	define('ALLUSFI_URL', plugin_dir_url(__FILE__));
 }
 
-if (!defined('LKD_WP_USR_FLTR_PREFIX')) {
-	define('LKD_WP_USR_FLTR_PREFIX', 'lkd_wp_usr_filter');
+if (!defined('ALLUSFI_PREFIX')) {
+	define('ALLUSFI_PREFIX', 'allusfi');
 }
 
 /**
@@ -51,8 +51,8 @@ if (!defined('LKD_WP_USR_FLTR_PREFIX')) {
  */
 global $pagenow;
 if (is_admin()) {
-	if (!class_exists('LKD_USERS_FILTER') && $pagenow == "users.php") {
-		require_once LKD_WP_USR_FLTR_DIR . '/inc/admin/class.lkd_main.php';
+	if (!class_exists('ALLUSFI_Admin') && $pagenow == "users.php") {
+		require_once ALLUSFI_DIR . '/inc/admin/class.allusfi_main.php';
 	}
-	require_once LKD_WP_USR_FLTR_DIR . '/inc/admin/admin_ajax_handler.php';
+	require_once ALLUSFI_DIR . '/inc/admin/admin_export_ajax_handler.php';
 }

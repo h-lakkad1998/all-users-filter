@@ -2,7 +2,7 @@
 Contributors: hlakkad1998
 Tags: filter-users, users-filter, wp-users-filter, users-export, export-user
 Donate link:
-Requires at least: 3.0
+Requires at least: 6.7
 Tested up to: 6.8
 Requires PHP: 7.4
 License: GPL-3.0-or-later
@@ -268,10 +268,10 @@ Add-on check: Compare with a query using `Type: NUMERIC` and `BETWEEN 18,45`; co
 Allow non-admins (specific user ID) to use the plugin by adding this to your theme's functions.php:
 
     // Allow a specific user to access All Users Filter UI
-   function yr_theme_custom_lkd_filter( $allowed ) {
+   function yr_theme_custom_allusfi_filter( $allowed ) {
         return ( 64901 === get_current_user_id() ) ? true : $allowed;
     }
-    add_filter( 'lkd_wp_usr_filter_allowed', 'yr_theme_custom_lkd_filter' );
+    add_filter( 'allusfi_allowed_user_to_filter', 'yr_theme_custom_allusfi_filter' );
 
 == Edge Cases ==
 * **Date format other than `YYYY-MM-DD`:** If stored as `DD/MM/YYYY`, direct `DATE` comparisons won't work. Normalize your data (recommended) or use REGEXP to pre-filter tokens; ideally migrate to ISO format.
@@ -291,7 +291,7 @@ Use this compact template to jot down UI scenarios:
 
 == Frequently Asked Questions ==
 = How can non-admins access the plugin? =
-Use the `lkd_wp_usr_filter_allowed` filter (see “Extending scope for multiple users”).
+Use the `allusfi_allowed_user_to_filter` filter (see “Extending scope for multiple users”).
 
 = Why doesn't a numeric filter work with Type: CHAR? =
 String comparisons are lexicographic. Use `NUMERIC` (or `SIGNED`/`UNSIGNED`) for number ranges and equality.
