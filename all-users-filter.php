@@ -51,7 +51,7 @@ if (!defined('ALLUSFI_PREFIX')) {
  */
 global $pagenow;
 if (is_admin()) {
-	if (!class_exists('ALLUSFI_Admin') && $pagenow == "users.php") {
+	if ( $pagenow == "users.php" ) {
 		require_once ALLUSFI_DIR . '/inc/admin/class.allusfi_main.php';
 	}
 	require_once ALLUSFI_DIR . '/inc/admin/admin_export_ajax_handler.php';
