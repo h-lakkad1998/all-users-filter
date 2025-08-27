@@ -8,7 +8,7 @@ add_action('wp_ajax_allusfi_wp_usr_export_csv', 'allusfi_wp_usr_export_csv_fun')
 
 function allusfi_wp_usr_export_csv_fun()
 {
-	// 1) PHPCS/WPCS-friendly nonce check (AJAX). Return JSON error instead of die().
+	// 1) PHPCS/WPCS-friendly nonce check (AJAX). Return JSON error
 	if (false === check_ajax_referer('allusfi_secure', 'allusfi_secure', false)) {
 		wp_send_json_error(array(
 			'status' => 'failed',
