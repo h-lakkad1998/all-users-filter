@@ -251,7 +251,9 @@ if (!class_exists('ALLUSFI_Admin')) {
 				? array_map('sanitize_text_field', wp_unslash($_REQUEST['mta-tp']))
 				: array();
 
-			$ops = (isset($_REQUEST['mta-op']) && is_array($_REQUEST['mta-op'])) ? array_map(array($this, 'sanitize_operator'), wp_unslash($_REQUEST['mta-op'])) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			$ops = (isset($_REQUEST['mta-op']) && is_array($_REQUEST['mta-op'])) ? array_map( 'sanitize_text_field', wp_unslash($_REQUEST['mta-op'])) : array(); 
+
+			$ops = ( ! empty($ops) && is_array($ops) ) ? array_map( array($this, 're_sanitize_operator'), $ops) : array(); 
 
 			$allowed_types = array('CHAR', 'NUMERIC', 'BINARY', 'DATE', 'DATETIME', 'DECIMAL', 'SIGNED', 'UNSIGNED', 'TIME');
 
@@ -268,28 +270,13 @@ if (!class_exists('ALLUSFI_Admin')) {
 			return $out;
 		}
 
-		private function sanitize_operator(string $op): string
+		private function re_sanitize_operator(string $op)
 		{
 			$allowed = array(
-				'=',
-				'!=',
-				'>',
-				'>=',
-				'<',
-				'<=',
-				'LIKE',
-				'NOT LIKE',
-				'IN',
-				'NOT IN',
-				'BETWEEN',
-				'NOT BETWEEN',
-				'EXISTS',
-				'NOT EXISTS',
-				'REGEXP',
-				'NOT REGEXP',
-				'RLIKE',
+				'&lt;'	=> '<',
+				'&lt;='	=> '<=',
 			);
-			return in_array($op, $allowed, true) ? $op : '=';
+			return ( isset( $allowed[$op] ) ) ? $allowed[$op] : $op;
 		}
 	}
 
