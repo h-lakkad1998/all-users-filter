@@ -1,5 +1,5 @@
 === All Users Filter ===
-Contributors: hlakkad1998, akshaykungiri
+Contributors: hlakkad1998, akshaykungiri, visualsbyridhi
 Tags: filter-users, users-filter, wp-users-filter, users-export, export-user
 Donate link:
 Requires at least: 6.7
