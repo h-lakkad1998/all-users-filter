@@ -153,12 +153,12 @@ UI:
 
 === 10) Extending scope for multiple users ===
 Allow non-admins (specific user ID) to use the plugin by adding this to your theme's functions.php:
-```
+`
 // Allow a specific user to access All Users Filter UI
 function yr_theme_custom_allusfi_filter( $allowed ) {
     return ( 64901 === get_current_user_id() ) ? true : $allowed;
 }
-add_filter( 'allusfi_allowed_user_to_filter', 'yr_theme_custom_allusfi_filter' );```
+add_filter( 'allusfi_allowed_user_to_filter', 'yr_theme_custom_allusfi_filter' );`
 
 == Frequently Asked Questions ==
 = How can non-admins access the plugin? =
