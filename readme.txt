@@ -178,7 +178,7 @@ String comparisons are lexicographic. Use `NUMERIC` (or `SIGNED`/`UNSIGNED`) for
 * Minor changes in the main file added German Support
 
 == Upgrade Notice ==
-= 1.1 =
+= 1.0 =
 Initial Release.
 = 1.1 =
 * Minor changes in the main file added German Support
