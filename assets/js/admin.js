@@ -40,7 +40,7 @@ jQuery(document).ready(function ($) {
     $('body').on('click', '#allusfi_EXP-csv-BTN', function (e) {
         e.preventDefault();
         // Disable button
-        $(this).prop('disabled', true).text("Currently processing your export... Please keep this browser window open until the process is complete to avoid interrupting it.");
+        $(this).prop('disabled', true).text(`${allusfi_obj.export_ongoing_txt}`);
         // Reset vars
         csvRows = [];
         processed = 0;
@@ -50,7 +50,7 @@ jQuery(document).ready(function ($) {
         let queryVars = $('#allusfi_model_options :input').serialize();
 
         // Reset progress UI
-        $('#allusfi_export_progress_text').text("Starting export...");
+        $('#allusfi_export_progress_text').text(`${allusfi_obj.start_export_process_txt}`);
         $('#allusfi_export_progress_bar').css('width', '0%');
 
         // Start batch
@@ -62,12 +62,12 @@ jQuery(document).ready(function ($) {
 		if (frm_method === "get") {
 			inpt_form.attr('method', 'post');
 			var msg_ele = document.getElementById("pop-pop");
-			msg_ele.innerHTML = 'POST REQUEST ENABLED!';
+			msg_ele.innerHTML = get_req_txt.post_req_txt;
 			msg_ele.className = "show";
 		} else {
 			inpt_form.attr('method', 'get');
 			var msg_ele = document.getElementById("pop-pop");
-			msg_ele.innerHTML = 'GET REQUEST ENABLED!';
+			msg_ele.innerHTML = allusfi_obj.get_req_txt;
 			msg_ele.className = "show";
 		}
 		setTimeout(function () { msg_ele.className = msg_ele.className.replace("show", ""); }, 3000);
@@ -91,8 +91,8 @@ jQuery(document).ready(function ($) {
         a.click();
         document.body.removeChild(a);
 
-        $('#allusfi_export_progress_text').html(`<span class="dashicons dashicons-yes-alt"></span> Export complete`);
-        $('#allusfi_EXP-csv-BTN').prop('disabled', false).html("CLICK HERE TO EXPORT CSV <span class='dashicons dashicons-download'></span>");
+        $('#allusfi_export_progress_text').html(`<span class="dashicons dashicons-yes-alt"></span> ${allusfi_obj.btn_export_finish_txt}`);
+        $('#allusfi_EXP-csv-BTN').prop('disabled', false).html(`${allusfi_obj.btn_export_txt} <span class='dashicons dashicons-download'></span>`);
     }
     function allusfi_fetchBatch(page, queryVars) {
         let allusfi_searched = $('#user-search-input').val();
@@ -103,7 +103,7 @@ jQuery(document).ready(function ($) {
             success: function(res) {
                 if (!res.success) {
                     console.log('Error: ' + (res.data ? res.data.msg : 'unknown'));
-                    $('#allusfi_EXP-csv-BTN').prop('disabled', false).html("CLICK HERE TO EXPORT CSV <span class='dashicons dashicons-download'></span>");
+                    $('#allusfi_EXP-csv-BTN').prop('disabled', false).html(`${allusfi_obj.btn_export_txt} <span class='dashicons dashicons-download'></span>`);
                     return;
                 }
 
@@ -120,7 +120,7 @@ jQuery(document).ready(function ($) {
                 let pct = (totalUsers > 0) ? Math.min(100, Math.round((processed / totalUsers) * 100)) : 0;
 
                 // update progress bar
-                $('#allusfi_export_progress_text').text(`Exporting... ${processed}/${totalUsers} (${pct}%)`);
+                $('#allusfi_export_progress_text').text(`${allusfi_obj.export_process_txt} ${processed}/${totalUsers} (${pct}%)`);
                 $('#allusfi_export_progress_bar').css('width', pct + '%');
 
                 if (processed < totalUsers) {
@@ -132,7 +132,7 @@ jQuery(document).ready(function ($) {
             error: function(xhr) {
                 console.error(xhr.responseText);
                 console.log("AJAX failed. See console.");
-                $('#allusfi_EXP-csv-BTN').prop('disabled', false).html("CLICK HERE TO EXPORT CSV <span class='dashicons dashicons-download'></span>");
+                $('#allusfi_EXP-csv-BTN').prop('disabled', false).html(`${allusfi_obj.btn_export_txt} <span class='dashicons dashicons-download'></span>`);
             }
         });
     }

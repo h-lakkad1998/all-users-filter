@@ -4,7 +4,7 @@
  * Plugin Name: All Users Filter
  * Plugin URI: https://github.com/h-lakkad1998/all-users-filter
  * Description: This plugin helps the admin to filter the users with various ranges of filters.
- * Version: 1.0
+ * Version: 1.1
  * Author: Hardik Lakkad/Patel
  * Author URI: https://www.linkedin.com/in/hardik-patel-lakkad-097b12147/
  * Text Domain: all-users-filter
@@ -25,7 +25,7 @@ if (!defined('ABSPATH')) exit;
  */
 
 if (!defined('ALLUSFI_VERSION')) {
-	define('ALLUSFI_VERSION', '1.0');
+	define('ALLUSFI_VERSION', '1.1');
 }
 
 if (!defined('ALLUSFI_FILE')) {
@@ -49,10 +49,19 @@ if (!defined('ALLUSFI_PREFIX')) {
  * This class will be only available at user.php page 
  * 
  */
-global $pagenow;
 if (is_admin()) {
+	global $pagenow;
 	if ( $pagenow == "users.php" ) {
 		require_once ALLUSFI_DIR . '/inc/admin/class.allusfi_main.php';
 	}
 	require_once ALLUSFI_DIR . '/inc/admin/admin_export_ajax_handler.php';
+}
+
+add_action( 'plugins_loaded', 'allusfi_load_textdomain' );
+function allusfi_load_textdomain() {
+    load_plugin_textdomain(
+        'all-users-filter',
+        false,
+        dirname( plugin_basename( __FILE__ ) ) . '/languages/'
+	); 
 }

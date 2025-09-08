@@ -7,8 +7,8 @@ Tested up to: 6.8
 Requires PHP: 7.4
 License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
-Stable tag: 1.0
-Version: 1.0
+Stable tag: 1.1
+Version: 1.1
 
 Filter, sort, and export WordPress users to CSV using powerful UI-driven meta queries (roles, dates, numeric ranges, regex, and more).
 
@@ -174,7 +174,11 @@ String comparisons are lexicographic. Use `NUMERIC` (or `SIGNED`/`UNSIGNED`) for
 == Changelog ==
 = 1.0 =
 * Initial Release
+= 1.1 =
+* Minor changes in the main file added German Support
 
 == Upgrade Notice ==
-= 1.0 =
+= 1.1 =
 Initial Release.
+= 1.1 =
+* Minor changes in the main file added German Support

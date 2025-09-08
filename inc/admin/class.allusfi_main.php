@@ -22,8 +22,15 @@ if (!class_exists('ALLUSFI_Admin')) {
 			wp_register_script(ALLUSFI_PREFIX . '_admin_js', ALLUSFI_URL . 'assets/js/admin.js', array('jquery'), ALLUSFI_VERSION, true);
 			wp_register_style(ALLUSFI_PREFIX . '_admin_css', ALLUSFI_URL . 'assets/css/admin.css', array(), ALLUSFI_VERSION);
 			$allusfi_local_array = array(
-				'plugin_prefix' => ALLUSFI_PREFIX,
-				'ajax_url'      => admin_url('admin-ajax.php'),
+				'plugin_prefix' 			=> ALLUSFI_PREFIX,
+				'ajax_url'      			=> admin_url('admin-ajax.php'),
+				'btn_export_txt'			=> __( 'CLICK HERE TO EXPORT CSV', 'all-users-filter'),
+				'btn_export_finish_txt'		=> __( 'Export complete', 'all-users-filter'),
+				'get_req_txt'				=> __( 'GET REQUEST ENABLED!','all-users-filter'),
+				'post_req_txt'				=> __( 'POST REQUEST ENABLED!','all-users-filter'),	
+				'start_export_process_txt'	=> __( 'Starting export...', 'all-users-filter'),
+				'export_process_txt'		=> __( 'Exporting...', 'all-users-filter'),
+				'export_ongoing_txt'		=> __( 'Currently processing your export... Please keep this browser window open until the process is complete to avoid interrupting it.', 'all-users-filter'),
 			);
 			wp_localize_script(ALLUSFI_PREFIX . '_admin_js', 'allusfi_obj', $allusfi_local_array);
 			wp_enqueue_script(ALLUSFI_PREFIX . '_admin_js');

@@ -1,0 +1,228 @@
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: All Users Filter 1.1\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/all-users-filter\n"
+"POT-Creation-Date: 2025-09-08T11:32:29+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.1\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Domain: all-users-filter\n"
+"X-Generator: WP-CLI 2.12.0\n"
+
+#. Plugin Name of the plugin
+msgid "All Users Filter"
+msgstr "Alle Benutzer filtern"
+
+#. Plugin URI of the plugin
+msgid "https://github.com/h-lakkad1998/all-users-filter"
+msgstr "https://github.com/h-lakkad1998/all-users-filter"
+
+#. Description of the plugin
+msgid ""
+"This plugin helps the admin to filter the users with various ranges of "
+"filters."
+msgstr ""
+"Dieses Plugin hilft dem Administrator, die Benutzer mit verschiedenen "
+"Filtern zu filtern."
+
+#. Author of the plugin
+msgid "Hardik Lakkad/Patel"
+msgstr "Hardik Lakkad/Patel"
+
+#. Author URI of the plugin
+msgid "https://www.linkedin.com/in/hardik-patel-lakkad-097b12147/"
+msgstr "https://www.linkedin.com/in/hardik-patel-lakkad-097b12147/"
+
+msgid "Security check failed! May Be Session Expired!"
+msgstr "Sicherheitscheck fehlgeschlagen! Kann eine Sitzung abgelaufen sein!"
+
+msgid "Insufficient permissions"
+msgstr "Unzureichende Berechtigungen"
+
+msgid "Internal error: helper class missing"
+msgstr "Interner Fehler: Helferklasse fehlt"
+
+msgid ""
+"Too many excluded IDs. Reduce the exclude list or export in smaller batches."
+msgstr ""
+"Zu viele ausgeschlossene IDs. Reduzieren Sie die Ausschlussliste oder den "
+"Export in kleineren Chargen."
+
+msgid "CLICK HERE TO EXPORT CSV"
+msgstr "Klicken Sie hier, um CSV zu exportieren"
+
+msgid "Export complete"
+msgstr "Exportieren"
+
+msgid "GET REQUEST ENABLED!"
+msgstr "\"GET\" Anfrage aktiviert!"
+
+msgid "POST REQUEST ENABLED!"
+msgstr "\"POST\" Anfrage aktiviert!"
+
+msgid "Starting export..."
+msgstr "Export beginnen..."
+
+msgid "Exporting..."
+msgstr "Exportieren..."
+
+msgid ""
+"Currently processing your export... Please keep this browser window open "
+"until the process is complete to avoid interrupting it."
+msgstr ""
+"Bearbeiten Sie derzeit Ihren Export ... Bitte halten Sie dieses "
+"Browserfenster offen, bis der Vorgang abgeschlossen ist, um zu vermeiden, "
+"dass es unterbrochen wird."
+
+msgid "Filter Users"
+msgstr "Filterbenutzer"
+
+msgid "General"
+msgstr "Allgemein"
+
+msgid "Registered Date Filter"
+msgstr "Registrierter Datumsfilter"
+
+msgid "Advanced(Meta filter)"
+msgstr "Fortgeschrittener (Metafilter)"
+
+msgid "Export"
+msgstr "Export"
+
+msgid "Clear Filters"
+msgstr "Klare Filter"
+
+msgid "General Filter"
+msgstr "Allgemeiner Filter"
+
+msgid "Sort By :"
+msgstr "Sortieren durch:"
+
+msgid "Select option..."
+msgstr "Option auswählen ..."
+
+msgid "First name"
+msgstr "Vorname"
+
+msgid "Last name"
+msgstr "Nachname"
+
+msgid "User ID"
+msgstr "Benutzer-ID"
+
+msgid "User Login"
+msgstr "Benutzeranmeldung"
+
+msgid "Display Name"
+msgstr "Anzeigename"
+
+msgid "Registered Date"
+msgstr "Datum eingetragen"
+
+msgid "Post Count"
+msgstr "Postanzahl"
+
+msgid "Order By:"
+msgstr "Bestellung von:"
+
+msgid "ASCENDING"
+msgstr "AUFSTEIGEND"
+
+msgid "DESCENDING"
+msgstr "ABSTEIGEND"
+
+msgid "Exclude Users Id/s:"
+msgstr "Benutzer -ID/s ausschließen:"
+
+msgid "Use \"-\" between numbers to exclude multiple ids."
+msgstr "Verwenden Sie \"-\" zwischen Zahlen, um mehrere IDs auszuschließen."
+
+msgid "Only numbers and \"-\" are allowed."
+msgstr "Nur Zahlen und \"-\" sind erlaubt."
+
+msgid "Filter users by date of registration : "
+msgstr "Filterbenutzer nach Registrierungsdatum:"
+
+msgid "Reset"
+msgstr "Zurücksetzen"
+
+msgid "Write something like  \"12 Hours ago\" : "
+msgstr "Schreiben Sie so etwas wie \"12 Hours ago\":"
+
+msgid "E.g. 12 Hours ago"
+msgstr "Z.B. Vor 12 Stunden"
+
+msgid "Exclude roles:"
+msgstr "Rollen ausschließen:"
+
+msgid "Multiple Date Filter"
+msgstr "Mehrfachdatumfilter"
+
+msgid "Filter users between two dates:"
+msgstr "Filter Benutzer zwischen zwei Daten:"
+
+msgid "This filter will filter users based on registration date."
+msgstr "Dieser Filter filtert Benutzer anhand des Registrierungsdatums."
+
+msgid "Add date"
+msgstr "Datum hinzufügen"
+
+msgid "From Date"
+msgstr "Ab Datum"
+
+msgid "To Date"
+msgstr "Miteinander ausgehen"
+
+msgid "Advanced Filters"
+msgstr "Fortgeschrittene Filter"
+
+msgid "Filter users using meta key/value:"
+msgstr "Filterbenutzer mit Metaschlüssel/Wert filtern:"
+
+msgid "1) Add meta key.  2) Select Operator.  3) Enter value. "
+msgstr ""
+"1) META -Schlüssel hinzufügen.  2) Wählen Sie Operator.  3) Wert eingeben."
+
+msgid "ADD META FILTER"
+msgstr "META -Filter hinzufügen"
+
+msgid "AND"
+msgstr "UND"
+
+msgid "OR"
+msgstr "ODER"
+
+msgid "Add meta key like: monthly_salary"
+msgstr "Fügen Sie Metaschlüssel hinzu wie: monatly_salary"
+
+msgid "Meta key"
+msgstr "Metaschlüssel"
+
+msgid "Operator"
+msgstr "Operator"
+
+msgid "Type"
+msgstr "Typ"
+
+msgid "Value"
+msgstr "Wert"
+
+msgid "The export file will include following things."
+msgstr "Die Exportdatei enthält die folgenden Dinge."
+
+msgid ""
+"User ID, User Login, User Email, User Nicename, Display Name, User Role."
+msgstr ""
+"Benutzer -ID, Benutzeranmeldung, Benutzer -E -Mail, Benutzer -NICENAME, "
+"Anzeigename, Benutzerrolle."
+
+msgid ""
+"Note: If filtered with meta key/s(advance filter), meta value/s will be "
+"included."
+msgstr ""
+"HINWEIS: Wenn Sie mit Meta -Key/S (Advance -Filter) gefiltert werden, werden"
+" Meta -Wert enthalten."
