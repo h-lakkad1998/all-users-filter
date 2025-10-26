@@ -46,13 +46,13 @@ if (!class_exists('ALLUSFI_Admin')) {
 		function allusfi_filter_users_by_requests($query)
 		{
 			if (! is_admin()) {
-				return;
+				return $query;
 			}
 			$admin  = new ALLUSFI_Admin();
 			$params = $admin->allusfi_get_query_params();
 
 			if (! $params['secure']) {
-				return; // Do not modify the query for unverified/ordinary loads
+				return $query;
 			}
 
 			// 1) Order.

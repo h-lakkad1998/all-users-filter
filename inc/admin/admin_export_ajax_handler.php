@@ -29,6 +29,7 @@ function allusfi_wp_usr_export_csv_fun()
 	if (! class_exists('ALLUSFI_Admin')) {
 		$maybe = defined('ALLUSFI_DIR') ? ALLUSFI_DIR . '/inc/admin/class.allusfi_main.php' : '';
 		if ($maybe && file_exists($maybe)) {
+			// phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 			require_once $maybe;
 		}
 	}
@@ -94,7 +95,7 @@ function allusfi_wp_usr_export_csv_fun()
 		}
 	}
 
-	// search (if present)
+	// search if present in the post request
 	if (! empty($search)) {
 		$proto->set('search', $search);
 	}

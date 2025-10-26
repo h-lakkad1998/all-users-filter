@@ -209,7 +209,6 @@ The Modal (background)
   z-index: 1;
   bottom: 125%;
   left: 50%;
-  /* margin-left: -60px; */
   opacity: 0;
   transition: opacity 0.3s;
   transform: translateX(-50%);
@@ -379,11 +378,6 @@ The Modal (background)
 .allusfi_modal-content .big_p {
   font-size: 14px;
 }
-
-/* When the radio button is checked, add a blue background */
-/* .allusfi_modal-content .fancy-radio  {
-   background-color: #2271b1; *
-} */
 
 /* Create the indicator (the dot/circle - hidden when not checked) */
 .allusfi_modal-content .fancy-select:after {

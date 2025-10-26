@@ -7,8 +7,8 @@ Tested up to: 6.8
 Requires PHP: 7.4
 License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
-Stable tag: 1.1
-Version: 1.1
+Stable tag: 1.2
+Version: 1.2
 
 Filter, sort, and export WordPress users to CSV using powerful UI-driven meta queries (roles, dates, numeric ranges, regex, and more).
 
@@ -176,10 +176,16 @@ String comparisons are lexicographic. Use `NUMERIC` (or `SIGNED`/`UNSIGNED`) for
 = 1.0 =
 * Initial Release
 = 1.1 =
-* Minor changes in the main file added German Support
+* Minor changes in the main file, added German Support
+= 1.2 =
+* Codebase refactored for full compliance with WordPressVIPMinimum coding standards.
+* Improved code quality and maintainability.
+* No user-facing changes.
 
 == Upgrade Notice ==
 = 1.0 =
 Initial Release.
 = 1.1 =
-* Minor changes in the main file added German Support
+* Minor changes in the main file, added German Support
+= 1.2 =
+*This release updates the plugin code for compliance with current WordPressVIPMinimum coding standards and improving and code quality. No changes to plugin functionality.

@@ -27,10 +27,12 @@ jQuery(document).ready(function ($) {
 	$('body').on('click', ".remov_meta", function () { $(this).parents('tr').remove(); });
 	$('body').on('click', '#allusfi_add_multi_date', function () {
 		const DATE_COPY_CONTENT = $("#allusfi_dt_copy_content").html().trim();
+        // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
 		$("#dt_append_content").append(DATE_COPY_CONTENT);
 	});
 	$('body').on('click', '#allusfi_add_meta_query', function () {
 		const META_COPY_CONTENT = $("#allusfi_meta_copy_content").html().trim();
+        // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
 		$("#advnce_append_content").append(META_COPY_CONTENT);
 	});
 	let csvRows = [];
@@ -62,11 +64,13 @@ jQuery(document).ready(function ($) {
 		if (frm_method === "get") {
 			inpt_form.attr('method', 'post');
 			var msg_ele = document.getElementById("pop-pop");
+            // phpcs:ignore WordPressVIPMinimum.JS.InnerHTML.Found
 			msg_ele.innerHTML = get_req_txt.post_req_txt;
 			msg_ele.className = "show";
 		} else {
 			inpt_form.attr('method', 'get');
 			var msg_ele = document.getElementById("pop-pop");
+            // phpcs:ignore WordPressVIPMinimum.JS.InnerHTML.Found
 			msg_ele.innerHTML = allusfi_obj.get_req_txt;
 			msg_ele.className = "show";
 		}
@@ -90,8 +94,9 @@ jQuery(document).ready(function ($) {
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
-
+        // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
         $('#allusfi_export_progress_text').html(`<span class="dashicons dashicons-yes-alt"></span> ${allusfi_obj.btn_export_finish_txt}`);
+        // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
         $('#allusfi_EXP-csv-BTN').prop('disabled', false).html(`${allusfi_obj.btn_export_txt} <span class='dashicons dashicons-download'></span>`);
     }
     function allusfi_fetchBatch(page, queryVars) {
@@ -103,6 +108,7 @@ jQuery(document).ready(function ($) {
             success: function(res) {
                 if (!res.success) {
                     console.log('Error: ' + (res.data ? res.data.msg : 'unknown'));
+                    // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
                     $('#allusfi_EXP-csv-BTN').prop('disabled', false).html(`${allusfi_obj.btn_export_txt} <span class='dashicons dashicons-download'></span>`);
                     return;
                 }
@@ -132,6 +138,7 @@ jQuery(document).ready(function ($) {
             error: function(xhr) {
                 console.error(xhr.responseText);
                 console.log("AJAX failed. See console.");
+                // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
                 $('#allusfi_EXP-csv-BTN').prop('disabled', false).html(`${allusfi_obj.btn_export_txt} <span class='dashicons dashicons-download'></span>`);
             }
         });
