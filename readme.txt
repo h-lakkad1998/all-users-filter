@@ -1,14 +1,14 @@
 === All Users Filter ===
 Contributors: hlakkad1998, akshaykungiri, visualsbyridhi
-Tags: filter-users, users-filter, wp-users-filter, users-export, export-user
-Donate link:
-Requires at least: 6.7
-Tested up to: 6.8
+Tags: customer-list, export-user, export-users, user-export, usermeta
+Donate link:    
+Requires at least: 6.9
+Tested up to: 6.9
 Requires PHP: 7.4
 License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
-Stable tag: 1.2
-Version: 1.2
+Stable tag: 1.3
+Version: 1.3
 
 Filter, sort, and export WordPress users to CSV using powerful UI-driven meta queries (roles, dates, numeric ranges, regex, and more).
 
@@ -172,6 +172,12 @@ String comparisons are lexicographic. Use `NUMERIC` (or `SIGNED`/`UNSIGNED`) for
 "SIGNED" Treated as a signed integer, can represent negative, zero, and positive numbers. e.g. -2, -1, 0, 1, 2
 "UNSIGNED" Only allows 0 and positive numbers (no negatives). e.g. 0, 1, 2
 
+= Does the order count filter work with WooCommerce High-Performance Order Storage (HPOS)? =
+Yes! The plugin is fully compatible with modern WooCommerce stores using HPOS, as well as stores using legacy custom post type (CPT) order storage.
+
+= Can I export the filtered order counts? =
+Yes. Whenever the WooCommerce filter is enabled, your user export file will automatically include a new "Total Orders" column containing the exact order count for each filtered user.
+
 == Changelog ==
 = 1.0 =
 * Initial Release
@@ -181,6 +187,8 @@ String comparisons are lexicographic. Use `NUMERIC` (or `SIGNED`/`UNSIGNED`) for
 * Codebase refactored for full compliance with WordPressVIPMinimum coding standards.
 * Improved code quality and maintainability.
 * No user-facing changes.
+= 1.3 =
+* Filter and export users based on their total WooCommerce order count, featuring full support for High-Performance Order Storage (HPOS) *
 
 == Upgrade Notice ==
 = 1.0 =
@@ -188,4 +196,6 @@ Initial Release.
 = 1.1 =
 * Minor changes in the main file, added German Support
 = 1.2 =
-*This release updates the plugin code for compliance with current WordPressVIPMinimum coding standards and improving and code quality. No changes to plugin functionality.
+* This release updates the plugin code for compliance with current WordPressVIPMinimum coding standards and improving and code quality. No changes to plugin functionality.
+= 1.3 =
+* Filter and export users based on their total WooCommerce order count, featuring full support for High-Performance Order Storage (HPOS) *

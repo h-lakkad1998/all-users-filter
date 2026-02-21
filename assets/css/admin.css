@@ -730,3 +730,78 @@ The Modal (background)
     width: 100%;
   }
 }
+
+/* ===========================
+   WooCommerce Tab & Toggle
+   =========================== */
+
+/* Toggle switch container */
+.allusfi_modal-content .allusfi-wc-toggle {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+  vertical-align: middle;
+}
+
+.allusfi_modal-content .allusfi-wc-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Slider track */
+.allusfi_modal-content .allusfi-wc-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.3s;
+  border-radius: 26px;
+}
+
+/* Slider knob */
+.allusfi_modal-content .allusfi-wc-slider::before {
+  content: "";
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #fff;
+  transition: 0.3s;
+  border-radius: 50%;
+}
+
+/* Checked state */
+.allusfi_modal-content .allusfi-wc-toggle input:checked + .allusfi-wc-slider {
+  background-color: #2271b1;
+}
+
+.allusfi_modal-content .allusfi-wc-toggle input:checked + .allusfi-wc-slider::before {
+  transform: translateX(24px);
+}
+
+/* WooCommerce tab content */
+.allusfi_modal-content .allusfi-tabcontent.allusfi_us_woocommerce {
+  min-height: 400px;
+}
+
+.allusfi_modal-content .allusfi-tabcontent.allusfi_us_woocommerce .child-col::after {
+  display: none;
+}
+
+.allusfi_modal-content .allusfi-wc-fields {
+  transition: opacity 0.3s ease;
+}
+
+.allusfi_modal-content .allusfi-tabcontent.allusfi_us_woocommerce select {
+  min-width: 200px;
+}
+
+.allusfi_modal-content .allusfi-tabcontent.allusfi_us_woocommerce input[type="number"] {
+  width: 120px;
+}

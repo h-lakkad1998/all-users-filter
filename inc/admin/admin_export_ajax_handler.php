@@ -1,6 +1,6 @@
 <?php
 // Exit if accessed directly.
-if (! defined('ABSPATH')) {
+if (!defined('ABSPATH')) {
 	exit;
 }
 
@@ -12,40 +12,40 @@ function allusfi_wp_usr_export_csv_fun()
 	if (false === check_ajax_referer('allusfi_secure', 'allusfi_secure', false)) {
 		wp_send_json_error(array(
 			'status' => 'failed',
-			'msg'    => esc_html__('Security check failed! May Be Session Expired!', 'all-users-filter'),
+			'msg' => esc_html__('Security check failed! May Be Session Expired!', 'all-users-filter'),
 		));
 	}
 
 	// 2) Capability check (standalone).
 	$allusfi_is_filter_allowed = apply_filters('allusfi_allowed_user_to_filter', false);
-	if (! current_user_can('administrator') && ! $allusfi_is_filter_allowed) {
+	if (!current_user_can('administrator') && !$allusfi_is_filter_allowed) {
 		wp_send_json_error(array(
 			'status' => 'failed',
-			'msg'    => esc_html__('Insufficient permissions', 'all-users-filter'),
+			'msg' => esc_html__('Insufficient permissions', 'all-users-filter'),
 		));
 	}
 
 	// 3) Ensure admin helper class is available
-	if (! class_exists('ALLUSFI_Admin')) {
+	if (!class_exists('ALLUSFI_Admin')) {
 		$maybe = defined('ALLUSFI_DIR') ? ALLUSFI_DIR . '/inc/admin/class.allusfi_main.php' : '';
 		if ($maybe && file_exists($maybe)) {
 			// phpcs:ignore WordPressVIPMinimum.Files.IncludingFile.UsingVariable
 			require_once $maybe;
 		}
 	}
-	if (! class_exists('ALLUSFI_Admin')) {
+	if (!class_exists('ALLUSFI_Admin')) {
 		wp_send_json_error(array(
 			'status' => 'failed',
-			'msg'    => esc_html__('Internal error: helper class missing', 'all-users-filter'),
+			'msg' => esc_html__('Internal error: helper class missing', 'all-users-filter'),
 		));
 	}
 
 	// 4) Get sanitized params (the method should NOT perform nonce checks).
-	$admin  = new ALLUSFI_Admin();
+	$admin = new ALLUSFI_Admin();
 	$params = (array) $admin->allusfi_get_query_params();
 
 	// 5) Lightweight additional request values (sanitized)
-	$paged  = isset($_REQUEST['paged']) ? absint(wp_unslash($_REQUEST['paged'])) : 1;
+	$paged = isset($_REQUEST['paged']) ? absint(wp_unslash($_REQUEST['paged'])) : 1;
 	$search = isset($_REQUEST['s']) ? sanitize_text_field(wp_unslash($_REQUEST['s'])) : '';
 
 	// 6) Batch size (default 100) - keeps queries small and reduces DB pressure.
@@ -53,11 +53,11 @@ function allusfi_wp_usr_export_csv_fun()
 	$batch_size = $batch_size > 0 ? $batch_size : 999;
 
 	// 7) Guard: refuse absurdly-large exclude lists (avoid extremely slow/exhaustive queries).
-	if (! empty($params['excl_ids']) && is_array($params['excl_ids'])) {
-		if (count($params['excl_ids']) > 500) {
+	if (!empty($params['excl_ids']) && is_array($params['excl_ids'])) {
+		if (count($params['excl_ids']) > 50) {
 			wp_send_json_error(array(
 				'status' => 'failed',
-				'msg'    => esc_html__('Too many excluded IDs. Reduce the exclude list or export in smaller batches.', 'all-users-filter'),
+				'msg' => esc_html__('Too many excluded IDs. Reduce the exclude list or export in smaller batches.', 'all-users-filter'),
 			));
 		}
 	}
@@ -67,7 +67,7 @@ function allusfi_wp_usr_export_csv_fun()
 	$proto->set('order', (isset($params['ordr_by']) && '1' === $params['ordr_by']) ? 'ASC' : 'DESC');
 
 	// sort mapping (only set meta_key when explicitly requested)
-	if (! empty($params['usr_sort'])) {
+	if (!empty($params['usr_sort'])) {
 		switch ($params['usr_sort']) {
 			case 'f-nm':
 				$proto->set('meta_key', 'first_name');
@@ -96,49 +96,49 @@ function allusfi_wp_usr_export_csv_fun()
 	}
 
 	// search if present in the post request
-	if (! empty($search)) {
+	if (!empty($search)) {
 		$proto->set('search', $search);
 	}
 
 	// role exclusion
-	if (! empty($params['exlude_roles']) && is_array($params['exlude_roles'])) {
+	if (!empty($params['exlude_roles']) && is_array($params['exlude_roles'])) {
 		$proto->set('role__not_in', $params['exlude_roles']);
 	}
 
 	// exclude ids
-	if (! empty($params['excl_ids']) && is_array($params['excl_ids'])) {
+	if (!empty($params['excl_ids']) && is_array($params['excl_ids'])) {
 		$proto->set('exclude', array_map('absint', $params['excl_ids']));
 	}
 
 	// date args (build only if necessary)
 	$date_args = array('relation' => 'OR');
-	if (! empty($params['one_date'])) {
+	if (!empty($params['one_date'])) {
 		$dt = $params['one_date'];
 		$date_args[] = array(
-			'year'  => gmdate('Y', strtotime($dt)),
+			'year' => gmdate('Y', strtotime($dt)),
 			'month' => gmdate('m', strtotime($dt)),
-			'day'   => gmdate('d', strtotime($dt)),
+			'day' => gmdate('d', strtotime($dt)),
 		);
 	}
-	if (! empty($params['cstm_dt'])) {
+	if (!empty($params['cstm_dt'])) {
 		$date_args[] = array('after' => $params['cstm_dt'], 'inclusive' => true);
 	}
-	if (! empty($params['multi_from_date']) && ! empty($params['multi_to_date'])) {
+	if (!empty($params['multi_from_date']) && !empty($params['multi_to_date'])) {
 		foreach ($params['multi_from_date'] as $index => $from) {
 			$to = isset($params['multi_to_date'][$index]) ? $params['multi_to_date'][$index] : '';
 			if (empty($from) || empty($to)) {
 				continue;
 			}
 			$multi_dates = array(
-				'before'    => array(
-					'year'  => gmdate('Y', strtotime($to)),
+				'before' => array(
+					'year' => gmdate('Y', strtotime($to)),
 					'month' => gmdate('m', strtotime($to)),
-					'day'   => gmdate('d', strtotime($to)),
+					'day' => gmdate('d', strtotime($to)),
 				),
-				'after'     => array(
-					'year'  => gmdate('Y', strtotime($from)),
+				'after' => array(
+					'year' => gmdate('Y', strtotime($from)),
 					'month' => gmdate('m', strtotime($from)),
-					'day'   => gmdate('d', strtotime($from)),
+					'day' => gmdate('d', strtotime($from)),
 				),
 				'inclusive' => true,
 			);
@@ -150,9 +150,9 @@ function allusfi_wp_usr_export_csv_fun()
 	}
 
 	// meta query (only if meta filters requested)
-	if (! empty($params['meta_keys']) && is_array($params['meta_keys'])) {
+	if (!empty($params['meta_keys']) && is_array($params['meta_keys'])) {
 		$meta_query = array('relation' => ('or' === $params['relation'] ? 'OR' : 'AND'));
-		$cnt_len = ! empty($params['meta_ops']) && is_array($params['meta_ops']) ? count($params['meta_ops']) : 0;
+		$cnt_len = !empty($params['meta_ops']) && is_array($params['meta_ops']) ? count($params['meta_ops']) : 0;
 		for ($i = 0; $i < $cnt_len; $i++) {
 			$change_meta_vals = isset($params['meta_vals'][$i]) ? $params['meta_vals'][$i] : '';
 			if (('BETWEEN' === $params['meta_ops'][$i] || 'IN' === $params['meta_ops'][$i]) && is_string($change_meta_vals) && false !== strpos($change_meta_vals, ',')) {
@@ -162,9 +162,9 @@ function allusfi_wp_usr_export_csv_fun()
 				}
 			}
 			$meta_query[] = array(
-				'key'     => $params['meta_keys'][$i],
-				'value'   => $change_meta_vals,
-				'type'    => isset($params['meta_tp'][$i]) ? $params['meta_tp'][$i] : 'CHAR',
+				'key' => $params['meta_keys'][$i],
+				'value' => $change_meta_vals,
+				'type' => isset($params['meta_tp'][$i]) ? $params['meta_tp'][$i] : 'CHAR',
 				'compare' => isset($params['meta_ops'][$i]) ? $params['meta_ops'][$i] : '=',
 			);
 		}
@@ -175,20 +175,25 @@ function allusfi_wp_usr_export_csv_fun()
 
 	// 9) Extract the query vars and apply paged/number, then execute a fresh WP_User_Query
 	$queried_variables = (array) $proto->query_vars;
-	$queried_variables['paged']  = $paged;
+	$queried_variables['paged'] = $paged;
 	$queried_variables['number'] = $batch_size;
 
 	$user_query = new WP_User_Query($queried_variables);
-	$users      = $user_query->get_results();
-	$total      = $user_query->get_total();
+	$users = $user_query->get_results();
+	$total = $user_query->get_total();
 
 	// 10) Build the CSV rows (preserve original JSON shape)
-	$meta_keys_for_header = ! empty($params['meta_keys']) && is_array($params['meta_keys']) ? array_map('sanitize_key', $params['meta_keys']) : array();
+	$meta_keys_for_header = !empty($params['meta_keys']) && is_array($params['meta_keys']) ? array_map('sanitize_key', $params['meta_keys']) : array();
 
 	$rows = array();
+	$wc_enabled = !empty($params['wc_order_enabled']) && class_exists('WooCommerce');
 	if (1 === (int) $paged) {
 		$base_cols = array('User ID', 'User Login', 'User Email', 'User Nicename', 'Display Name', 'User Role', 'Registration Date');
-		$rows[] = ! empty($meta_keys_for_header) ? array_merge($base_cols, $meta_keys_for_header) : $base_cols;
+		$header = !empty($meta_keys_for_header) ? array_merge($base_cols, $meta_keys_for_header) : $base_cols;
+		if ($wc_enabled) {
+			$header[] = 'Total Orders';
+		}
+		$rows[] = $header;
 	}
 
 	foreach ($users as $u) {
@@ -198,26 +203,84 @@ function allusfi_wp_usr_export_csv_fun()
 			$u->user_email,
 			isset($u->user_nicename) ? $u->user_nicename : '',
 			isset($u->display_name) ? $u->display_name : '',
-			! empty($u->roles) ? implode(',', $u->roles) : '',
+			!empty($u->roles) ? implode(',', $u->roles) : '',
 			isset($u->user_registered) ? $u->user_registered : '',
 		);
 
-		if (! empty($meta_keys_for_header)) {
+		if (!empty($meta_keys_for_header)) {
 			$user_meta_vals = array();
 			foreach ($meta_keys_for_header as $single_key) {
 				$m_val = get_user_meta($u->ID, $single_key, true);
 				$user_meta_vals[] = is_array($m_val) ? wp_json_encode($m_val) : $m_val;
 			}
-			$rows[] = array_merge($main_data, $user_meta_vals);
+			$row_data = array_merge($main_data, $user_meta_vals);
 		} else {
-			$rows[] = $main_data;
+			$row_data = $main_data;
 		}
+
+		if ($wc_enabled) {
+			$row_data[] = allusfi_get_user_order_count($u->ID);
+		}
+
+		$rows[] = $row_data;
 	}
 
 	wp_send_json_success(array(
-		'rows'  => $rows,
+		'rows' => $rows,
 		'total' => $total,
 		'paged' => $paged,
 		'count' => count($rows),
 	));
+}
+
+/**
+ * Get the total WooCommerce order count for a specific user.
+ *
+ * Supports both HPOS and Legacy storage modes.
+ *
+ * @param int $user_id The user ID.
+ * @return int The total number of completed/processing orders.
+ */
+function allusfi_get_user_order_count($user_id)
+{
+	global $wpdb;
+
+	$user_id = absint($user_id);
+	$statuses = array('wc-completed', 'wc-processing');
+
+	// Detect HPOS.
+	$hpos_enabled = false;
+	if (class_exists('Automattic\WooCommerce\Utilities\OrderUtil')) {
+		$hpos_enabled = \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled();
+	}
+
+	if ($hpos_enabled) {
+		$orders_table = $wpdb->prefix . 'wc_orders';
+		$placeholders = implode(',', array_fill(0, count($statuses), '%s'));
+		$prepared_values = array_merge(array($user_id), $statuses);
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$count = (int) $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*) FROM `{$orders_table}` WHERE customer_id = %d AND type = 'shop_order' AND status IN ({$placeholders})",
+				$prepared_values
+			)
+		);
+	} else {
+		$placeholders = implode(',', array_fill(0, count($statuses), '%s'));
+		$prepared_values = array_merge(array($user_id), $statuses);
+
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+		$count = (int) $wpdb->get_var(
+			$wpdb->prepare(
+				"SELECT COUNT(*)
+				FROM {$wpdb->posts} AS p
+				INNER JOIN {$wpdb->postmeta} AS pm ON p.ID = pm.post_id AND pm.meta_key = '_customer_user'
+				WHERE pm.meta_value = %d AND p.post_type = 'shop_order' AND p.post_status IN ({$placeholders})",
+				$prepared_values
+			)
+		);
+	}
+
+	return $count;
 }

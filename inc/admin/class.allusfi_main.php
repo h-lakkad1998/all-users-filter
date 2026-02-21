@@ -1,11 +1,12 @@
 <?php
 /*Main class that is made for declaring the functions, actions, filters */
 // Exit if accessed directly
-if (!defined('ABSPATH')) exit;
+if (!defined('ABSPATH'))
+	exit;
 
 if (!class_exists('ALLUSFI_Admin')) {
 
-	class  ALLUSFI_Admin
+	class ALLUSFI_Admin
 	{
 		function __construct()
 		{
@@ -15,6 +16,7 @@ if (!class_exists('ALLUSFI_Admin')) {
 
 			/********* list of filters *********/
 			add_filter('pre_get_users', array($this, 'allusfi_filter_users_by_requests'));
+			add_action('pre_user_query', array($this, 'allusfi_filter_users_by_wc_orders'));
 		}
 
 		function allusfi_action_admin_init()
@@ -22,15 +24,15 @@ if (!class_exists('ALLUSFI_Admin')) {
 			wp_register_script(ALLUSFI_PREFIX . '_admin_js', ALLUSFI_URL . 'assets/js/admin.js', array('jquery'), ALLUSFI_VERSION, true);
 			wp_register_style(ALLUSFI_PREFIX . '_admin_css', ALLUSFI_URL . 'assets/css/admin.css', array(), ALLUSFI_VERSION);
 			$allusfi_local_array = array(
-				'plugin_prefix' 			=> ALLUSFI_PREFIX,
-				'ajax_url'      			=> admin_url('admin-ajax.php'),
-				'btn_export_txt'			=> __( 'CLICK HERE TO EXPORT CSV', 'all-users-filter'),
-				'btn_export_finish_txt'		=> __( 'Export complete', 'all-users-filter'),
-				'get_req_txt'				=> __( 'GET REQUEST ENABLED!','all-users-filter'),
-				'post_req_txt'				=> __( 'POST REQUEST ENABLED!','all-users-filter'),	
-				'start_export_process_txt'	=> __( 'Starting export...', 'all-users-filter'),
-				'export_process_txt'		=> __( 'Exporting...', 'all-users-filter'),
-				'export_ongoing_txt'		=> __( 'Currently processing your export... Please keep this browser window open until the process is complete to avoid interrupting it.', 'all-users-filter'),
+				'plugin_prefix' => ALLUSFI_PREFIX,
+				'ajax_url' => admin_url('admin-ajax.php'),
+				'btn_export_txt' => __('CLICK HERE TO EXPORT CSV', 'all-users-filter'),
+				'btn_export_finish_txt' => __('Export complete', 'all-users-filter'),
+				'get_req_txt' => __('GET REQUEST ENABLED!', 'all-users-filter'),
+				'post_req_txt' => __('POST REQUEST ENABLED!', 'all-users-filter'),
+				'start_export_process_txt' => __('Starting export...', 'all-users-filter'),
+				'export_process_txt' => __('Exporting...', 'all-users-filter'),
+				'export_ongoing_txt' => __('Currently processing your export... Please keep this browser window open until the process is complete to avoid interrupting it.', 'all-users-filter'),
 			);
 			wp_localize_script(ALLUSFI_PREFIX . '_admin_js', 'allusfi_obj', $allusfi_local_array);
 			wp_enqueue_script(ALLUSFI_PREFIX . '_admin_js');
@@ -45,13 +47,13 @@ if (!class_exists('ALLUSFI_Admin')) {
 
 		function allusfi_filter_users_by_requests($query)
 		{
-			if (! is_admin()) {
+			if (!is_admin()) {
 				return $query;
 			}
-			$admin  = new ALLUSFI_Admin();
+			$admin = new ALLUSFI_Admin();
 			$params = $admin->allusfi_get_query_params();
 
-			if (! $params['secure']) {
+			if (!$params['secure']) {
 				return $query;
 			}
 
@@ -85,12 +87,12 @@ if (!class_exists('ALLUSFI_Admin')) {
 			}
 
 			// 2) Exclude roles.
-			if (! empty($params['exclude_roles'])) {
+			if (!empty($params['exclude_roles'])) {
 				$query->set('role__not_in', $params['exclude_roles']);
 			}
 
 			// 3) Exclude IDs.
-			if (! empty($params['excl_ids'])) {
+			if (!empty($params['excl_ids'])) {
 				$query->set('exclude', $params['excl_ids']);
 			}
 
@@ -99,9 +101,9 @@ if (!class_exists('ALLUSFI_Admin')) {
 
 			if ($params['one_date']) {
 				$date_args[] = array(
-					'year'  => (int) gmdate('Y', strtotime($params['one_date'])),
+					'year' => (int) gmdate('Y', strtotime($params['one_date'])),
 					'month' => (int) gmdate('m', strtotime($params['one_date'])),
-					'day'   => (int) gmdate('d', strtotime($params['one_date'])),
+					'day' => (int) gmdate('d', strtotime($params['one_date'])),
 				);
 			}
 
@@ -109,21 +111,21 @@ if (!class_exists('ALLUSFI_Admin')) {
 				$date_args[] = array('after' => $params['cstm_dt'], 'inclusive' => true);
 			}
 
-			if (! empty($params['multi_from_date']) && ! empty($params['multi_to_date'])) {
+			if (!empty($params['multi_from_date']) && !empty($params['multi_to_date'])) {
 				foreach ($params['multi_from_date'] as $i => $from) {
 					if (empty($params['multi_to_date'][$i]) || empty($from)) {
 						continue;
 					}
 					$date_args[] = array(
-						'before'    => array(
-							'year'  => (int) gmdate('Y', strtotime($params['multi_to_date'][$i])),
+						'before' => array(
+							'year' => (int) gmdate('Y', strtotime($params['multi_to_date'][$i])),
 							'month' => (int) gmdate('m', strtotime($params['multi_to_date'][$i])),
-							'day'   => (int) gmdate('d', strtotime($params['multi_to_date'][$i])),
+							'day' => (int) gmdate('d', strtotime($params['multi_to_date'][$i])),
 						),
-						'after'     => array(
-							'year'  => (int) gmdate('Y', strtotime($from)),
+						'after' => array(
+							'year' => (int) gmdate('Y', strtotime($from)),
 							'month' => (int) gmdate('m', strtotime($from)),
-							'day'   => (int) gmdate('d', strtotime($from)),
+							'day' => (int) gmdate('d', strtotime($from)),
 						),
 						'inclusive' => true,
 					);
@@ -136,9 +138,9 @@ if (!class_exists('ALLUSFI_Admin')) {
 
 			// 5) Meta query.
 			if (
-				! empty($params['meta_keys']) &&
-				! empty($params['meta_ops']) &&
-				! empty($params['meta_tp'])
+				!empty($params['meta_keys']) &&
+				!empty($params['meta_ops']) &&
+				!empty($params['meta_tp'])
 			) {
 				$meta_query = array('relation' => ('or' === $params['relation']) ? 'OR' : 'AND');
 				$len = max(count($params['meta_keys']), count($params['meta_ops']), count($params['meta_tp']));
@@ -157,9 +159,9 @@ if (!class_exists('ALLUSFI_Admin')) {
 					}
 
 					$meta_query[] = array(
-						'key'     => $params['meta_keys'][$i],
-						'value'   => $value,
-						'type'    => $params['meta_tp'][$i],
+						'key' => $params['meta_keys'][$i],
+						'value' => $value,
+						'type' => $params['meta_tp'][$i],
 						'compare' => $params['meta_ops'][$i],
 					);
 				}
@@ -174,31 +176,34 @@ if (!class_exists('ALLUSFI_Admin')) {
 		function allusfi_get_query_params()
 		{
 			$out = array(
-				'secure'          => false,
-				'ordr_by'         => '',
-				'usr_sort'        => '',
-				'one_date'        => '',
-				'cstm_dt'         => '',
-				'relation'        => 'nd',
-				'exclude_roles'    => array(),
-				'excl_ids'        => array(),
+				'secure' => false,
+				'ordr_by' => '',
+				'usr_sort' => '',
+				'one_date' => '',
+				'cstm_dt' => '',
+				'relation' => 'nd',
+				'exclude_roles' => array(),
+				'excl_ids' => array(),
 				'multi_from_date' => array(),
-				'multi_to_date'   => array(),
-				'meta_keys'       => array(),
-				'meta_vals'       => array(),
-				'meta_ops'        => array(),
-				'meta_tp'         => array(),
+				'multi_to_date' => array(),
+				'meta_keys' => array(),
+				'meta_vals' => array(),
+				'meta_ops' => array(),
+				'meta_tp' => array(),
+				'wc_order_enabled' => false,
+				'wc_order_count' => 0,
+				'wc_order_op' => '>',
 			);
 
 			// 1) Standalone nonce verification.
 			$out['secure'] = empty($_REQUEST['allusfi_secure']) ? false : wp_verify_nonce(sanitize_text_field(wp_unslash($_REQUEST['allusfi_secure'])), 'allusfi_secure');
-			if (! $out['secure']) {
+			if (!$out['secure']) {
 				return $out;
 			}
 
 			if (isset($_REQUEST['excl-ids'])) {
 				$raw_ids = wp_kses_post(wp_unslash($_REQUEST['excl-ids']));
-				$ids     = array_filter(array_map('absint', explode('-', $raw_ids)));
+				$ids = array_filter(array_map('absint', explode('-', $raw_ids)));
 				$out['excl_ids'] = array_values($ids);
 			}
 
@@ -229,15 +234,15 @@ if (!class_exists('ALLUSFI_Admin')) {
 				is_array($_REQUEST['mlt-t-dt'])
 			) {
 				$from = array_map('sanitize_text_field', wp_unslash($_REQUEST['mlt-f-dt']));
-				$to   = array_map('sanitize_text_field', wp_unslash($_REQUEST['mlt-t-dt']));
+				$to = array_map('sanitize_text_field', wp_unslash($_REQUEST['mlt-t-dt']));
 
 				$out['multi_from_date'] = $from;
-				$out['multi_to_date']   = $to;
+				$out['multi_to_date'] = $to;
 			}
 
 			$out['one_date'] = (
 				isset($_REQUEST['one-dt']) &&
-				! empty($_REQUEST['one-dt']) &&
+				!empty($_REQUEST['one-dt']) &&
 				empty($out['multi_from_date'])
 			)
 				? sanitize_textarea_field(sanitize_text_field(wp_unslash($_REQUEST['one-dt'])))
@@ -258,9 +263,9 @@ if (!class_exists('ALLUSFI_Admin')) {
 				? array_map('sanitize_text_field', wp_unslash($_REQUEST['mta-tp']))
 				: array();
 
-			$ops = (isset($_REQUEST['mta-op']) && is_array($_REQUEST['mta-op'])) ? array_map( 'sanitize_text_field', wp_unslash($_REQUEST['mta-op'])) : array(); 
+			$ops = (isset($_REQUEST['mta-op']) && is_array($_REQUEST['mta-op'])) ? array_map('sanitize_text_field', wp_unslash($_REQUEST['mta-op'])) : array();
 
-			$ops = ( ! empty($ops) && is_array($ops) ) ? array_map( array($this, 're_sanitize_operator'), $ops) : array(); 
+			$ops = (!empty($ops) && is_array($ops)) ? array_map(array($this, 're_sanitize_operator'), $ops) : array();
 
 			$allowed_types = array('CHAR', 'NUMERIC', 'BINARY', 'DATE', 'DATETIME', 'DECIMAL', 'SIGNED', 'UNSIGNED', 'TIME');
 
@@ -271,19 +276,112 @@ if (!class_exists('ALLUSFI_Admin')) {
 
 			$out['meta_keys'] = array_values(array_filter($keys));
 			$out['meta_vals'] = array_values($vals);
-			$out['meta_ops']  = array_values($ops);
-			$out['meta_tp']   = array_values($tps);
+			$out['meta_ops'] = array_values($ops);
+			$out['meta_tp'] = array_values($tps);
+
+			// WooCommerce order count filter params.
+			$out['wc_order_enabled'] = !empty($_REQUEST['wc-ordr-enabled']);
+
+			$out['wc_order_count'] = isset($_REQUEST['wc-ordr-cnt'])
+				? absint(wp_unslash($_REQUEST['wc-ordr-cnt']))
+				: 0;
+
+			$allowed_wc_ops = array('>', '<', '=', '!=');
+			$raw_wc_op = isset($_REQUEST['wc-ordr-op'])
+				? sanitize_text_field(wp_unslash($_REQUEST['wc-ordr-op']))
+				: '>';
+			$out['wc_order_op'] = in_array($raw_wc_op, $allowed_wc_ops, true) ? $raw_wc_op : '>';
 
 			return $out;
+		}
+
+		/**
+		 * Filter users by WooCommerce order count.
+		 *
+		 * Hooked to `pre_user_query`. Modifies the raw SQL to INNER JOIN
+		 * order data grouped by customer ID with a HAVING clause.
+		 *
+		 * @param WP_User_Query $query The current user query object.
+		 */
+		function allusfi_filter_users_by_wc_orders($query)
+		{
+			if (!is_admin() || !class_exists('WooCommerce')) {
+				return $query;
+			}
+
+			// Static guard: prevent the JOIN from being appended more than once
+			// (the constructor re-registers this hook each time ALLUSFI_Admin is instantiated).
+			static $wc_filter_applied = false;
+			if ($wc_filter_applied) {
+				return $query;
+			}
+
+			$params = $this->allusfi_get_query_params();
+
+			if (!$params['secure'] || !$params['wc_order_enabled']) {
+				return $query;
+			}
+
+			// Mark as applied so duplicate hook registrations are harmless.
+			$wc_filter_applied = true;
+
+			global $wpdb;
+
+			$op = $params['wc_order_op'];    // Already whitelisted.
+			$count = $params['wc_order_count'];  // Already absint.
+
+			if (self::allusfi_is_hpos_enabled()) {
+				// HPOS: orders stored in {prefix}wc_orders.
+				$orders_table = $wpdb->prefix . 'wc_orders';
+				$subquery = "LEFT JOIN (
+						SELECT customer_id, COUNT(*) AS order_count
+						FROM `{$orders_table}`
+						GROUP BY customer_id
+					) AS wc_order_counts ON {$wpdb->users}.ID = wc_order_counts.customer_id";
+			} else {
+				// Legacy: orders stored in {prefix}posts + {prefix}postmeta.
+				$subquery = "LEFT JOIN (
+						SELECT pm.meta_value AS customer_id, COUNT(*) AS order_count
+						FROM {$wpdb->posts} AS p
+						INNER JOIN {$wpdb->postmeta} AS pm ON p.ID = pm.post_id AND pm.meta_key = '_customer_user'
+						GROUP BY pm.meta_value
+					) AS wc_order_counts ON {$wpdb->users}.ID = wc_order_counts.customer_id";
+			}
+
+			$query->query_from .= " {$subquery}";
+
+			// Use COALESCE so users with no orders get count = 0 instead of NULL.
+			$query->query_where .= $wpdb->prepare(
+				" AND COALESCE(wc_order_counts.order_count, 0) {$op} %d",
+				$count
+			);
+
+			// Prevent duplicate user rows from the JOIN.
+			if (strpos($query->query_fields, 'DISTINCT') === false) {
+				$query->query_fields = 'DISTINCT ' . $query->query_fields;
+			}
+		}
+
+		/**
+		 * Detect if WooCommerce High-Performance Order Storage (HPOS) is enabled.
+		 *
+		 * @return bool True if HPOS custom tables are in use.
+		 */
+		private static function allusfi_is_hpos_enabled()
+		{
+			if (!class_exists('Automattic\WooCommerce\Utilities\OrderUtil')) {
+				return false;
+			}
+			return \Automattic\WooCommerce\Utilities\OrderUtil::custom_orders_table_usage_is_enabled();
 		}
 
 		private function re_sanitize_operator(string $op)
 		{
 			$allowed = array(
-				'&lt;'	=> '<',
-				'&lt;='	=> '<=',
+				'&lt;' => '<',
+				'&lt;=' => '<=',
 			);
-			return ( isset( $allowed[$op] ) ) ? $allowed[$op] : $op;
+			return (isset($allowed[$op])) ? $allowed[$op] : $op;
 		}
 	}
 

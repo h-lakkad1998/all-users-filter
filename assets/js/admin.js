@@ -35,6 +35,15 @@ jQuery(document).ready(function ($) {
         // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
 		$("#advnce_append_content").append(META_COPY_CONTENT);
 	});
+	// WooCommerce toggle: enable/disable the order count fields.
+	$('body').on('change', '#allusfi_wc_toggle', function () {
+		var $fields = $('.allusfi-wc-fields');
+		if ($(this).is(':checked')) {
+			$fields.css({ 'opacity': '1', 'pointer-events': 'auto' });
+		} else {
+			$fields.css({ 'opacity': '0.5', 'pointer-events': 'none' });
+		}
+	});
 	let csvRows = [];
     let totalUsers = 0;
     let processed = 0;

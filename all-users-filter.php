@@ -4,11 +4,11 @@
  * Plugin Name: All Users Filter
  * Plugin URI: https://github.com/h-lakkad1998/all-users-filter
  * Description: This plugin helps the admin to filter the users with various ranges of filters.
- * Version: 1.2
+ * Version: 1.3
  * Author: Hardik Lakkad/Patel
  * Author URI: https://www.linkedin.com/in/hardik-patel-lakkad-097b12147/
  * Text Domain: all-users-filter
- * Requires at least: 6.7
+ * Requires at least: 6.9
  * Requires PHP: 7.4
  * Developer: Hardik Patel
  * Developer E-Mail: hardiklakkad2@gmail.com
@@ -17,7 +17,8 @@
  */
 
 // Exit if accessed directly
-if (!defined('ABSPATH')) exit;
+if (!defined('ABSPATH'))
+	exit;
 
 /**
  * Basic plugin definitions
@@ -25,7 +26,7 @@ if (!defined('ABSPATH')) exit;
  */
 
 if (!defined('ALLUSFI_VERSION')) {
-	define('ALLUSFI_VERSION', '1.2');
+	define('ALLUSFI_VERSION', '1.3');
 }
 
 if (!defined('ALLUSFI_FILE')) {
@@ -51,17 +52,18 @@ if (!defined('ALLUSFI_PREFIX')) {
  */
 if (is_admin()) {
 	global $pagenow;
-	if ( "users.php" === $pagenow ) {
+	if ("users.php" === $pagenow) {
 		require_once ALLUSFI_DIR . '/inc/admin/class.allusfi_main.php';
 	}
 	require_once ALLUSFI_DIR . '/inc/admin/admin_export_ajax_handler.php';
 }
 
-add_action( 'plugins_loaded', 'allusfi_load_textdomain' );
-function allusfi_load_textdomain() {
-    load_plugin_textdomain(
-        'all-users-filter',
-        false,
-        dirname( plugin_basename( __FILE__ ) ) . '/languages/'
-	); 
+add_action('plugins_loaded', 'allusfi_load_textdomain');
+function allusfi_load_textdomain()
+{
+	load_plugin_textdomain(
+		'all-users-filter',
+		false,
+		dirname(plugin_basename(__FILE__)) . '/languages/'
+	);
 }
