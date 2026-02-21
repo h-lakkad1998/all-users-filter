@@ -7,8 +7,8 @@ Tested up to: 6.9
 Requires PHP: 7.4
 License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
-Stable tag: 1.3
-Version: 1.3
+Stable tag: 1.4
+Version: 1.4
 
 Filter, sort, and export WordPress users to CSV using powerful UI-driven meta queries (roles, dates, numeric ranges, regex, and more).
 
@@ -189,6 +189,8 @@ Yes. Whenever the WooCommerce filter is enabled, your user export file will auto
 * No user-facing changes.
 = 1.3 =
 * Filter and export users based on their total WooCommerce order count, featuring full support for High-Performance Order Storage (HPOS) *
+= 1.4 =
+Minor changes for order status count in csv.
 
 == Upgrade Notice ==
 = 1.0 =
@@ -199,3 +201,5 @@ Initial Release.
 * This release updates the plugin code for compliance with current WordPressVIPMinimum coding standards and improving and code quality. No changes to plugin functionality.
 = 1.3 =
 * Filter and export users based on their total WooCommerce order count, featuring full support for High-Performance Order Storage (HPOS) *
+= 1.4 =
+Minor changes for order status count in csv.

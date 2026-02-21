@@ -178,7 +178,9 @@ function allusfi_wp_usr_export_csv_fun()
 	$queried_variables['paged'] = $paged;
 	$queried_variables['number'] = $batch_size;
 
+
 	$user_query = new WP_User_Query($queried_variables);
+	// wp_send_json( array( $user_query->request ) );
 	$users = $user_query->get_results();
 	$total = $user_query->get_total();
 
@@ -246,7 +248,6 @@ function allusfi_get_user_order_count($user_id)
 	global $wpdb;
 
 	$user_id = absint($user_id);
-	$statuses = array('wc-completed', 'wc-processing');
 
 	// Detect HPOS.
 	$hpos_enabled = false;
@@ -256,28 +257,27 @@ function allusfi_get_user_order_count($user_id)
 
 	if ($hpos_enabled) {
 		$orders_table = $wpdb->prefix . 'wc_orders';
-		$placeholders = implode(',', array_fill(0, count($statuses), '%s'));
-		$prepared_values = array_merge(array($user_id), $statuses);
 
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$count = (int) $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT COUNT(*) FROM `{$orders_table}` WHERE customer_id = %d AND type = 'shop_order' AND status IN ({$placeholders})",
-				$prepared_values
+				"SELECT COUNT(*) 
+				 FROM `{$orders_table}` 
+				 WHERE customer_id = %d 
+				 AND type = 'shop_order'",
+				$user_id
 			)
 		);
 	} else {
-		$placeholders = implode(',', array_fill(0, count($statuses), '%s'));
-		$prepared_values = array_merge(array($user_id), $statuses);
-
-		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$count = (int) $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(*)
-				FROM {$wpdb->posts} AS p
-				INNER JOIN {$wpdb->postmeta} AS pm ON p.ID = pm.post_id AND pm.meta_key = '_customer_user'
-				WHERE pm.meta_value = %d AND p.post_type = 'shop_order' AND p.post_status IN ({$placeholders})",
-				$prepared_values
+				 FROM {$wpdb->posts} AS p
+				 INNER JOIN {$wpdb->postmeta} AS pm 
+					ON p.ID = pm.post_id 
+					AND pm.meta_key = '_customer_user'
+				 WHERE pm.meta_value = %d 
+				 AND p.post_type = 'shop_order'",
+				$user_id
 			)
 		);
 	}
