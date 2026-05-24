@@ -1,18 +1,31 @@
-.allusfi_modal-content * {
-  margin: 0px;
-  padding: 0px;
+/* =========================================================
+   All Users Filter – admin.css
+   Targets: WordPress 6.9 and earlier
+   Browsers: Chrome, Firefox, Edge, Safari (macOS + iOS)
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   1. RESET – scoped inside the modal
+   --------------------------------------------------------- */
+.allusfi_modal-content *,
+.allusfi_modal-content *::before,
+.allusfi_modal-content *::after {
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
   box-sizing: border-box;
 }
 
-/* 
-prefix for html elements : allusfi
-The Modal (background) 
-*/
+/* ---------------------------------------------------------
+   2. MODAL OVERLAY
+   --------------------------------------------------------- */
 .allusfi_modal {
   display: none;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
   align-items: center;
   position: fixed;
-  z-index: 999;
+  z-index: 99999;
   left: 0;
   top: 0;
   width: 100%;
@@ -21,67 +34,118 @@ The Modal (background)
   background-color: rgba(0, 0, 0, 0.4);
 }
 
-/* Modal Content/Box */
+/* ---------------------------------------------------------
+   3. MODAL CONTENT BOX
+   WP 6.9 sidebar = 160px fixed width.
+   Using margin-left: 160px + width: calc(100% - 180px) ensures
+   the modal always clears the sidebar and fills the rest of the
+   screen, regardless of viewport width (1536px, 1920px, 2048px…).
+   max-width caps the box on very wide displays.
+   --------------------------------------------------------- */
 .allusfi_modal-content {
   background-color: #fefefe;
-  margin-left: 14%;
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-left: 20vw;
+  margin-right: 20px;
   padding: 20px;
   border: 1px solid #888;
-  width: 80%;
+  width: calc(100% - 180px);
+  max-width: 1100px;
   font-size: 15px;
+  position: relative;
 }
 
-/* The Close Button */
+/* ---------------------------------------------------------
+   4. CLOSE BUTTON
+   --------------------------------------------------------- */
+.close-popup-btn {
+  text-align: right;
+  margin-bottom: 5px;
+}
+
 .allusfi_model_close {
   color: #aaa;
-  text-align: right;
   font-size: 28px;
   font-weight: bold;
+  display: inline-block;
+  line-height: 1;
+  cursor: pointer;
 }
 
 .allusfi_model_close:hover,
 .allusfi_model_close:focus {
-  color: black;
+  color: #000;
   text-decoration: none;
   cursor: pointer;
 }
 
+/* ---------------------------------------------------------
+   5. TABS BAR
+   --------------------------------------------------------- */
 .allusfi-tabs {
   overflow: hidden;
   border: 1px solid #ccc;
   background-color: #f1f1f1;
+  /* clearfix */
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
 }
 
-.allusfi-tabs button {
+.allusfi-tabs button.tablinks {
   background-color: inherit;
-  float: left;
   border: none;
   outline: none;
   cursor: pointer;
   padding: 14px 16px;
-  transition: 0.3s;
+  -webkit-transition: background-color 0.3s;
+  -o-transition: background-color 0.3s;
+  transition: background-color 0.3s;
   font-size: 17px;
+  /* override any WP button-reset that sets display:inline-block */
+  display: inline-block;
+  float: none;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  border-radius: 0;
+  text-shadow: none;
+  /* prevent WP global button colours bleeding in */
+  color: inherit;
+  height: auto;
+  line-height: 1.4;
+  min-height: 0;
+  vertical-align: middle;
 }
 
 .allusfi-tabs .clear_filters {
-  float: right;
+  margin-left: auto !important;
+  margin-top: 5px !important;
+  margin-right: 8px !important;
+  margin-bottom: 5px !important;
   cursor: pointer !important;
-  transition: 0.3s;
-  margin-top: 1% !important;
-  margin-right: 1% !important;
+  -webkit-transition: opacity 0.3s;
+  -o-transition: opacity 0.3s;
+  transition: opacity 0.3s;
+  display: inline-block;
 }
 
-/* Change background color of buttons on hover */
-.allusfi-tabs button:hover {
+.allusfi-tabs button.tablinks:hover {
   background-color: #ddd;
 }
 
-/* Create an active/current tablink class */
-.allusfi-tabs button.set-active {
+.allusfi-tabs button.tablinks.set-active {
   background-color: #ccc;
 }
 
-/* Style the tab content */
+/* ---------------------------------------------------------
+   6. TAB CONTENT PANELS
+   --------------------------------------------------------- */
 .allusfi-tabcontent {
   padding: 6px 12px;
   border: 1px solid #ccc;
@@ -89,13 +153,21 @@ The Modal (background)
   min-height: 400px;
 }
 
+/* ---------------------------------------------------------
+   7. GENERAL SETTINGS TAB LAYOUT
+   --------------------------------------------------------- */
 .allusfi_modal-content .stng-title {
   text-align: center;
 }
 
 .allusfi_modal-content .parent-col {
+  display: -webkit-box;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
   justify-content: space-between;
+  -ms-flex-wrap: wrap;
   flex-wrap: wrap;
   padding-top: 30px;
 }
@@ -109,10 +181,7 @@ The Modal (background)
   position: relative;
 }
 
-.allusfi_us_advance.allusfi-tabcontent .child-col:first-child {
-  border-right: 1px solid #000;
-}
-
+/* Vertical dividers between columns */
 .allusfi-tabcontent .child-col::after {
   content: '';
   position: absolute;
@@ -120,11 +189,18 @@ The Modal (background)
   right: -16px;
   width: 1px;
   height: 100%;
-  background: #000;
+  background: #ccc;
 }
 
-.allusfi-tabcontent .child-col:last-child:after {
+.allusfi-tabcontent .child-col:last-child::after {
   display: none;
+}
+
+/* ---------------------------------------------------------
+   8. ADVANCED TAB
+   --------------------------------------------------------- */
+.allusfi_us_advance.allusfi-tabcontent .child-col:first-child {
+  border-right: 1px solid #ccc;
 }
 
 .allusfi_us_advance.allusfi-tabcontent .child-col::after {
@@ -132,7 +208,8 @@ The Modal (background)
 }
 
 .allusfi_modal-content .allusfi-tabcontent.allusfi_us_advance {
-  overflow-y: scroll;
+  overflow-y: auto;
+  /* use 'auto' – avoids phantom scrollbar on macOS/Safari */
   height: 300px;
 }
 
@@ -145,29 +222,337 @@ The Modal (background)
   padding: 0 30px;
 }
 
-
+/* ---------------------------------------------------------
+   9. EXCLUDE ROLES COLUMN
+   --------------------------------------------------------- */
 .allusfi-tabcontent .exclude-roles {
+  -webkit-column-count: 2;
+  -moz-column-count: 2;
   column-count: 2;
 }
 
+/* ---------------------------------------------------------
+   10. DATE FILTER TAB
+   --------------------------------------------------------- */
 .allusfi-tabcontent.allusfi_us_dates {
   text-align: center;
 }
 
+/* ---------------------------------------------------------
+   11. TOOLTIP
+   --------------------------------------------------------- */
 .allusfi_modal-content .tooltip {
   position: relative;
   display: inline-block;
-  border: 1px dotted black;
+  border: 1px dotted #000;
   border-radius: 50%;
   width: 20px;
   height: 20px;
   cursor: help;
   text-align: center;
+  line-height: 18px;
 }
 
-.close-popup-btn {
+.allusfi_modal-content .tooltip .tooltiptext {
+  visibility: hidden;
+  width: 120px;
+  background-color: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px;
+  position: absolute;
+  z-index: 9999;
+  bottom: 125%;
+  left: 50%;
+  opacity: 0;
+  -webkit-transition: opacity 0.3s;
+  -o-transition: opacity 0.3s;
+  transition: opacity 0.3s;
+  -webkit-transform: translateX(-50%);
+  -ms-transform: translateX(-50%);
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+.allusfi_modal-content .tooltip .tooltiptext::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #555 transparent transparent transparent;
+}
+
+.allusfi_modal-content .tooltip:hover .tooltiptext {
+  visibility: visible;
+  opacity: 1;
+  padding: 20px;
+  min-width: 200px;
+  font-size: 15px;
+  line-height: 25px;
+}
+
+.allusfi-tabcontent.allusfi_us_advance .tooltip:hover .tooltiptext {
+  width: 400px;
+}
+
+/* ---------------------------------------------------------
+   12. UTILITY CLASSES
+   --------------------------------------------------------- */
+.allusfi_modal-content .dis-block {
+  display: block;
+}
+
+.allusfi_modal-content .pad-top-40 {
+  padding-top: 40px;
+}
+
+.allusfi_modal-content .pad-top-10 {
+  padding-top: 10px;
+}
+
+.allusfi_modal-content .txt-center {
+  text-align: center;
+}
+
+.allusfi_modal-content .txt-right {
   text-align: right;
-  margin-bottom: 5px;
+}
+
+/* ---------------------------------------------------------
+   13. EXCLUDE ROLES LABELS
+   --------------------------------------------------------- */
+.allusfi_modal-content .exclude-roles label {
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  display: block;
+  padding-bottom: 10px;
+}
+
+/* ---------------------------------------------------------
+   14. EXPORT TAB
+   --------------------------------------------------------- */
+.wp-core-ui .tablenav .allusfi_modal-content .export-btn {
+  margin-top: 10%;
+}
+
+.wp-core-ui .tablenav .allusfi_modal-content .export-btn button {
+  padding: 10px 20px;
+}
+
+.wp-core-ui .tablenav .allusfi_modal-content .export-btn button span {
+  line-height: 1.5;
+}
+
+/* ---------------------------------------------------------
+   15. ADVANCED – LETS-MAKE-POST-FORM TITLE
+   --------------------------------------------------------- */
+.allusfi_modal-content #LETS-make-POST-Form {
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* ---------------------------------------------------------
+   16. CUSTOM CHECKBOX  (.fancy-check)
+   --------------------------------------------------------- */
+.allusfi_modal-content .fancy-check {
+  display: block;
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  font-size: 15px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* hide native input */
+.allusfi_modal-content .fancy-check input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* custom box – we MUST reset WP's .button styles that bleed in */
+.allusfi_modal-content .fancy-checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  min-height: 26px;
+  width: 25px;
+  /* reset WP button styles */
+  border-radius: 20% !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  background-color: var(--wp-editor-canvas-background) !important;
+  border: 1px solid var(--wp-editor-canvas-background) !important;
+  display: inline-block;
+  padding: 0 !important;
+  line-height: 1 !important;
+  color: transparent !important;
+  text-decoration: none !important;
+}
+
+.allusfi_modal-content .fancy-check:hover input[type="checkbox"]~.fancy-checkmark {
+  background-color: #ccc;
+}
+
+/* checkmark tick */
+.allusfi_modal-content .fancy-checkmark::after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.allusfi_modal-content .fancy-check input[type="checkbox"]:checked~.fancy-checkmark::after {
+  display: block;
+}
+
+.allusfi_modal-content .fancy-check .fancy-checkmark::after {
+  left: 8px;
+  top: 4px;
+  width: 5px;
+  height: 13px;
+  border: solid var(--wp-admin-theme-color);
+  border-width: 0 3px 3px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+/* ---------------------------------------------------------
+   17. CUSTOM RADIO  (.fancy-radio / .fancy-select)
+   --------------------------------------------------------- */
+.allusfi_modal-content .fancy-radio {
+  display: inline-block;
+  position: relative;
+  padding-left: 38px;
+  cursor: pointer;
+  font-size: 15px;
+  line-height: 1.4;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* hide native radio */
+.allusfi_modal-content .fancy-radio input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* custom circle – override WP .button styles completely */
+.allusfi_modal-content .fancy-select {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  -webkit-transform: translateY(-50%);
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+  height: 22px;
+  width: 22px;
+  border-radius: 50% !important;
+  /* reset WP .button / .button-primary styles */
+  background-color: #eee !important;
+  border: 2px solid #8c8f94 !important;
+  -webkit-box-shadow: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  color: transparent !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  display: inline-block;
+  vertical-align: middle;
+  min-height: 0 !important;
+  -webkit-transition: border-color 0.2s, background-color 0.2s;
+  -o-transition: border-color 0.2s, background-color 0.2s;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.allusfi_modal-content .fancy-radio:hover input[type="radio"]~.fancy-select {
+  background-color: #ddd !important;
+  border-color: #646970 !important;
+}
+
+/* dot when checked */
+.allusfi_modal-content .fancy-select::after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+.allusfi_modal-content .fancy-radio input[type="radio"]:checked~.fancy-select::after {
+  display: block;
+}
+
+.allusfi_modal-content .fancy-radio .fancy-select::after {
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--wp-admin-theme-color);
+}
+
+/* checked state – make the ring blue */
+.allusfi_modal-content .fancy-radio input[type="radio"]:checked~.fancy-select {
+  background-color: #fff !important;
+  border-color: var(--wp-admin-theme-color) !important;
+}
+
+/* ---------------------------------------------------------
+   18. ORDER-BY FIELD WRAPPER
+   --------------------------------------------------------- */
+.allusfi_modal-content .ordr-by-fields {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+.allusfi_modal-content .form-order {
+  display: inline-block;
+  width: -webkit-fit-content;
+  width: -moz-fit-content;
+  width: fit-content;
+  padding-left: 20px;
+}
+
+/* ---------------------------------------------------------
+   19. META TABLE
+   --------------------------------------------------------- */
+.allusfi_meta_append_content input[type='text'] {
+  width: 70%;
+}
+
+.allusfi_modal-content .add_multi_date,
+.allusfi_modal-content .add_multi_meta_query {
+  margin: 0 10px 10px 27px !important;
+}
+
+.allusfi_modal-content .relation {
+  margin-left: 20px;
 }
 
 .meta_filter_table {
@@ -194,245 +579,23 @@ The Modal (background)
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: left;
-  color: rgb(0, 0, 0);
+  color: #000;
 }
 
-.allusfi_modal-content .tooltip .tooltiptext {
-  visibility: hidden;
-  width: 120px;
-  background-color: #555;
-  color: #fff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 5px 0;
-  position: absolute;
-  z-index: 1;
-  bottom: 125%;
-  left: 50%;
-  opacity: 0;
-  transition: opacity 0.3s;
-  transform: translateX(-50%);
-}
-
-.allusfi_modal-content .tooltip .tooltiptext::after {
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: #555 transparent transparent transparent;
-}
-
-.allusfi_modal-content .tooltip:hover .tooltiptext {
-  visibility: visible;
-  opacity: 1;
-  padding: 20px;
-  min-width: 200px;
-  font-size: 15px;
-  line-height: 25px;
-}
-
-.allusfi-tabcontent.allusfi_us_advance .tooltip:hover .tooltiptext {
-  width: 400px;
-}
-
-.allusfi_modal-content .dis-block {
-  display: block;
-}
-
-.allusfi_modal-content .pad-top-40 {
-  padding-top: 40px;
-}
-
-.allusfi_modal-content .pad-top-10 {
-  padding-top: 10px;
-}
-
-.allusfi_modal-content .exclude-roles label {
-  width: fit-content;
-  display: block;
-  padding-bottom: 10px;
-}
-
-.allusfi_modal-content .export-btn {
-  margin-top: 13%;
-}
-
-.allusfi_modal-content .export-btn button {
-  padding: 10px 20px;
-}
-
-.allusfi_modal-content .export-btn button span{
-  margin-top: 5px;
-}
-
-.allusfi_modal-content #LETS-make-POST-Form {
-  cursor: pointer;
-  -webkit-user-select: none;
-  /* Safari */
-  -ms-user-select: none;
-  /* IE 10 and IE 11 */
-  user-select: none;
-  /* Standard syntax */
-}
-
-/* The container */
-.allusfi_modal-content .fancy-check {
-  display: block;
-  position: relative;
-  padding-left: 35px;
-  margin-bottom: 12px;
-  cursor: pointer;
-  font-size: 15px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-.allusfi_modal-content .fancy-check input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
-}
-
-.allusfi_modal-content .fancy-checkmark {
-  position: absolute;
-  top: 0;
-  left: 0;
-  min-height: 26px;
-  width: 25px;
-}
-
-.allusfi_modal-content .fancy-check:hover input~.fancy-checkmark {
-  background-color: #ccc;
-}
-
-.allusfi_modal-content .fancy-checkmark:after {
-  content: "";
-  position: absolute;
-  display: none;
-}
-
-.allusfi_modal-content .fancy-check input:checked~.fancy-checkmark:after {
-  display: block;
-}
-
-.allusfi_modal-content .fancy-check .fancy-checkmark:after {
-  left: 8px;
-  top: 4px;
-  width: 5px;
-  height: 10px;
-  border: solid #000;
-  border-width: 0 3px 3px 0;
-  -webkit-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  transform: rotate(45deg);
-}
-
-/* ***********
-*******************
-** */
-.allusfi_modal-content .fancy-radio {
-  display: inline-block;
-  position: relative;
-  padding-left: 35px;
-  cursor: pointer;
-  font-size: 15px;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-/* Hide the browser's default radio button */
-.allusfi_modal-content .fancy-radio input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-}
-
-/* Create a custom radio button */
-.allusfi_modal-content .fancy-select {
-  position: absolute;
-  top: -4px;
-  left: 0;
-  height: 29px;
-  width: 29px;
-  border-radius: 50% !important;
-}
-
-/* On mouse-over, add a grey background color */
-.allusfi_modal-content .fancy-radio:hover input~.fancy-select {
-  background-color: #ccc;
-}
-
+/* ---------------------------------------------------------
+   20. EXPORT PARAGRAPH SIZES
+   --------------------------------------------------------- */
 .allusfi_modal-content .big_p_bold {
   font-size: 16px;
 }
-
 
 .allusfi_modal-content .big_p {
   font-size: 14px;
 }
 
-/* Create the indicator (the dot/circle - hidden when not checked) */
-.allusfi_modal-content .fancy-select:after {
-  content: "";
-  position: absolute;
-  display: none;
-}
-
-/* Show the indicator (dot/circle) when checked */
-.allusfi_modal-content .fancy-radio input:checked~.fancy-select:after {
-  display: block;
-}
-
-/* Style the indicator (dot/circle) */
-.allusfi_modal-content .fancy-radio .fancy-select:after {
-  top: 9px;
-  left: 9px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: white;
-}
-
-.allusfi_modal-content .txt-center {
-  text-align: center;
-}
-
-.allusfi_modal-content .txt-right {
-  text-align: right;
-}
-
-.allusfi_modal-content .form-order {
-  display: inline-block;
-  width: fit-content;
-  padding-left: 20px;
-}
-
-.allusfi_meta_append_content input[type='text'] {
-  width: 70%;
-}
-
-.allusfi_modal-content .add_multi_date,
-.allusfi_modal-content .add_multi_meta_query {
-  margin: 0px 10px 10px 27px !important;
-}
-
-.allusfi_modal-content .relation {
-  margin-left: 20px;
-}
-
-.allusfi_modal-content .ordr-by-fields {
-  display: flex;
-  align-items: center;
-}
-
+/* ---------------------------------------------------------
+   21. FOOTER
+   --------------------------------------------------------- */
 .allusfi_modal-content .allusfi-sbmit-actions {
   display: block;
   float: right;
@@ -440,13 +603,17 @@ The Modal (background)
 
 .allusfi_modal-content .pop-up-footer {
   margin-top: 20px;
+  overflow: hidden;
+  /* clear float */
 }
 
 .allusfi_modal-content .pop-up-footer p {
   font-size: 15px;
 }
 
-/**** pop up message ***/
+/* ---------------------------------------------------------
+   22. TOAST / POP-UP MESSAGE  (#pop-pop)
+   --------------------------------------------------------- */
 .allusfi_modal-content #pop-pop {
   visibility: hidden;
   min-width: 250px;
@@ -457,60 +624,33 @@ The Modal (background)
   border-radius: 2px;
   padding: 16px;
   position: fixed;
-  z-index: 1;
+  z-index: 100001;
   left: 50%;
   bottom: 30px;
   font-size: 17px;
   -webkit-user-select: none;
-  /* Safari */
+  -moz-user-select: none;
   -ms-user-select: none;
-  /* IE 10 and IE 11 */
   user-select: none;
-  /* Standard syntax */
 }
 
 .allusfi_modal-content #pop-pop.show {
   visibility: visible;
-  -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
-  animation: fadein 0.5s, fadeout 0.5s 2.5s;
+  -webkit-animation: allusfi_fadein 0.5s, allusfi_fadeout 0.5s 2.5s;
+  animation: allusfi_fadein 0.5s, allusfi_fadeout 0.5s 2.5s;
 }
 
-/* 
-  Heart shape
- */
-
-.allusfi_modal-content .heart {
-  background-color: #0487ff;
-  display: inline-block;
-  height: 9px;
-  margin: 0 7px;
-  position: relative;
-  top: 0;
-  transform: rotate(-45deg);
-  width: 9px;
+/* ---------------------------------------------------------
+   23. HEART ICON
+   --------------------------------------------------------- */
+.allusfi_modal-content .dashicons.dashicons-heart {
+  color: var(--wp-admin-theme-color-darker-20);
 }
 
-.allusfi_modal-content .heart:before,
-.allusfi_modal-content .heart:after {
-  content: "";
-  background-color: #0487ff;
-  border-radius: 50%;
-  height: 9px;
-  position: absolute;
-  width: 9px;
-}
-
-.allusfi_modal-content .heart:before {
-  top: -6px;
-  left: 0;
-}
-
-.allusfi_modal-content .heart:after {
-  left: 5px;
-  top: 0;
-}
-
-@-webkit-keyframes fadein {
+/* ---------------------------------------------------------
+   24. KEYFRAMES  (namespaced to avoid conflicts)
+   --------------------------------------------------------- */
+@-webkit-keyframes allusfi_fadein {
   from {
     bottom: 0;
     opacity: 0;
@@ -522,7 +662,7 @@ The Modal (background)
   }
 }
 
-@keyframes fadein {
+@keyframes allusfi_fadein {
   from {
     bottom: 0;
     opacity: 0;
@@ -534,7 +674,7 @@ The Modal (background)
   }
 }
 
-@-webkit-keyframes fadeout {
+@-webkit-keyframes allusfi_fadeout {
   from {
     bottom: 30px;
     opacity: 1;
@@ -546,7 +686,7 @@ The Modal (background)
   }
 }
 
-@keyframes fadeout {
+@keyframes allusfi_fadeout {
   from {
     bottom: 30px;
     opacity: 1;
@@ -558,11 +698,19 @@ The Modal (background)
   }
 }
 
-/*  animation css */
+/* ---------------------------------------------------------
+   25. ANIMATED BORDER BUTTON
+   --------------------------------------------------------- */
 .allusfi_animated-btn {
   position: relative;
   padding: 30px 60px;
   overflow: hidden;
+}
+
+.allusfi_animated-btn .abc_snake {
+  min-height: 0 !important;
+  min-width: 0 !important;
+  padding: 0 !important;
 }
 
 .allusfi_animated-btn span:nth-child(1) {
@@ -571,23 +719,8 @@ The Modal (background)
   right: 0;
   width: 100%;
   height: 1px;
-  animation: animate1 2s linear infinite;
-}
-
-.allusfi_animated-btn .abc_snake {
-  min-height: 0px !important;
-  min-width: 0px !important;
-  padding: 0px !important;
-}
-
-@keyframes animate1 {
-  0% {
-    transform: translateX(-100%);
-  }
-
-  100% {
-    transform: translateX(100%);
-  }
+  -webkit-animation: allusfi_animate1 2s linear infinite;
+  animation: allusfi_animate1 2s linear infinite;
 }
 
 .allusfi_animated-btn span:nth-child(2) {
@@ -596,18 +729,10 @@ The Modal (background)
   right: 0;
   height: 100%;
   width: 1px;
-  animation: animate2 2s linear infinite;
+  -webkit-animation: allusfi_animate2 2s linear infinite;
+  animation: allusfi_animate2 2s linear infinite;
+  -webkit-animation-delay: 1s;
   animation-delay: 1s;
-}
-
-@keyframes animate2 {
-  0% {
-    transform: translateY(-100%);
-  }
-
-  100% {
-    transform: translateY(100%);
-  }
 }
 
 .allusfi_animated-btn span:nth-child(3) {
@@ -616,17 +741,8 @@ The Modal (background)
   right: 0;
   width: 100%;
   height: 1px;
-  animation: animate3 2s linear infinite;
-}
-
-@keyframes animate3 {
-  0% {
-    transform: translateX(100%);
-  }
-
-  100% {
-    transform: translateX(-100%);
-  }
+  -webkit-animation: allusfi_animate3 2s linear infinite;
+  animation: allusfi_animate3 2s linear infinite;
 }
 
 .allusfi_animated-btn span:nth-child(4) {
@@ -635,62 +751,225 @@ The Modal (background)
   left: 0;
   height: 100%;
   width: 1px;
-  animation: animate4 2s linear infinite;
+  -webkit-animation: allusfi_animate4 2s linear infinite;
+  animation: allusfi_animate4 2s linear infinite;
+  -webkit-animation-delay: 1s;
   animation-delay: 1s;
 }
 
-@keyframes animate4 {
+@-webkit-keyframes allusfi_animate1 {
   0% {
+    -webkit-transform: translateX(-100%);
+    transform: translateX(-100%);
+  }
+
+  100% {
+    -webkit-transform: translateX(100%);
+    transform: translateX(100%);
+  }
+}
+
+@keyframes allusfi_animate1 {
+  0% {
+    -webkit-transform: translateX(-100%);
+    transform: translateX(-100%);
+  }
+
+  100% {
+    -webkit-transform: translateX(100%);
+    transform: translateX(100%);
+  }
+}
+
+@-webkit-keyframes allusfi_animate2 {
+  0% {
+    -webkit-transform: translateY(-100%);
+    transform: translateY(-100%);
+  }
+
+  100% {
+    -webkit-transform: translateY(100%);
+    transform: translateY(100%);
+  }
+}
+
+@keyframes allusfi_animate2 {
+  0% {
+    -webkit-transform: translateY(-100%);
+    transform: translateY(-100%);
+  }
+
+  100% {
+    -webkit-transform: translateY(100%);
+    transform: translateY(100%);
+  }
+}
+
+@-webkit-keyframes allusfi_animate3 {
+  0% {
+    -webkit-transform: translateX(100%);
+    transform: translateX(100%);
+  }
+
+  100% {
+    -webkit-transform: translateX(-100%);
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes allusfi_animate3 {
+  0% {
+    -webkit-transform: translateX(100%);
+    transform: translateX(100%);
+  }
+
+  100% {
+    -webkit-transform: translateX(-100%);
+    transform: translateX(-100%);
+  }
+}
+
+@-webkit-keyframes allusfi_animate4 {
+  0% {
+    -webkit-transform: translateY(100%);
     transform: translateY(100%);
   }
 
   100% {
+    -webkit-transform: translateY(-100%);
     transform: translateY(-100%);
   }
 }
 
+@keyframes allusfi_animate4 {
+  0% {
+    -webkit-transform: translateY(100%);
+    transform: translateY(100%);
+  }
+
+  100% {
+    -webkit-transform: translateY(-100%);
+    transform: translateY(-100%);
+  }
+}
+
+/* ---------------------------------------------------------
+   26. WOOCOMMERCE TAB  (toggle + fields)
+   --------------------------------------------------------- */
+.allusfi_modal-content .allusfi-wc-toggle {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 26px;
+  vertical-align: middle;
+}
+
+.allusfi_modal-content .allusfi-wc-toggle input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.allusfi_modal-content .allusfi-wc-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: background-color 0.3s;
+  -o-transition: background-color 0.3s;
+  transition: background-color 0.3s;
+  border-radius: 26px;
+}
+
+.allusfi_modal-content .allusfi-wc-slider::before {
+  content: "";
+  position: absolute;
+  height: 20px;
+  width: 20px;
+  left: 3px;
+  bottom: 3px;
+  background-color: #fff;
+  -webkit-transition: -webkit-transform 0.3s;
+  -moz-transition: -moz-transform 0.3s;
+  -o-transition: -o-transform 0.3s;
+  transition: transform 0.3s;
+  border-radius: 50%;
+}
+
+.allusfi_modal-content .allusfi-wc-toggle input:checked+.allusfi-wc-slider {
+  background-color: var(--wp-admin-theme-color);
+}
+
+.allusfi_modal-content .allusfi-wc-toggle input:checked+.allusfi-wc-slider::before {
+  -webkit-transform: translateX(24px);
+  -ms-transform: translateX(24px);
+  transform: translateX(24px);
+}
+
+.allusfi_modal-content .allusfi-tabcontent.allusfi_us_woocommerce {
+  min-height: 400px;
+}
+
+.allusfi_modal-content .allusfi-tabcontent.allusfi_us_woocommerce .child-col::after {
+  display: none;
+}
+
+.allusfi_modal-content .allusfi-wc-fields {
+  -webkit-transition: opacity 0.3s ease;
+  -o-transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease;
+}
+
+.allusfi_modal-content .allusfi-tabcontent.allusfi_us_woocommerce select {
+  min-width: 200px;
+}
+
+.allusfi_modal-content .allusfi-tabcontent.allusfi_us_woocommerce input[type="number"] {
+  width: 120px;
+}
+
+/* ---------------------------------------------------------
+   27. RESPONSIVE  — Tablet (≤ 991 px)
+   --------------------------------------------------------- */
 @media only screen and (max-width: 991px) {
 
-  /* For mobile phones, Tablets, iPads : */
+  .allusfi_modal-content {
+    margin-left: 0;
+    width: 95%;
+    margin: auto;
+  }
+
   .allusfi-tabcontent {
     max-height: 500px;
     overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    /* smooth momentum on iOS */
   }
 
-  .allusfi_modal-content .allusfi-tabcontent.allusfi_us_general .child-col {
-    width: 100%;
-    padding-bottom: 40px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.4);
-  }
-
+  .allusfi_modal-content .allusfi-tabcontent.allusfi_us_general .child-col,
   .allusfi_modal-content .allusfi-tabcontent.allusfi_us_advance .child-col {
     width: 100%;
     padding-bottom: 40px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.4);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   }
 
   .allusfi_modal-content .allusfi-tabcontent.allusfi_us_general .child-col:last-child {
-    padding: 0px;
-    border: none;
+    padding-bottom: 0;
+    border-bottom: none;
   }
 
   .allusfi-tabcontent .child-col::after {
     display: none;
   }
 
-  .allusfi-tabcontent .between-two-dates input,
-  span {
+  /* date inputs full-width on mobile */
+  .allusfi-tabcontent .between-two-dates input[type="date"] {
     display: block;
     width: 100%;
-  }
-
-  .allusfi-tabcontent .between-two-dates span {
-    padding: 10px 0px;
-  }
-
-  .allusfi_modal-content .pad-top-40 span {
-    display: block;
-    text-align: center;
   }
 
   .allusfi_modal-content .form-field input[name='one-dt'] {
@@ -707,101 +986,117 @@ The Modal (background)
   }
 }
 
-/* Tablet (768px and below) */
+/* ---------------------------------------------------------
+   28. RESPONSIVE  — Small Tablet / Large Phone (≤ 768 px)
+   --------------------------------------------------------- */
 @media screen and (max-width: 768px) {
-  .allusfi_modal {
-    width: 90%;
+  .allusfi_modal-content {
+    width: 96%;
+    margin: 10px auto;
     padding: 16px;
+  }
+
+  .allusfi-tabs button.tablinks {
+    padding: 10px 12px;
+    font-size: 14px;
   }
 }
 
-/* Mobile (480px and below) */
+/* ---------------------------------------------------------
+   29. RESPONSIVE  — Mobile (≤ 480 px)
+   --------------------------------------------------------- */
 @media screen and (max-width: 480px) {
   .allusfi_modal {
-    padding-top: 200px;
+    -webkit-box-align: flex-start;
+    -ms-flex-align: flex-start;
+    align-items: flex-start;
+    padding-top: 20px;
   }
-  
+
   .allusfi_modal-content {
-    width: 95%;
+    width: 98%;
     padding: 12px;
     font-size: 14px;
+    margin: 0 auto;
   }
-  .allusfi-tabs button.tablinks{
+
+  /* stack tabs vertically on very small screens */
+  .allusfi-tabs {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-align: stretch;
+    -ms-flex-align: stretch;
+    align-items: stretch;
+  }
+
+  .allusfi-tabs button.tablinks {
+    width: 100%;
+    text-align: left;
+  }
+
+  .allusfi-tabs .clear_filters {
+    width: 100%;
+    text-align: center;
+    margin: 4px 0 !important;
+  }
+
+  .meta_filter_table,
+  .meta_filter_table tbody,
+  .meta_filter_table tr,
+  .meta_filter_table td,
+  .meta_filter_table th {
+    display: block;
+    width: 100%;
+  }
+
+  .meta_filter_table th {
+    display: none;
+  }
+
+  .allusfi_meta_append_content input[type='text'] {
     width: 100%;
   }
 }
 
-/* ===========================
-   WooCommerce Tab & Toggle
-   =========================== */
+/* ---------------------------------------------------------
+   30. SAFARI / iOS  — specific fixes
+   --------------------------------------------------------- */
+/* iOS Safari: prevent zoom on input focus (font-size must be ≥ 16px) */
+@supports (-webkit-touch-callout: none) {
 
-/* Toggle switch container */
-.allusfi_modal-content .allusfi-wc-toggle {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 26px;
-  vertical-align: middle;
+  .allusfi_modal-content input[type="text"],
+  .allusfi_modal-content input[type="date"],
+  .allusfi_modal-content select,
+  .allusfi_modal-content textarea {
+    font-size: 16px;
+  }
 }
 
-.allusfi_modal-content .allusfi-wc-toggle input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-/* Slider track */
-.allusfi_modal-content .allusfi-wc-slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  transition: 0.3s;
-  border-radius: 26px;
-}
-
-/* Slider knob */
-.allusfi_modal-content .allusfi-wc-slider::before {
-  content: "";
-  position: absolute;
-  height: 20px;
-  width: 20px;
-  left: 3px;
-  bottom: 3px;
+/* date input appearance on Safari */
+.allusfi_modal-content input[type="date"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: 1px solid #8c8f94;
+  border-radius: 3px;
   background-color: #fff;
-  transition: 0.3s;
-  border-radius: 50%;
+  color: #000;
 }
 
-/* Checked state */
-.allusfi_modal-content .allusfi-wc-toggle input:checked + .allusfi-wc-slider {
-  background-color: #2271b1;
-}
-
-.allusfi_modal-content .allusfi-wc-toggle input:checked + .allusfi-wc-slider::before {
-  transform: translateX(24px);
-}
-
-/* WooCommerce tab content */
-.allusfi_modal-content .allusfi-tabcontent.allusfi_us_woocommerce {
-  min-height: 400px;
-}
-
-.allusfi_modal-content .allusfi-tabcontent.allusfi_us_woocommerce .child-col::after {
-  display: none;
-}
-
-.allusfi_modal-content .allusfi-wc-fields {
-  transition: opacity 0.3s ease;
-}
-
-.allusfi_modal-content .allusfi-tabcontent.allusfi_us_woocommerce select {
-  min-width: 200px;
-}
-
-.allusfi_modal-content .allusfi-tabcontent.allusfi_us_woocommerce input[type="number"] {
-  width: 120px;
+/* select appearance */
+.allusfi_modal-content select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23666'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 10px 6px;
+  padding-right: 28px;
+  border: 1px solid #8c8f94;
+  border-radius: 3px;
+  background-color: #fff;
+  color: #000;
 }

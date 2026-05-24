@@ -1,50 +1,50 @@
 (function ($) {
-	"use strict";
+    "use strict";
 
 })(jQuery);
 jQuery(document).ready(function ($) {
-	var allusfi_crnt_tab = localStorage.getItem("allusfi_current_tab");
-	allusfi_crnt_tab = (allusfi_crnt_tab === null) ? "general-settings" : allusfi_crnt_tab;
-	var allusfi_modal = $("#allusfi_model_options");
-	// When the user clicks on the button, open the modal
-	$('body').on('click', "#allusfi_pop_up_btn", function () { allusfi_modal.attr("style", "display:flex;"); });
-	$('body').on('click', ".allusfi_model_close", function () { allusfi_modal.attr("style", "display:none;"); });
-	// When the user clicks anywhere outside of the modal, close it
-	$('body').on('click', function (e) {
-		if (e.target.className == "allusfi_modal")
-			allusfi_modal.attr("style", "display:none;");
-	});
-	$('body').on("click", ".tablinks", function (e) {
-		$(".tablinks").removeClass("set-active");
-		$(this).addClass("set-active");
-		$(".allusfi-tabcontent").hide();
-		$("#" + $(this).attr("data-id")).show();
-		var crnt_tab_attr = $(this).attr("data-id");
-		var splited_ary = crnt_tab_attr.split('usfi-');
-		localStorage.setItem("allusfi_current_tab", splited_ary[1]);
-	});
-	$('body').on('click', ".remov_date", function () { $(this).parents('tr').remove(); });
-	$('body').on('click', ".remov_meta", function () { $(this).parents('tr').remove(); });
-	$('body').on('click', '#allusfi_add_multi_date', function () {
-		const DATE_COPY_CONTENT = $("#allusfi_dt_copy_content").html().trim();
+    var allusfi_crnt_tab = localStorage.getItem("allusfi_current_tab");
+    allusfi_crnt_tab = (allusfi_crnt_tab === null) ? "general-settings" : allusfi_crnt_tab;
+    var allusfi_modal = $("#allusfi_model_options");
+    // When the user clicks on the button, open the modal
+    $('body').on('click', "#allusfi_pop_up_btn", function () { allusfi_modal.attr("style", "display:flex;"); });
+    $('body').on('click', ".allusfi_model_close", function () { allusfi_modal.attr("style", "display:none;"); });
+    // When the user clicks anywhere outside of the modal, close it
+    $('body').on('click', function (e) {
+        if (e.target.className == "allusfi_modal")
+            allusfi_modal.attr("style", "display:none;");
+    });
+    $('body').on("click", ".tablinks", function (e) {
+        $(".tablinks").removeClass("set-active");
+        $(this).addClass("set-active");
+        $(".allusfi-tabcontent").hide();
+        $("#" + $(this).attr("data-id")).show();
+        var crnt_tab_attr = $(this).attr("data-id");
+        var splited_ary = crnt_tab_attr.split('usfi-');
+        localStorage.setItem("allusfi_current_tab", splited_ary[1]);
+    });
+    $('body').on('click', ".remov_date", function () { $(this).parents('tr').remove(); });
+    $('body').on('click', ".remov_meta", function () { $(this).parents('tr').remove(); });
+    $('body').on('click', '#allusfi_add_multi_date', function () {
+        const DATE_COPY_CONTENT = $("#allusfi_dt_copy_content").html().trim();
         // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
-		$("#dt_append_content").append(DATE_COPY_CONTENT);
-	});
-	$('body').on('click', '#allusfi_add_meta_query', function () {
-		const META_COPY_CONTENT = $("#allusfi_meta_copy_content").html().trim();
+        $("#dt_append_content").append(DATE_COPY_CONTENT);
+    });
+    $('body').on('click', '#allusfi_add_meta_query', function () {
+        const META_COPY_CONTENT = $("#allusfi_meta_copy_content").html().trim();
         // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
-		$("#advnce_append_content").append(META_COPY_CONTENT);
-	});
-	// WooCommerce toggle: enable/disable the order count fields.
-	$('body').on('change', '#allusfi_wc_toggle', function () {
-		var $fields = $('.allusfi-wc-fields');
-		if ($(this).is(':checked')) {
-			$fields.css({ 'opacity': '1', 'pointer-events': 'auto' });
-		} else {
-			$fields.css({ 'opacity': '0.5', 'pointer-events': 'none' });
-		}
-	});
-	let csvRows = [];
+        $("#advnce_append_content").append(META_COPY_CONTENT);
+    });
+    // WooCommerce toggle: enable/disable the order count fields.
+    $('body').on('change', '#allusfi_wc_toggle', function () {
+        var $fields = $('.allusfi-wc-fields');
+        if ($(this).is(':checked')) {
+            $fields.css({ 'opacity': '1', 'pointer-events': 'auto' });
+        } else {
+            $fields.css({ 'opacity': '0.5', 'pointer-events': 'none' });
+        }
+    });
+    let csvRows = [];
     let totalUsers = 0;
     let processed = 0;
 
@@ -67,28 +67,28 @@ jQuery(document).ready(function ($) {
         // Start batch
         allusfi_fetchBatch(1, queryVars);
     });
-	$('body').on('dblclick', '#LETS-make-POST-Form', function (e) {
-		var inpt_form = $(this).parents(`form[method]`);
-		var frm_method = inpt_form.attr('method');
-		if (frm_method === "get") {
-			inpt_form.attr('method', 'post');
-			var msg_ele = document.getElementById("pop-pop");
+    $('body').on('dblclick', '#LETS-make-POST-Form', function (e) {
+        var inpt_form = $(this).parents(`form[method]`);
+        var frm_method = inpt_form.attr('method');
+        if (frm_method === "get") {
+            inpt_form.attr('method', 'post');
+            var msg_ele = document.getElementById("pop-pop");
             // phpcs:ignore WordPressVIPMinimum.JS.InnerHTML.Found
-			msg_ele.innerHTML = get_req_txt.post_req_txt;
-			msg_ele.className = "show";
-		} else {
-			inpt_form.attr('method', 'get');
-			var msg_ele = document.getElementById("pop-pop");
+            msg_ele.innerHTML = allusfi_obj.post_req_txt;
+            msg_ele.className = "show";
+        } else {
+            inpt_form.attr('method', 'get');
+            var msg_ele = document.getElementById("pop-pop");
             // phpcs:ignore WordPressVIPMinimum.JS.InnerHTML.Found
-			msg_ele.innerHTML = allusfi_obj.get_req_txt;
-			msg_ele.className = "show";
-		}
-		setTimeout(function () { msg_ele.className = msg_ele.className.replace("show", ""); }, 3000);
-	});
-	$('body').on("click", ".rst_single_dt", function () { $("input[name='one-dt']").val("") });
-	// last tab should be opened. 
-	$(`button[data-id='allusfi-${allusfi_crnt_tab}']`).click();
-    /*common functions that is used by this js*/ 
+            msg_ele.innerHTML = allusfi_obj.get_req_txt;
+            msg_ele.className = "show";
+        }
+        setTimeout(function () { msg_ele.className = msg_ele.className.replace("show", ""); }, 3000);
+    });
+    $('body').on("click", ".rst_single_dt", function () { $("input[name='one-dt']").val("") });
+    // last tab should be opened. 
+    $(`button[data-id='allusfi-${allusfi_crnt_tab}']`).click();
+    /*common functions that is used by this js*/
     function allusfi_downloadCSV() {
         let csvContent = csvRows.map(
             row => row.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")
@@ -113,8 +113,8 @@ jQuery(document).ready(function ($) {
         $.ajax({
             type: "POST",
             url: allusfi_obj.ajax_url,
-            data: queryVars += `&paged=${page}&s=${allusfi_searched}&action=allusfi_wp_usr_export_csv` ,
-            success: function(res) {
+            data: queryVars += `&paged=${page}&s=${allusfi_searched}&action=allusfi_wp_usr_export_csv`,
+            success: function (res) {
                 if (!res.success) {
                     console.log('Error: ' + (res.data ? res.data.msg : 'unknown'));
                     // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
@@ -131,7 +131,7 @@ jQuery(document).ready(function ($) {
 
                 csvRows = csvRows.concat(data.rows);
 
-                processed += (data.rows.length - (page === 1 ? 1 : 0)); 
+                processed += (data.rows.length - (page === 1 ? 1 : 0));
                 let pct = (totalUsers > 0) ? Math.min(100, Math.round((processed / totalUsers) * 100)) : 0;
 
                 // update progress bar
@@ -144,7 +144,7 @@ jQuery(document).ready(function ($) {
                     allusfi_downloadCSV();
                 }
             },
-            error: function(xhr) {
+            error: function (xhr) {
                 console.error(xhr.responseText);
                 console.log("AJAX failed. See console.");
                 // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html

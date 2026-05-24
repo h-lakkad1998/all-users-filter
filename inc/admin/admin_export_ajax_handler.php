@@ -186,7 +186,7 @@ function allusfi_wp_usr_export_csv_fun()
 
 	// 10) Build the CSV rows (preserve original JSON shape)
 	$meta_keys_for_header = !empty($params['meta_keys']) && is_array($params['meta_keys']) ? array_map('sanitize_key', $params['meta_keys']) : array();
-
+	$meta_keys_for_header = array_unique($meta_keys_for_header);
 	$rows = array();
 	$wc_enabled = !empty($params['wc_order_enabled']) && class_exists('WooCommerce');
 	if (1 === (int) $paged) {

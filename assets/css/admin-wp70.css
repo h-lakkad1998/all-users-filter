@@ -1,0 +1,524 @@
+/* =========================================================
+   All Users Filter – admin-wp70.css
+   Loaded ONLY on WordPress 7.0 and above.
+   Overrides and re-targets styles broken by WP 7.0's
+   redesigned admin UI (new sidebar width, color scheme,
+   button/form resets, updated typography tokens).
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   WP 7.0 changed the sidebar width and introduced
+   CSS custom properties for layout.
+   We use env(--wp-admin-sidebar-width) when available,
+   falling back to 200px (WP 7.0 default sidebar).
+   --------------------------------------------------------- */
+
+/* MODAL OVERLAY – same as base */
+.allusfi_modal {
+  display: none;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  position: fixed;
+  z-index: 99999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.45);
+  padding-top: 0;
+}
+
+/* ---------------------------------------------------------
+   MODAL CONTENT
+   WP 7.0 sidebar default: ~200px collapsed, ~260px expanded.
+   We use margin-left with a CSS env fallback.
+   --------------------------------------------------------- */
+.allusfi_modal-content {
+  background-color: #fff;
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-right: 20px;
+  padding: 20px;
+  border: 1px solid #c3c4c7;
+  border-radius: 4px;
+  /* calc the width using the same offset */
+  width: calc(100% - max(200px, env(--wp-admin--sidebar-width, 200px)) - 20px);
+  max-width: 1100px;
+  font-size: 15px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  position: relative;
+  -webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+}
+
+/* ---------------------------------------------------------
+   WP 7.0 global * reset may set box-sizing differently.
+   Re-enforce our scoped reset.
+   --------------------------------------------------------- */
+.allusfi_modal-content *,
+.allusfi_modal-content *::before,
+.allusfi_modal-content *::after {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+/* ---------------------------------------------------------
+   TABS BAR
+   WP 7.0 uses a different base color (#f0f0f1 instead of #f1f1f1)
+   and its global nav styles can bleed into flex children.
+   --------------------------------------------------------- */
+.allusfi-tabs {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-align: stretch;
+  -ms-flex-align: stretch;
+  align-items: stretch;
+  overflow: hidden;
+  background-color: #f0f0f1;
+  border: 1px solid #c3c4c7;
+  border-radius: 2px 2px 0 0;
+  /* ensure no WP 7.0 nav styles leak */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.allusfi-tabs button.tablinks {
+  /* reset WP 7.0 button baseline */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #1d2327;
+  -webkit-transition: background-color 0.2s ease;
+  -o-transition: background-color 0.2s ease;
+  transition: background-color 0.2s ease;
+  border-radius: 0;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  text-shadow: none;
+  vertical-align: middle;
+  white-space: nowrap;
+  /* WP 7.0 sets min-height on buttons */
+  min-height: 0;
+  height: auto;
+}
+
+.allusfi-tabs button.tablinks:hover {
+  background-color: #dcdcde;
+}
+
+.allusfi-tabs button.tablinks.set-active {
+  background-color: #c3c4c7;
+  font-weight: 600;
+}
+
+.allusfi-tabs .clear_filters {
+  margin-left: auto !important;
+  margin-right: 8px !important;
+  -ms-flex-item-align: center;
+  align-self: center;
+  cursor: pointer !important;
+}
+
+/* ---------------------------------------------------------
+   TAB CONTENT PANELS
+   --------------------------------------------------------- */
+.allusfi-tabcontent {
+  padding: 6px 12px;
+  border: 1px solid #c3c4c7;
+  border-top: none;
+  border-radius: 0 0 2px 2px;
+  min-height: 400px;
+  background: #fff;
+}
+
+/* ---------------------------------------------------------
+   CUSTOM CHECKBOX  — WP 7.0 introduced its own
+   [type=checkbox] and [type=radio] base styles.
+   We must reset more aggressively.
+   --------------------------------------------------------- */
+.allusfi_modal-content .fancy-check input[type="checkbox"] {
+  /* WP 7.0 may render styled checkboxes; hide them */
+  position: absolute !important;
+  opacity: 0 !important;
+  pointer-events: none;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  border: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+}
+
+.allusfi_modal-content .fancy-checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 22px !important;
+  width: 22px !important;
+  /* full reset from WP 7.0 .button */
+  background-color: var(--wp-editor-canvas-background) !important;
+  border: 2px solid var(--wp-editor-canvas-background) !important;
+  border-radius: 3px !important;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, .07) !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, .07) !important;
+  text-shadow: none !important;
+  color: transparent !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  display: inline-block !important;
+  min-height: 0 !important;
+  -webkit-transition: border-color 0.15s, background-color 0.15s;
+  -o-transition: border-color 0.15s, background-color 0.15s;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.allusfi_modal-content .fancy-check:hover input[type="checkbox"]~.fancy-checkmark {
+  border-color: var(--wp-admin-theme-color) !important;
+}
+
+.allusfi_modal-content .fancy-check input[type="checkbox"]:checked~.fancy-checkmark {
+  background-color: var(--wp-editor-canvas-background) !important;
+  border-color: var(--wp-admin-theme-color) !important;
+}
+
+.allusfi_modal-content .fancy-check input[type="checkbox"]:checked~.fancy-checkmark::after {
+  display: block;
+}
+
+.allusfi_modal-content .fancy-check .fancy-checkmark::after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 13px;
+  border: solid var(--wp-admin-theme-color);
+  border-width: 0 2px 2px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+/* ---------------------------------------------------------
+   CUSTOM RADIO  — WP 7.0 injects styled radio buttons.
+   --------------------------------------------------------- */
+.allusfi_modal-content .fancy-radio input[type="radio"] {
+  position: absolute !important;
+  opacity: 0 !important;
+  pointer-events: none;
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 0 !important;
+  height: 0 !important;
+  border: none !important;
+  -webkit-appearance: none !important;
+  -moz-appearance: none !important;
+  appearance: none !important;
+}
+
+.allusfi_modal-content .fancy-select {
+  position: absolute !important;
+  top: 50% !important;
+  left: 0 !important;
+  -webkit-transform: translateY(-50%) !important;
+  -ms-transform: translateY(-50%) !important;
+  transform: translateY(-50%) !important;
+  height: 20px !important;
+  width: 20px !important;
+  border-radius: 50% !important;
+  /* Strip every WP 7.0 button / button-primary override */
+  background-color: #fff !important;
+  background-image: none !important;
+  border: 2px solid #8c8f94 !important;
+  -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, .07) !important;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, .07) !important;
+  text-shadow: none !important;
+  color: transparent !important;
+  padding: 0 !important;
+  line-height: 1 !important;
+  min-height: 0 !important;
+  font-size: 0 !important;
+  cursor: pointer;
+  display: inline-block !important;
+  -webkit-transition: border-color 0.15s;
+  -o-transition: border-color 0.15s;
+  transition: border-color 0.15s;
+}
+
+.allusfi_modal-content .fancy-radio:hover input[type="radio"]~.fancy-select {
+  border-color: var(--wp-admin-theme-color) !important;
+}
+
+.allusfi_modal-content .fancy-radio input[type="radio"]:checked~.fancy-select {
+  border-color: var(--wp-admin-theme-color) !important;
+  background-color: #fff !important;
+}
+
+.allusfi_modal-content .fancy-select::after {
+  content: "" !important;
+  position: absolute;
+  display: none;
+}
+
+.allusfi_modal-content .fancy-radio input[type="radio"]:checked~.fancy-select::after {
+  display: block;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  -webkit-transform: translate(-50%, -50%);
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--wp-admin-theme-color);
+}
+
+/* ---------------------------------------------------------
+   INPUTS + SELECTS  — WP 7.0 uses larger inputs by default
+   --------------------------------------------------------- */
+.allusfi_modal-content input[type="text"],
+.allusfi_modal-content input[type="date"],
+.allusfi_modal-content input[type="number"],
+.allusfi_modal-content select,
+.allusfi_modal-content textarea {
+  /* normalize across WP 7.0 form reset */
+  border: 1px solid #8c8f94;
+  border-radius: 3px;
+  padding: 4px 8px;
+  background-color: #fff;
+  color: #1d2327;
+  font-size: 14px;
+  line-height: 2;
+  -webkit-box-shadow: 0 0 0 transparent;
+  box-shadow: 0 0 0 transparent;
+  -webkit-transition: border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.allusfi_modal-content input[type="text"]:focus,
+.allusfi_modal-content input[type="date"]:focus,
+.allusfi_modal-content input[type="number"]:focus,
+.allusfi_modal-content select:focus {
+  border-color: var(--wp-admin-theme-color);
+  -webkit-box-shadow: 0 0 0 1px var(--wp-admin-theme-color);
+  box-shadow: 0 0 0 1px var(--wp-admin-theme-color);
+  outline: 2px solid transparent;
+}
+
+.allusfi_modal-content input[type="date"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.allusfi_modal-content select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23646970'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 10px 6px;
+  padding-right: 30px;
+  min-height: 30px;
+}
+
+/* ---------------------------------------------------------
+   WP 7.0 Headings – normalize inside the modal
+   --------------------------------------------------------- */
+.allusfi_modal-content h2,
+.allusfi_modal-content h3 {
+  font-weight: 600;
+  line-height: 1.3;
+  color: #1d2327;
+}
+
+.allusfi_modal-content h2 {
+  font-size: 1.3em;
+}
+
+.allusfi_modal-content h3 {
+  font-size: 1.1em;
+}
+
+/* ---------------------------------------------------------
+   FOOTER SUBMIT BUTTON AREA
+   WP 7.0 button-primary picks up new styles; our footer
+   alignment must still work.
+   --------------------------------------------------------- */
+.allusfi_modal-content .pop-up-footer {
+  margin-top: 20px;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+  -webkit-box-align: end;
+  -ms-flex-align: end;
+  align-items: flex-end;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.allusfi_modal-content .allusfi-sbmit-actions {
+  display: block;
+  float: none;
+  margin-left: auto;
+}
+
+/* ---------------------------------------------------------
+   RESPONSIVE  —  WP 7.0 collapses sidebar at ≤782px
+   --------------------------------------------------------- */
+@media only screen and (max-width: 991px) {
+  .allusfi_modal-content {
+    margin-left: 0;
+    margin-right: 0;
+    width: 96%;
+    margin: 10px auto;
+  }
+
+  .allusfi-tabcontent {
+    max-height: 500px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .allusfi_modal-content .allusfi-tabcontent.allusfi_us_general .child-col,
+  .allusfi_modal-content .allusfi-tabcontent.allusfi_us_advance .child-col {
+    width: 100%;
+    padding-bottom: 40px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  }
+
+  .allusfi_modal-content .allusfi-tabcontent.allusfi_us_general .child-col:last-child {
+    padding-bottom: 0;
+    border-bottom: none;
+  }
+
+  .allusfi-tabcontent .child-col::after {
+    display: none;
+  }
+
+  .allusfi_modal-content .fancy-radio {
+    margin-top: 25px;
+  }
+}
+
+@media screen and (max-width: 782px) {
+
+  /* WP 7.0 sidebar collapses to icon-only below 782px */
+  .allusfi_modal-content {
+    margin-left: 0;
+    width: 97%;
+    margin: 8px auto;
+  }
+
+  .allusfi-tabs {
+    -ms-flex-direction: column;
+    flex-direction: column;
+  }
+
+  .allusfi-tabs button.tablinks {
+    width: 100%;
+    text-align: left;
+    border-bottom: 1px solid #c3c4c7;
+  }
+
+  .allusfi-tabs .clear_filters {
+    width: 100%;
+    text-align: center;
+    margin: 4px 8px !important;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .allusfi_modal {
+    -webkit-box-align: flex-start;
+    -ms-flex-align: flex-start;
+    align-items: flex-start;
+    padding-top: 10px;
+  }
+
+  .allusfi_modal-content {
+    width: 98%;
+    padding: 10px;
+    font-size: 14px;
+    margin: 0 auto;
+  }
+
+  .meta_filter_table,
+  .meta_filter_table tbody,
+  .meta_filter_table tr,
+  .meta_filter_table td,
+  .meta_filter_table th {
+    display: block;
+    width: 100%;
+  }
+
+  .meta_filter_table th {
+    display: none;
+  }
+
+  .allusfi_meta_append_content input[type='text'] {
+    width: 100%;
+  }
+
+  /* footer stacks vertically */
+  .allusfi_modal-content .pop-up-footer {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    -webkit-box-align: start;
+    -ms-flex-align: start;
+    align-items: flex-start;
+  }
+
+  .allusfi_modal-content .allusfi-sbmit-actions {
+    width: 100%;
+    text-align: right;
+  }
+}
+
+/* ---------------------------------------------------------
+   Safari / iOS  — WP 7.0 also ships on iOS admin
+   --------------------------------------------------------- */
+@supports (-webkit-touch-callout: none) {
+
+  /* Prevent iOS zoom on input focus */
+  .allusfi_modal-content input[type="text"],
+  .allusfi_modal-content input[type="date"],
+  .allusfi_modal-content input[type="number"],
+  .allusfi_modal-content select,
+  .allusfi_modal-content textarea {
+    font-size: 16px;
+  }
+
+  /* iOS momentum scroll inside tabcontent */
+  .allusfi-tabcontent {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+.wp-core-ui .tablenav .allusfi_modal-content select {
+  float: unset;
+}

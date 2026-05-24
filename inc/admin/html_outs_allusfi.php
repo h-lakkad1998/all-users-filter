@@ -175,7 +175,7 @@ $allusfi_html_compatible_compares = array('=', '!=', 'IN', 'BETWEEN', 'LIKE', 'R
                                                 <?php echo (in_array($role_slug, (array) $params['exclude_roles'], true)) ? ' checked' : ''; ?>> <?php echo esc_html($role_name); ?>
                                             <span class="fancy-checkmark button"></span>
                                         </label>
-                                    <?php endforeach;
+                                <?php endforeach;
                                 endif; ?>
                             </div>
                         </div>
@@ -208,7 +208,7 @@ $allusfi_html_compatible_compares = array('=', '!=', 'IN', 'BETWEEN', 'LIKE', 'R
                             if (!empty($params['multi_from_date']) && is_array($params['multi_from_date'])):
                                 foreach ($params['multi_from_date'] as $index => $from):
                                     $to = isset($params['multi_to_date'][$index]) ? $params['multi_to_date'][$index] : '';
-                                    ?>
+                            ?>
                                     <tr>
                                         <td><input type="date" name="mlt-f-dt[]" value="<?php echo esc_attr($from); ?>"></td>
                                         <td>
@@ -216,7 +216,7 @@ $allusfi_html_compatible_compares = array('=', '!=', 'IN', 'BETWEEN', 'LIKE', 'R
                                             <button type="button" class="button remov_date">X</button>
                                         </td>
                                     </tr>
-                                    <?php
+                            <?php
                                 endforeach;
                             endif;
                             ?>
@@ -311,7 +311,7 @@ $allusfi_html_compatible_compares = array('=', '!=', 'IN', 'BETWEEN', 'LIKE', 'R
                                                 $op = isset($params['meta_ops'][$i]) ? $params['meta_ops'][$i] : '=';
                                                 $tp = isset($params['meta_tp'][$i]) ? $params['meta_tp'][$i] : 'CHAR';
                                                 $value = isset($params['meta_vals'][$i]) ? $params['meta_vals'][$i] : '';
-                                                ?>
+                                        ?>
                                                 <tr>
                                                     <td><input type="text" name="mta-ky[]" value="<?php echo esc_attr($key); ?>"
                                                             placeholder="<?php esc_attr_e('Add meta key like: monthly_salary', 'all-users-filter'); ?>">
@@ -331,7 +331,7 @@ $allusfi_html_compatible_compares = array('=', '!=', 'IN', 'BETWEEN', 'LIKE', 'R
                                                             <?php
                                                             $compatible_type = array('CHAR', 'NUMERIC', 'BINARY', 'DATE', 'DATETIME', 'DECIMAL', 'SIGNED', 'UNSIGNED', 'TIME');
                                                             foreach ($compatible_type as $single_tp):
-                                                                ?>
+                                                            ?>
                                                                 <option value="<?php echo esc_attr($single_tp); ?>" <?php selected($tp, $single_tp); ?>>
                                                                     <?php echo esc_html($single_tp); ?></option>
                                                             <?php endforeach; ?>
@@ -344,7 +344,7 @@ $allusfi_html_compatible_compares = array('=', '!=', 'IN', 'BETWEEN', 'LIKE', 'R
                                                         <button type="button" class="button remov_meta">X</button>
                                                     </td>
                                                 </tr>
-                                            <?php endfor;
+                                        <?php endfor;
                                         endif;
                                         ?>
                                     </tbody>
@@ -436,7 +436,7 @@ $allusfi_html_compatible_compares = array('=', '!=', 'IN', 'BETWEEN', 'LIKE', 'R
             <!-- tab content of export setting ends -->
             <div class="pop-up-footer">
                 <div style="display: inline-block;">
-                    <p> Made with <span class="heart"></span> By <a target="_blank" style="color: #5dacec;"
+                    <p> Made with <span class="dashicons dashicons-heart"></span> By <a target="_blank" style="color: #5dacec;"
                             href="https://www.instagram.com/hlakkad/">Hardik Patel(Lakkad)</a> </p>
                     <p> Need more plugins customiation? <a
                             href="https://www.linkedin.com/in/hardik-patel-lakkad-097b12147/" target="_blank"

@@ -23,6 +23,20 @@ if (!class_exists('ALLUSFI_Admin')) {
 		{
 			wp_register_script(ALLUSFI_PREFIX . '_admin_js', ALLUSFI_URL . 'assets/js/admin.js', array('jquery'), ALLUSFI_VERSION, true);
 			wp_register_style(ALLUSFI_PREFIX . '_admin_css', ALLUSFI_URL . 'assets/css/admin.css', array(), ALLUSFI_VERSION);
+
+			// WordPress 7.0+ ships a redesigned admin UI that breaks the base CSS.
+			// Load the targeted override sheet only on WP 7.0 and above so that
+			// WP 6.9 (and earlier) users keep the original, unchanged experience.
+			if (version_compare(get_bloginfo('version'), '7.0', '>=')) {
+				wp_register_style(
+					ALLUSFI_PREFIX . '_admin_css_wp70',
+					ALLUSFI_URL . 'assets/css/admin-wp70.css',
+					array(ALLUSFI_PREFIX . '_admin_css'), // load after base CSS
+					ALLUSFI_VERSION
+				);
+				wp_enqueue_style(ALLUSFI_PREFIX . '_admin_css_wp70');
+			}
+
 			$allusfi_local_array = array(
 				'plugin_prefix' => ALLUSFI_PREFIX,
 				'ajax_url' => admin_url('admin-ajax.php'),
@@ -236,6 +250,9 @@ if (!class_exists('ALLUSFI_Admin')) {
 				$from = array_map('sanitize_text_field', wp_unslash($_REQUEST['mlt-f-dt']));
 				$to = array_map('sanitize_text_field', wp_unslash($_REQUEST['mlt-t-dt']));
 
+				$from = array_filter($from);
+				$to = array_filter($to);
+
 				$out['multi_from_date'] = $from;
 				$out['multi_to_date'] = $to;
 			}
@@ -274,10 +291,24 @@ if (!class_exists('ALLUSFI_Admin')) {
 				$tps[$i] = in_array($tp, $allowed_types, true) ? $tp : 'CHAR';
 			}
 
-			$out['meta_keys'] = array_values(array_filter($keys));
-			$out['meta_vals'] = array_values($vals);
-			$out['meta_ops'] = array_values($ops);
-			$out['meta_tp'] = array_values($tps);
+			$out['meta_keys'] = $keys;
+			$out['meta_vals'] = $vals;
+			$out['meta_ops'] = $ops;
+			$out['meta_tp'] = $tps;
+
+			foreach ($out['meta_keys'] as $index => $key) {
+				if (empty(trim($key))) {
+					unset($out['meta_keys'][$index]);
+					unset($out['meta_vals'][$index]);
+					unset($out['meta_ops'][$index]);
+					unset($out['meta_tp'][$index]);
+				}
+			}
+
+			$out['meta_keys'] = array_values($out['meta_keys']);
+			$out['meta_vals'] = array_values($out['meta_vals']);
+			$out['meta_ops'] = array_values($out['meta_ops']);
+			$out['meta_tp'] = array_values($out['meta_tp']);
 
 			// WooCommerce order count filter params.
 			$out['wc_order_enabled'] = !empty($_REQUEST['wc-ordr-enabled']);
