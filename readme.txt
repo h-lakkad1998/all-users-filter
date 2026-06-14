@@ -1,6 +1,6 @@
 === All Users Filter ===
 Contributors: hlakkad1998, akshaykungiri, visualsbyridhi
-Tags: customer-list, export-user, export-users, user-export, usermeta, export-customers
+Tags: customer-list, export-user, export-users, usermeta, export-customers
 Donate link:    
 Requires at least: 6.1
 Tested up to: 7.0
