@@ -2,14 +2,14 @@
 # This file is distributed under the GNU General Public License v3.0.
 msgid ""
 msgstr ""
-"Project-Id-Version: All Users Filter 1.2\n"
+"Project-Id-Version: All Users Filter 1.6\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/all-users-filter\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-02-21T06:38:35+00:00\n"
+"POT-Creation-Date: 2026-06-14T09:43:16+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: all-users-filter\n"
@@ -40,10 +40,14 @@ msgid "https://www.linkedin.com/in/hardik-patel-lakkad-097b12147/"
 msgstr ""
 
 #: inc/admin/admin_export_ajax_handler.php:15
+#: inc/admin/admin_saved_filters_ajax_handler.php:23
+#: inc/admin/admin_saved_filters_ajax_handler.php:91
 msgid "Security check failed! May Be Session Expired!"
 msgstr ""
 
 #: inc/admin/admin_export_ajax_handler.php:24
+#: inc/admin/admin_saved_filters_ajax_handler.php:32
+#: inc/admin/admin_saved_filters_ajax_handler.php:100
 msgid "Insufficient permissions"
 msgstr ""
 
@@ -55,37 +59,78 @@ msgstr ""
 msgid "Too many excluded IDs. Reduce the exclude list or export in smaller batches."
 msgstr ""
 
-#: inc/admin/class.allusfi_main.php:29
-#: inc/admin/html_outs_allusfi.php:423
+#: inc/admin/admin_saved_filters_ajax_handler.php:44
+msgid "Filter name is required."
+msgstr ""
+
+#: inc/admin/admin_saved_filters_ajax_handler.php:66
+#: inc/admin/class.allusfi_main.php:53
+msgid "A filter with that name already exists. Please choose a different name."
+msgstr ""
+
+#: inc/admin/admin_saved_filters_ajax_handler.php:112
+msgid "Filter not found."
+msgstr ""
+
+#: inc/admin/class.allusfi_main.php:43
+#: inc/admin/html_outs_allusfi.php:425
 msgid "CLICK HERE TO EXPORT CSV"
 msgstr ""
 
-#: inc/admin/class.allusfi_main.php:30
+#: inc/admin/class.allusfi_main.php:44
 msgid "Export complete"
 msgstr ""
 
-#: inc/admin/class.allusfi_main.php:31
+#: inc/admin/class.allusfi_main.php:45
 msgid "GET REQUEST ENABLED!"
 msgstr ""
 
-#: inc/admin/class.allusfi_main.php:32
+#: inc/admin/class.allusfi_main.php:46
 msgid "POST REQUEST ENABLED!"
 msgstr ""
 
-#: inc/admin/class.allusfi_main.php:33
+#: inc/admin/class.allusfi_main.php:47
 msgid "Starting export..."
 msgstr ""
 
-#: inc/admin/class.allusfi_main.php:34
+#: inc/admin/class.allusfi_main.php:48
 msgid "Exporting..."
 msgstr ""
 
-#: inc/admin/class.allusfi_main.php:35
+#: inc/admin/class.allusfi_main.php:49
 msgid "Currently processing your export... Please keep this browser window open until the process is complete to avoid interrupting it."
 msgstr ""
 
+#: inc/admin/class.allusfi_main.php:54
+msgid "Please enter a name for this filter."
+msgstr ""
+
+#: inc/admin/class.allusfi_main.php:55
+msgid "Error saving filter. Please try again."
+msgstr ""
+
+#: inc/admin/class.allusfi_main.php:56
+msgid "Are you sure you want to delete this saved filter?"
+msgstr ""
+
+#: inc/admin/class.allusfi_main.php:57
+msgid "Error deleting filter. Please try again."
+msgstr ""
+
+#: inc/admin/class.allusfi_main.php:58
+msgid "No saved filters yet."
+msgstr ""
+
+#: inc/admin/class.allusfi_main.php:59
+msgid "Apply"
+msgstr ""
+
+#: inc/admin/class.allusfi_main.php:60
+msgid "Delete"
+msgstr ""
+
 #: inc/admin/html_outs_allusfi.php:57
-#: inc/admin/html_outs_allusfi.php:448
+#: inc/admin/html_outs_allusfi.php:486
 msgid "Filter Users"
 msgstr ""
 
@@ -110,198 +155,219 @@ msgid "Export"
 msgstr ""
 
 #: inc/admin/html_outs_allusfi.php:88
+#: inc/admin/html_outs_allusfi.php:443
+msgid "Saved Filters"
+msgstr ""
+
+#: inc/admin/html_outs_allusfi.php:90
 msgid "Clear Filters"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:93
+#: inc/admin/html_outs_allusfi.php:95
 msgid "General Filter"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:98
+#: inc/admin/html_outs_allusfi.php:100
 msgid "Sort By :"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:101
+#: inc/admin/html_outs_allusfi.php:103
 msgid "Select option..."
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:103
+#: inc/admin/html_outs_allusfi.php:105
 msgid "First name"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:105
+#: inc/admin/html_outs_allusfi.php:107
 msgid "Last name"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:107
+#: inc/admin/html_outs_allusfi.php:109
 msgid "User ID"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:109
+#: inc/admin/html_outs_allusfi.php:111
 msgid "User Login"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:111
+#: inc/admin/html_outs_allusfi.php:113
 msgid "Display Name"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:113
+#: inc/admin/html_outs_allusfi.php:115
 msgid "Registered Date"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:115
+#: inc/admin/html_outs_allusfi.php:117
 msgid "Post Count"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:119
+#: inc/admin/html_outs_allusfi.php:121
 msgid "Order By:"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:122
+#: inc/admin/html_outs_allusfi.php:124
 msgid "ASCENDING"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:126
+#: inc/admin/html_outs_allusfi.php:128
 msgid "DESCENDING"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:132
+#: inc/admin/html_outs_allusfi.php:134
 msgid "Exclude Users Id/s:"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:135
+#: inc/admin/html_outs_allusfi.php:137
 msgid "Use \"-\" between numbers to exclude multiple ids."
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:141
+#: inc/admin/html_outs_allusfi.php:143
 msgid "Only numbers and \"-\" are allowed."
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:147
+#: inc/admin/html_outs_allusfi.php:149
 msgid "Filter users by date of registration : "
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:151
+#: inc/admin/html_outs_allusfi.php:153
 msgid "Reset"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:155
+#: inc/admin/html_outs_allusfi.php:157
 msgid "Write something like  \"12 Hours ago\" : "
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:161
+#: inc/admin/html_outs_allusfi.php:163
 msgid "E.g. 12 Hours ago"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:168
+#: inc/admin/html_outs_allusfi.php:170
 msgid "Exclude roles:"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:189
+#: inc/admin/html_outs_allusfi.php:191
 msgid "Multiple Date Filter"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:193
+#: inc/admin/html_outs_allusfi.php:195
 msgid "Filter users between two dates:"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:196
+#: inc/admin/html_outs_allusfi.php:198
 msgid "This filter will filter users based on registration date."
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:199
+#: inc/admin/html_outs_allusfi.php:201
 msgid "Add date"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:204
+#: inc/admin/html_outs_allusfi.php:206
 msgid "From Date"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:205
+#: inc/admin/html_outs_allusfi.php:207
 msgid "To Date"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:242
+#: inc/admin/html_outs_allusfi.php:244
 msgid "Advanced Filters"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:247
+#: inc/admin/html_outs_allusfi.php:249
 msgid "Filter users using meta key/value:"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:250
+#: inc/admin/html_outs_allusfi.php:252
 msgid "1) Add meta key.  2) Select Operator.  3) Enter value. "
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:253
+#: inc/admin/html_outs_allusfi.php:255
 msgid "ADD META FILTER"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:257
+#: inc/admin/html_outs_allusfi.php:259
 msgid "AND"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:259
+#: inc/admin/html_outs_allusfi.php:261
 msgid "OR"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:265
-#: inc/admin/html_outs_allusfi.php:317
+#: inc/admin/html_outs_allusfi.php:267
+#: inc/admin/html_outs_allusfi.php:319
 msgid "Add meta key like: monthly_salary"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:300
+#: inc/admin/html_outs_allusfi.php:302
 msgid "Meta key"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:301
+#: inc/admin/html_outs_allusfi.php:303
 msgid "Operator"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:302
+#: inc/admin/html_outs_allusfi.php:304
 msgid "Type"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:303
+#: inc/admin/html_outs_allusfi.php:305
 msgid "Value"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:363
+#: inc/admin/html_outs_allusfi.php:365
 msgid "WooCommerce Order Filter"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:368
+#: inc/admin/html_outs_allusfi.php:370
 msgid "Enable Order Count Filter:"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:377
+#: inc/admin/html_outs_allusfi.php:379
 msgid "Comparison Operator:"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:390
+#: inc/admin/html_outs_allusfi.php:392
 msgid "Order Count:"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:393
+#: inc/admin/html_outs_allusfi.php:395
 msgid "Enter the number of orders to compare against. Only completed and processing orders are counted."
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:398
+#: inc/admin/html_outs_allusfi.php:400
 msgid "e.g. 5"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:410
+#: inc/admin/html_outs_allusfi.php:412
 msgid "The export file will include following things."
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:413
+#: inc/admin/html_outs_allusfi.php:415
 msgid "User ID, User Login, User Email, User Nicename, Display Name, User Role."
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:415
+#: inc/admin/html_outs_allusfi.php:417
 msgid "Note: If filtered with meta key/s(advance filter), meta value/s will be included."
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:418
+#: inc/admin/html_outs_allusfi.php:420
 msgid "WooCommerce: If order count filter is enabled, a 'Total Orders' column will be appended."
+msgstr ""
+
+#: inc/admin/html_outs_allusfi.php:451
+msgid "Save Current Filter"
+msgstr ""
+
+#: inc/admin/html_outs_allusfi.php:455
+msgid "Enter filter name..."
+msgstr ""
+
+#: inc/admin/html_outs_allusfi.php:458
+msgid "Confirm Save"
+msgstr ""
+
+#: inc/admin/html_outs_allusfi.php:461
+msgid "Cancel"
 msgstr ""

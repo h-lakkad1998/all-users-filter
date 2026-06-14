@@ -21,8 +21,8 @@ if (!class_exists('ALLUSFI_Admin')) {
 
 		function allusfi_action_admin_init()
 		{
-			wp_register_script(ALLUSFI_PREFIX . '_admin_js', ALLUSFI_URL . 'assets/js/admin.js', array('jquery'), ALLUSFI_VERSION, true);
-			wp_register_style(ALLUSFI_PREFIX . '_admin_css', ALLUSFI_URL . 'assets/css/admin.css', array(), ALLUSFI_VERSION);
+			wp_register_script(ALLUSFI_PREFIX . '_admin_js',  ALLUSFI_URL . 'assets/js/admin.js',       array('jquery'), (int) filemtime(ALLUSFI_DIR . '/assets/js/admin.js')       ?: 1, true);
+			wp_register_style(ALLUSFI_PREFIX . '_admin_css',  ALLUSFI_URL . 'assets/css/admin.css',     array(),         (int) filemtime(ALLUSFI_DIR . '/assets/css/admin.css')     ?: 1);
 
 			// WordPress 7.0+ ships a redesigned admin UI that breaks the base CSS.
 			// Load the targeted override sheet only on WP 7.0 and above so that
@@ -32,21 +32,31 @@ if (!class_exists('ALLUSFI_Admin')) {
 					ALLUSFI_PREFIX . '_admin_css_wp70',
 					ALLUSFI_URL . 'assets/css/admin-wp70.css',
 					array(ALLUSFI_PREFIX . '_admin_css'), // load after base CSS
-					ALLUSFI_VERSION
+					(int) filemtime(ALLUSFI_DIR . '/assets/css/admin-wp70.css') ?: 1
 				);
 				wp_enqueue_style(ALLUSFI_PREFIX . '_admin_css_wp70');
 			}
 
 			$allusfi_local_array = array(
-				'plugin_prefix' => ALLUSFI_PREFIX,
-				'ajax_url' => admin_url('admin-ajax.php'),
-				'btn_export_txt' => __('CLICK HERE TO EXPORT CSV', 'all-users-filter'),
-				'btn_export_finish_txt' => __('Export complete', 'all-users-filter'),
-				'get_req_txt' => __('GET REQUEST ENABLED!', 'all-users-filter'),
-				'post_req_txt' => __('POST REQUEST ENABLED!', 'all-users-filter'),
-				'start_export_process_txt' => __('Starting export...', 'all-users-filter'),
-				'export_process_txt' => __('Exporting...', 'all-users-filter'),
-				'export_ongoing_txt' => __('Currently processing your export... Please keep this browser window open until the process is complete to avoid interrupting it.', 'all-users-filter'),
+				'plugin_prefix'           => ALLUSFI_PREFIX,
+				'ajax_url'                => admin_url('admin-ajax.php'),
+				'btn_export_txt'          => __('CLICK HERE TO EXPORT CSV', 'all-users-filter'),
+				'btn_export_finish_txt'   => __('Export complete', 'all-users-filter'),
+				'get_req_txt'             => __('GET REQUEST ENABLED!', 'all-users-filter'),
+				'post_req_txt'            => __('POST REQUEST ENABLED!', 'all-users-filter'),
+				'start_export_process_txt'=> __('Starting export...', 'all-users-filter'),
+				'export_process_txt'      => __('Exporting...', 'all-users-filter'),
+				'export_ongoing_txt'      => __('Currently processing your export... Please keep this browser window open until the process is complete to avoid interrupting it.', 'all-users-filter'),
+				// Saved filters
+				'saved_filters'           => array_values((array) get_option('allusfi_saved_filters', array())),
+				'sf_duplicate_name_txt'   => __('A filter with that name already exists. Please choose a different name.', 'all-users-filter'),
+				'sf_enter_name_txt'       => __('Please enter a name for this filter.', 'all-users-filter'),
+				'sf_save_error_txt'       => __('Error saving filter. Please try again.', 'all-users-filter'),
+				'sf_delete_confirm_txt'   => __('Are you sure you want to delete this saved filter?', 'all-users-filter'),
+				'sf_delete_error_txt'     => __('Error deleting filter. Please try again.', 'all-users-filter'),
+				'sf_no_filters_txt'       => __('No saved filters yet.', 'all-users-filter'),
+				'sf_apply_txt'            => __('Apply', 'all-users-filter'),
+				'sf_delete_txt'           => __('Delete', 'all-users-filter'),
 			);
 			wp_localize_script(ALLUSFI_PREFIX . '_admin_js', 'allusfi_obj', $allusfi_local_array);
 			wp_enqueue_script(ALLUSFI_PREFIX . '_admin_js');
@@ -319,7 +329,7 @@ if (!class_exists('ALLUSFI_Admin')) {
 
 			$allowed_wc_ops = array('>', '<', '=', '!=');
 			$raw_wc_op = isset($_REQUEST['wc-ordr-op'])
-				? sanitize_text_field(wp_unslash($_REQUEST['wc-ordr-op']))
+				? $this->re_sanitize_operator(sanitize_text_field(wp_unslash($_REQUEST['wc-ordr-op'])))
 				: '>';
 			$out['wc_order_op'] = in_array($raw_wc_op, $allowed_wc_ops, true) ? $raw_wc_op : '>';
 

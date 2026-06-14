@@ -49,8 +49,8 @@ function allusfi_wp_usr_export_csv_fun()
 	$search = isset($_REQUEST['s']) ? sanitize_text_field(wp_unslash($_REQUEST['s'])) : '';
 
 	// 6) Batch size (default 100) - keeps queries small and reduces DB pressure.
-	$batch_size = (int) apply_filters('allusfi_export_batch_size', 999);
-	$batch_size = $batch_size > 0 ? $batch_size : 999;
+	$batch_size = (int) apply_filters('allusfi_export_batch_size', 99);
+	$batch_size = $batch_size > 0 ? $batch_size : 99;
 
 	// 7) Guard: refuse absurdly-large exclude lists (avoid extremely slow/exhaustive queries).
 	if (!empty($params['excl_ids']) && is_array($params['excl_ids'])) {

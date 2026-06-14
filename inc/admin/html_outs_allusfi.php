@@ -84,6 +84,8 @@ $allusfi_html_compatible_compares = array('=', '!=', 'IN', 'BETWEEN', 'LIKE', 'R
                 <?php endif; ?>
                 <button type="button" class="tablinks"
                     data-id="allusfi-export-settings"><?php esc_html_e("Export", 'all-users-filter'); ?></button>
+                <button type="button" class="tablinks"
+                    data-id="allusfi-saved-filters"><?php esc_html_e("Saved Filters", 'all-users-filter'); ?></button>
                 <a href="<?php echo esc_url($pagenow, 'all-users-filter'); ?>"
                     class="button button-primary clear_filters"><?php esc_html_e("Clear Filters", 'all-users-filter'); ?></a>
             </div>
@@ -434,6 +436,42 @@ $allusfi_html_compatible_compares = array('=', '!=', 'IN', 'BETWEEN', 'LIKE', 'R
             </div>
 
             <!-- tab content of export setting ends -->
+
+            <!-- tab content of saved filters starts -->
+            <div id="allusfi-saved-filters" class="allusfi-tabcontent allusfi_us_saved_filters" style="display:none;">
+                <div class="stng-title">
+                    <h2><?php esc_html_e("Saved Filters", 'all-users-filter'); ?></h2>
+                </div>
+
+                <!-- Save current filter form (only shown when allusfi_secure is set) -->
+                <?php if (isset($_GET['allusfi_secure'])): ?>
+                    <div class="allusfi-sf-save-wrap">
+                        <button type="button" id="allusfi_sf_show_save_form" class="button button-primary">
+                            <span class="dashicons dashicons-cloud-upload"></span>
+                            <?php esc_html_e("Save Current Filter", 'all-users-filter'); ?>
+                        </button>
+                        <div id="allusfi_sf_name_wrap" class="allusfi-sf-name-wrap" style="display:none;">
+                            <input type="text" id="allusfi_sf_name_input"
+                                placeholder="<?php esc_attr_e('Enter filter name...', 'all-users-filter'); ?>"
+                                maxlength="100">
+                            <button type="button" id="allusfi_sf_confirm_save" class="button button-primary">
+                                <?php esc_html_e("Confirm Save", 'all-users-filter'); ?>
+                            </button>
+                            <button type="button" id="allusfi_sf_cancel_save" class="button">
+                                <?php esc_html_e("Cancel", 'all-users-filter'); ?>
+                            </button>
+                            <span id="allusfi_sf_save_msg" class="allusfi-sf-msg"></span>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
+                <!-- Saved filters list (rendered by JS) -->
+                <div id="allusfi_sf_list_wrap" class="allusfi-sf-list-wrap">
+                    <div id="allusfi_sf_list"></div>
+                </div>
+            </div>
+            <!-- tab content of saved filters ends -->
+
             <div class="pop-up-footer">
                 <div style="display: inline-block;">
                     <p> Made with <span class="dashicons dashicons-heart"></span> By <a target="_blank" style="color: #5dacec;"

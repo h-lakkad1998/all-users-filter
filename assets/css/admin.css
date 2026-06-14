@@ -1100,3 +1100,124 @@
   background-color: #fff;
   color: #000;
 }
+
+/* ---------------------------------------------------------
+   SAVED FILTERS TAB
+   --------------------------------------------------------- */
+
+/* Save form area */
+.allusfi-sf-save-wrap {
+  padding: 18px 0 10px;
+}
+
+/* Hidden name-input + confirm row */
+.allusfi-sf-name-wrap {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.allusfi-sf-name-wrap input[type="text"] {
+  width: 280px;
+  max-width: 100%;
+  padding: 5px 8px;
+  border: 1px solid #8c8f94;
+  border-radius: 3px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* Inline feedback message */
+.allusfi-sf-msg {
+  font-size: 13px;
+  font-style: italic;
+  margin-left: 4px;
+}
+
+.allusfi-sf-msg--error {
+  color: #d63638;
+}
+
+.allusfi-sf-msg--ok {
+  color: #00a32a;
+}
+
+/* List wrapper */
+.allusfi-sf-list-wrap {
+  margin-top: 20px;
+}
+
+/* Empty state */
+.allusfi-sf-empty {
+  color: #646970;
+  font-style: italic;
+  padding: 12px 0;
+}
+
+/* Table */
+.allusfi-sf-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 6px;
+  font-size: 14px;
+}
+
+.allusfi-sf-table th,
+.allusfi-sf-table td {
+  padding: 9px 12px;
+  text-align: left;
+  border: 1px solid #ddd;
+  vertical-align: middle;
+}
+
+.allusfi-sf-table th {
+  background-color: #f1f1f1;
+  font-weight: 600;
+  color: #1d2327;
+}
+
+.allusfi-sf-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.allusfi-sf-table tbody tr:hover {
+  background-color: #eef4fb;
+}
+
+.allusfi-sf-num {
+  width: 40px;
+  color: #646970;
+  text-align: center;
+}
+
+.allusfi-sf-name {
+  font-weight: 500;
+}
+
+.allusfi-sf-actions {
+  width: 160px;
+  white-space: nowrap;
+}
+
+/* Delete button – subtle red tint */
+.allusfi-sf-delete-btn {
+  color: #d63638 !important;
+  border-color: #d63638 !important;
+  margin-left: 4px !important;
+}
+
+.allusfi-sf-delete-btn:hover,
+.allusfi-sf-delete-btn:focus {
+  background: #d63638 !important;
+  color: #fff !important;
+  border-color: #d63638 !important;
+  -webkit-box-shadow: 0 0 0 1px #d63638 !important;
+  box-shadow: 0 0 0 1px #d63638 !important;
+}

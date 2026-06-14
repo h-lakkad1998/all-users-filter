@@ -152,4 +152,195 @@ jQuery(document).ready(function ($) {
             }
         });
     }
+
+    /* ============================================================
+       SAVED FILTERS
+       ============================================================ */
+
+    // Params that must NOT be saved (session / page-specific)
+    var ALLUSFI_SF_SKIP_PARAMS = [
+        'allusfi_secure', 'paged',
+        'action', 'action2', 'new_role', 'new_role2'
+    ];
+
+    /**
+     * Strip unwanted params from a serialized query string.
+     * Handles both plain keys and array-style keys (e.g. rl-excld%5B%5D).
+     */
+    function allusfi_sf_strip_params(serialized) {
+        var pairs = serialized.split('&');
+        var filtered = pairs.filter(function (pair) {
+            var key = decodeURIComponent(pair.split('=')[0]);
+            // Strip array brackets for comparison: "rl-excld[]" → "rl-excld"
+            var baseKey = key.replace(/\[\d*\]$/, '');
+            return ALLUSFI_SF_SKIP_PARAMS.indexOf(baseKey) === -1;
+        });
+        return filtered.join('&');
+    }
+
+    /**
+     * Build a users.php URL from saved params + a fresh nonce.
+     */
+    function allusfi_sf_build_apply_url(savedParams) {
+        var freshNonce = $('input[name="allusfi_secure"]').val() || '';
+        return 'users.php?' + savedParams + '&allusfi_secure=' + encodeURIComponent(freshNonce) + '&fltr-sbmt=1';
+    }
+
+    /**
+     * Render the saved filters list inside #allusfi_sf_list.
+     */
+    function allusfi_sf_render_list(filters) {
+        var $list = $('#allusfi_sf_list');
+        $list.empty();
+
+        if (!filters || filters.length === 0) {
+            // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
+            $list.html('<p class="allusfi-sf-empty">' + allusfi_obj.sf_no_filters_txt + '</p>');
+            return;
+        }
+
+        var $table = $('<table class="allusfi-sf-table widefat striped"></table>');
+        var $thead = $('<thead><tr>' +
+            '<th>#</th>' +
+            '<th>Filter Name</th>' +
+            '<th>Actions</th>' +
+            '</tr></thead>');
+        $table.append($thead);
+
+        var $tbody = $('<tbody></tbody>');
+        $.each(filters, function (i, filter) {
+            var applyUrl = allusfi_sf_build_apply_url(filter.params);
+            var $row = $('<tr class="allusfi-sf-row"></tr>');
+            $row.append('<td class="allusfi-sf-num">' + (i + 1) + '</td>');
+            $row.append('<td class="allusfi-sf-name">' + $('<span>').text(filter.name).html() + '</td>');
+
+            var $actions = $('<td class="allusfi-sf-actions"></td>');
+            var $applyBtn = $('<a class="button button-primary allusfi-sf-apply-btn" target="_self"></a>')
+                .attr('href', applyUrl)
+                .text(allusfi_obj.sf_apply_txt);
+            var $delBtn = $('<button type="button" class="button allusfi-sf-delete-btn"></button>')
+                .text(allusfi_obj.sf_delete_txt)
+                .attr('data-id', i);
+
+            $actions.append($applyBtn).append(' ').append($delBtn);
+            $row.append($actions);
+            $tbody.append($row);
+        });
+
+        $table.append($tbody);
+        $list.append($table);
+    }
+
+    // Initial render on page load using localized data
+    allusfi_sf_render_list(allusfi_obj.saved_filters);
+
+    /* ---- Show / hide the save-name form ---- */
+    $('body').on('click', '#allusfi_sf_show_save_form', function () {
+        $('#allusfi_sf_name_wrap').slideDown(150);
+        $('#allusfi_sf_name_input').focus();
+        $(this).hide();
+    });
+
+    $('body').on('click', '#allusfi_sf_cancel_save', function () {
+        $('#allusfi_sf_name_wrap').slideUp(150);
+        $('#allusfi_sf_name_input').val('');
+        $('#allusfi_sf_save_msg').text('').removeClass('allusfi-sf-msg--error allusfi-sf-msg--ok');
+        $('#allusfi_sf_show_save_form').show();
+    });
+
+    /* ---- Confirm Save ---- */
+    $('body').on('click', '#allusfi_sf_confirm_save', function () {
+        var filterName = $.trim($('#allusfi_sf_name_input').val());
+        var $msg = $('#allusfi_sf_save_msg');
+
+        if (!filterName) {
+            $msg.text(allusfi_obj.sf_enter_name_txt).removeClass('allusfi-sf-msg--ok').addClass('allusfi-sf-msg--error');
+            return;
+        }
+
+        // Check duplicate names client-side first (fast feedback)
+        var existing = allusfi_obj.saved_filters || [];
+        for (var i = 0; i < existing.length; i++) {
+            if (existing[i].name.toLowerCase() === filterName.toLowerCase()) {
+                $msg.text(allusfi_obj.sf_duplicate_name_txt).removeClass('allusfi-sf-msg--ok').addClass('allusfi-sf-msg--error');
+                return;
+            }
+        }
+
+        // Collect + strip params from the current URL (the definitive source of truth).
+        // The "Save" button is only visible when fltr-sbmt=1 is in the URL, so
+        // window.location.search already contains the exact, fully-encoded filter params.
+        // This avoids re-serialising the form, which can lose array indices, drop
+        // checkboxes that weren't re-ticked, and mis-encode special values like "<".
+        var rawSearch = window.location.search.length > 1
+            ? window.location.search.substring(1) // strip leading "?"
+            : '';
+        var cleanParams = allusfi_sf_strip_params(rawSearch);
+
+        var $btn = $(this).prop('disabled', true);
+
+        $.ajax({
+            type: 'POST',
+            url: allusfi_obj.ajax_url,
+            data: {
+                action: 'allusfi_save_filter',
+                nonce: $('#allusfi_secure').val(),
+                filter_name: filterName,
+                filter_params: cleanParams
+            },
+            success: function (res) {
+                $btn.prop('disabled', false);
+                if (!res.success) {
+                    $msg.text(res.data && res.data.msg ? res.data.msg : allusfi_obj.sf_save_error_txt)
+                        .removeClass('allusfi-sf-msg--ok').addClass('allusfi-sf-msg--error');
+                    return;
+                }
+                // Update local cache
+                allusfi_obj.saved_filters = res.data.saved_filters;
+                allusfi_sf_render_list(allusfi_obj.saved_filters);
+
+                // Reset the form
+                $('#allusfi_sf_name_input').val('');
+                $('#allusfi_sf_name_wrap').slideUp(150);
+                $('#allusfi_sf_show_save_form').show();
+                $msg.text('').removeClass('allusfi-sf-msg--error allusfi-sf-msg--ok');
+            },
+            error: function () {
+                $btn.prop('disabled', false);
+                $msg.text(allusfi_obj.sf_save_error_txt).removeClass('allusfi-sf-msg--ok').addClass('allusfi-sf-msg--error');
+            }
+        });
+    });
+
+    /* ---- Delete ---- */
+    $('body').on('click', '.allusfi-sf-delete-btn', function () {
+        if (!window.confirm(allusfi_obj.sf_delete_confirm_txt)) {
+            return;
+        }
+        var filterId = $(this).attr('data-id');
+        var $btn = $(this).prop('disabled', true);
+
+        $.ajax({
+            type: 'POST',
+            url: allusfi_obj.ajax_url,
+            data: {
+                action: 'allusfi_delete_filter',
+                nonce: $('#allusfi_secure').val(),
+                filter_id: filterId
+            },
+            success: function (res) {
+                if (!res.success) {
+                    alert(res.data && res.data.msg ? res.data.msg : allusfi_obj.sf_delete_error_txt);
+                    $btn.prop('disabled', false);
+                    return;
+                }
+                allusfi_obj.saved_filters = res.data.saved_filters;
+                allusfi_sf_render_list(allusfi_obj.saved_filters);
+            },
+            error: function () {
+                alert(allusfi_obj.sf_delete_error_txt);
+                $btn.prop('disabled', false);
+            }
+        });
+    });
 });

@@ -1,14 +1,14 @@
 === All Users Filter ===
 Contributors: hlakkad1998, akshaykungiri, visualsbyridhi
-Tags: customer-list, export-user, export-users, user-export, usermeta
+Tags: customer-list, export-user, export-users, user-export, usermeta, export-customers
 Donate link:    
 Requires at least: 6.1
 Tested up to: 7.0
 Requires PHP: 7.4
 License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
-Stable tag: 1.5
-Version: 1.5
+Stable tag: 1.6
+Version: 1.6
 
 Filter, sort, and export WordPress users to CSV using powerful UI-driven meta queries (roles, dates, numeric ranges, regex, and more).
 
@@ -165,6 +165,9 @@ add_filter( 'allusfi_allowed_user_to_filter', 'yr_theme_custom_allusfi_filter' )
 = How can non-admins access the plugin? =
 Use the `allusfi_allowed_user_to_filter` filter (see "Extending scope for multiple users").
 
+= Will the export sheet also include meta data if filtered with it? =
+Yes. If you filter by meta data, the export sheet will include the data.
+
 = Why doesn't a numeric filter work with Type: CHAR? =
 String comparisons are lexicographic. Use `NUMERIC` (or `SIGNED`/`UNSIGNED`) for number ranges and equality.
 
@@ -178,7 +181,14 @@ Yes! The plugin is fully compatible with modern WooCommerce stores using HPOS, a
 = Can I export the filtered order counts (WooCommerce orders)? =
 Yes. Whenever the WooCommerce filter is enabled, your user export file will automatically include a new "Total Orders" column containing the exact order count for each filtered user.
 
+= Can I save the filter combinations? =
+Yes. You can save the filter combinations, I released this feature in 1.6 version.
+
 == Changelog ==
+= 1.6 =
+* Added saved filters tab. So now, users do not need to remember their filter combinations.
+* Reduced export 999 users to 99 users to avoid performance issues on heavy filters.
+* Added performance improvements.
 = 1.5 =
 * Minor changes in the admin ui
 * Added support for 7.0 version
@@ -197,6 +207,10 @@ Minor changes for order status count in csv.
 * Initial Release
 
 == Upgrade Notice ==
+= 1.6 =
+* Added saved filters tab. So now, users do not need to remember their filter combinations.
+* Reduced export 999 users to 99 users to avoid performance issues on heavy filters.
+* Added performance improvements.
 = 1.5 =
 * Minor changes in the admin ui
 * Added support for 7.0 version
