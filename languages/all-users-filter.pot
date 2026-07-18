@@ -2,14 +2,14 @@
 # This file is distributed under the GNU General Public License v3.0.
 msgid ""
 msgstr ""
-"Project-Id-Version: All Users Filter 1.6\n"
+"Project-Id-Version: All Users Filter 1.7\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/all-users-filter\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-06-14T09:43:16+00:00\n"
+"POT-Creation-Date: 2026-07-18T10:59:20+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: all-users-filter\n"
@@ -39,23 +39,23 @@ msgstr ""
 msgid "https://www.linkedin.com/in/hardik-patel-lakkad-097b12147/"
 msgstr ""
 
-#: inc/admin/admin_export_ajax_handler.php:15
+#: inc/admin/admin_export_ajax_handler.php:24
 #: inc/admin/admin_saved_filters_ajax_handler.php:23
-#: inc/admin/admin_saved_filters_ajax_handler.php:91
+#: inc/admin/admin_saved_filters_ajax_handler.php:93
 msgid "Security check failed! May Be Session Expired!"
 msgstr ""
 
-#: inc/admin/admin_export_ajax_handler.php:24
+#: inc/admin/admin_export_ajax_handler.php:33
 #: inc/admin/admin_saved_filters_ajax_handler.php:32
-#: inc/admin/admin_saved_filters_ajax_handler.php:100
+#: inc/admin/admin_saved_filters_ajax_handler.php:102
 msgid "Insufficient permissions"
 msgstr ""
 
-#: inc/admin/admin_export_ajax_handler.php:39
+#: inc/admin/admin_export_ajax_handler.php:48
 msgid "Internal error: helper class missing"
 msgstr ""
 
-#: inc/admin/admin_export_ajax_handler.php:60
+#: inc/admin/admin_export_ajax_handler.php:100
 msgid "Too many excluded IDs. Reduce the exclude list or export in smaller batches."
 msgstr ""
 
@@ -63,311 +63,423 @@ msgstr ""
 msgid "Filter name is required."
 msgstr ""
 
-#: inc/admin/admin_saved_filters_ajax_handler.php:66
-#: inc/admin/class.allusfi_main.php:53
+#: inc/admin/admin_saved_filters_ajax_handler.php:68
+#: inc/admin/class.allusfi_main.php:55
 msgid "A filter with that name already exists. Please choose a different name."
 msgstr ""
 
-#: inc/admin/admin_saved_filters_ajax_handler.php:112
+#: inc/admin/admin_saved_filters_ajax_handler.php:114
 msgid "Filter not found."
 msgstr ""
 
-#: inc/admin/class.allusfi_main.php:43
-#: inc/admin/html_outs_allusfi.php:425
+#: inc/admin/class.allusfi_main.php:46
+#: inc/admin/html_outs_allusfi.php:650
 msgid "CLICK HERE TO EXPORT CSV"
 msgstr ""
 
-#: inc/admin/class.allusfi_main.php:44
+#: inc/admin/class.allusfi_main.php:47
 msgid "Export complete"
 msgstr ""
 
-#: inc/admin/class.allusfi_main.php:45
+#: inc/admin/class.allusfi_main.php:48
 msgid "GET REQUEST ENABLED!"
 msgstr ""
 
-#: inc/admin/class.allusfi_main.php:46
+#: inc/admin/class.allusfi_main.php:49
 msgid "POST REQUEST ENABLED!"
 msgstr ""
 
-#: inc/admin/class.allusfi_main.php:47
+#: inc/admin/class.allusfi_main.php:50
 msgid "Starting export..."
 msgstr ""
 
-#: inc/admin/class.allusfi_main.php:48
+#: inc/admin/class.allusfi_main.php:51
 msgid "Exporting..."
 msgstr ""
 
-#: inc/admin/class.allusfi_main.php:49
+#: inc/admin/class.allusfi_main.php:52
 msgid "Currently processing your export... Please keep this browser window open until the process is complete to avoid interrupting it."
 msgstr ""
 
-#: inc/admin/class.allusfi_main.php:54
+#: inc/admin/class.allusfi_main.php:56
 msgid "Please enter a name for this filter."
 msgstr ""
 
-#: inc/admin/class.allusfi_main.php:55
+#: inc/admin/class.allusfi_main.php:57
 msgid "Error saving filter. Please try again."
 msgstr ""
 
-#: inc/admin/class.allusfi_main.php:56
+#: inc/admin/class.allusfi_main.php:58
 msgid "Are you sure you want to delete this saved filter?"
 msgstr ""
 
-#: inc/admin/class.allusfi_main.php:57
+#: inc/admin/class.allusfi_main.php:59
 msgid "Error deleting filter. Please try again."
 msgstr ""
 
-#: inc/admin/class.allusfi_main.php:58
+#: inc/admin/class.allusfi_main.php:60
 msgid "No saved filters yet."
 msgstr ""
 
-#: inc/admin/class.allusfi_main.php:59
+#: inc/admin/class.allusfi_main.php:61
 msgid "Apply"
 msgstr ""
 
-#: inc/admin/class.allusfi_main.php:60
+#: inc/admin/class.allusfi_main.php:62
 msgid "Delete"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:57
-#: inc/admin/html_outs_allusfi.php:486
+#: inc/admin/class.allusfi_main.php:64
+msgid "Include Meta Fields"
+msgstr ""
+
+#: inc/admin/class.allusfi_main.php:65
+msgid "No active meta filters. Use the Advanced tab to add meta filters, or enter an extra meta key below."
+msgstr ""
+
+#: inc/admin/html_outs_allusfi.php:61
+#: inc/admin/html_outs_allusfi.php:710
 msgid "Filter Users"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:76
+#: inc/admin/html_outs_allusfi.php:80
 msgid "General"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:78
+#: inc/admin/html_outs_allusfi.php:82
 msgid "Registered Date Filter"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:80
+#: inc/admin/html_outs_allusfi.php:84
 msgid "Advanced(Meta filter)"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:83
+#: inc/admin/html_outs_allusfi.php:86
+#: inc/admin/html_outs_allusfi.php:371
+msgid "Relative/Meta Date Filter"
+msgstr ""
+
+#: inc/admin/html_outs_allusfi.php:89
 msgid "WooCommerce"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:86
+#: inc/admin/html_outs_allusfi.php:92
 msgid "Export"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:88
-#: inc/admin/html_outs_allusfi.php:443
+#: inc/admin/html_outs_allusfi.php:94
+#: inc/admin/html_outs_allusfi.php:667
 msgid "Saved Filters"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:90
+#: inc/admin/html_outs_allusfi.php:96
 msgid "Clear Filters"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:95
+#: inc/admin/html_outs_allusfi.php:101
 msgid "General Filter"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:100
+#: inc/admin/html_outs_allusfi.php:106
 msgid "Sort By :"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:103
+#: inc/admin/html_outs_allusfi.php:109
 msgid "Select option..."
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:105
+#: inc/admin/html_outs_allusfi.php:111
 msgid "First name"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:107
+#: inc/admin/html_outs_allusfi.php:113
 msgid "Last name"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:109
+#: inc/admin/html_outs_allusfi.php:115
+#: inc/admin/html_outs_allusfi.php:551
 msgid "User ID"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:111
+#: inc/admin/html_outs_allusfi.php:117
+#: inc/admin/html_outs_allusfi.php:552
 msgid "User Login"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:113
+#: inc/admin/html_outs_allusfi.php:119
+#: inc/admin/html_outs_allusfi.php:555
 msgid "Display Name"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:115
+#: inc/admin/html_outs_allusfi.php:121
 msgid "Registered Date"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:117
+#: inc/admin/html_outs_allusfi.php:123
 msgid "Post Count"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:121
+#: inc/admin/html_outs_allusfi.php:127
 msgid "Order By:"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:124
+#: inc/admin/html_outs_allusfi.php:130
 msgid "ASCENDING"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:128
+#: inc/admin/html_outs_allusfi.php:134
 msgid "DESCENDING"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:134
+#: inc/admin/html_outs_allusfi.php:140
 msgid "Exclude Users Id/s:"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:137
+#: inc/admin/html_outs_allusfi.php:143
 msgid "Use \"-\" between numbers to exclude multiple ids."
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:143
+#: inc/admin/html_outs_allusfi.php:149
 msgid "Only numbers and \"-\" are allowed."
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:149
+#: inc/admin/html_outs_allusfi.php:155
 msgid "Filter users by date of registration : "
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:153
+#: inc/admin/html_outs_allusfi.php:159
 msgid "Reset"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:157
+#: inc/admin/html_outs_allusfi.php:163
 msgid "Write something like  \"12 Hours ago\" : "
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:163
+#: inc/admin/html_outs_allusfi.php:169
 msgid "E.g. 12 Hours ago"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:170
+#: inc/admin/html_outs_allusfi.php:176
 msgid "Exclude roles:"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:191
+#: inc/admin/html_outs_allusfi.php:197
 msgid "Multiple Date Filter"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:195
+#: inc/admin/html_outs_allusfi.php:201
 msgid "Filter users between two dates:"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:198
+#: inc/admin/html_outs_allusfi.php:204
 msgid "This filter will filter users based on registration date."
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:201
+#: inc/admin/html_outs_allusfi.php:207
 msgid "Add date"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:206
+#: inc/admin/html_outs_allusfi.php:212
 msgid "From Date"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:207
+#: inc/admin/html_outs_allusfi.php:213
 msgid "To Date"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:244
+#: inc/admin/html_outs_allusfi.php:251
 msgid "Advanced Filters"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:249
+#: inc/admin/html_outs_allusfi.php:256
 msgid "Filter users using meta key/value:"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:252
+#: inc/admin/html_outs_allusfi.php:259
 msgid "1) Add meta key.  2) Select Operator.  3) Enter value. "
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:255
+#: inc/admin/html_outs_allusfi.php:262
 msgid "ADD META FILTER"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:259
+#: inc/admin/html_outs_allusfi.php:266
 msgid "AND"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:261
+#: inc/admin/html_outs_allusfi.php:268
 msgid "OR"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:267
-#: inc/admin/html_outs_allusfi.php:319
+#: inc/admin/html_outs_allusfi.php:274
+#: inc/admin/html_outs_allusfi.php:326
 msgid "Add meta key like: monthly_salary"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:302
+#: inc/admin/html_outs_allusfi.php:309
 msgid "Meta key"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:303
+#: inc/admin/html_outs_allusfi.php:310
+#: inc/admin/html_outs_allusfi.php:402
 msgid "Operator"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:304
+#: inc/admin/html_outs_allusfi.php:311
+#: inc/admin/html_outs_allusfi.php:403
 msgid "Type"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:305
+#: inc/admin/html_outs_allusfi.php:312
 msgid "Value"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:365
+#: inc/admin/html_outs_allusfi.php:378
+msgid "Filter users by a meta field containing a date using relative or absolute expressions.<br><strong>Examples:</strong> <code>today</code>, <code>yesterday</code>, <code>last week</code>, <code>this month</code>, <code>last month</code>, <code>last 30 days</code>, <code>30 mins ago</code>, <code>2 months ago</code>, <code>2026-05-01,2026-05-31</code>, <code>2026-07-18</code>"
+msgstr ""
+
+#: inc/admin/html_outs_allusfi.php:384
+msgid "Add Meta Date Filter Row"
+msgstr ""
+
+#: inc/admin/html_outs_allusfi.php:401
+msgid "Meta Key"
+msgstr ""
+
+#: inc/admin/html_outs_allusfi.php:404
+msgid "Value (semantic or YYYY-MM-DD)"
+msgstr ""
+
+#: inc/admin/html_outs_allusfi.php:416
+#: inc/admin/html_outs_allusfi.php:448
+msgid "e.g. last_updated"
+msgstr ""
+
+#: inc/admin/html_outs_allusfi.php:433
+#: inc/admin/html_outs_allusfi.php:465
+msgid "e.g. last week, today, 30 mins ago"
+msgstr ""
+
+#: inc/admin/html_outs_allusfi.php:479
 msgid "WooCommerce Order Filter"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:370
+#: inc/admin/html_outs_allusfi.php:484
 msgid "Enable Order Count Filter:"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:379
+#: inc/admin/html_outs_allusfi.php:493
 msgid "Comparison Operator:"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:392
+#: inc/admin/html_outs_allusfi.php:506
 msgid "Order Count:"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:395
+#: inc/admin/html_outs_allusfi.php:509
 msgid "Enter the number of orders to compare against. Only completed and processing orders are counted."
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:400
+#: inc/admin/html_outs_allusfi.php:514
 msgid "e.g. 5"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:412
-msgid "The export file will include following things."
+#: inc/admin/html_outs_allusfi.php:527
+msgid "CSV Separator / Delimiter"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:415
-msgid "User ID, User Login, User Email, User Nicename, Display Name, User Role."
+#: inc/admin/html_outs_allusfi.php:529
+msgid "Delimiter character:"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:417
-msgid "Note: If filtered with meta key/s(advance filter), meta value/s will be included."
+#: inc/admin/html_outs_allusfi.php:531
+msgid "Character used to separate columns in the exported CSV file. Default is a comma (,). Common alternatives: semicolon (;) or tab (\\t)."
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:420
+#: inc/admin/html_outs_allusfi.php:547
+msgid "Select Columns to Export"
+msgstr ""
+
+#: inc/admin/html_outs_allusfi.php:548
+msgid "Choose which columns to include in the CSV. All are selected by default."
+msgstr ""
+
+#: inc/admin/html_outs_allusfi.php:553
+msgid "User Email"
+msgstr ""
+
+#: inc/admin/html_outs_allusfi.php:554
+msgid "User Nicename"
+msgstr ""
+
+#: inc/admin/html_outs_allusfi.php:556
+msgid "User Role"
+msgstr ""
+
+#: inc/admin/html_outs_allusfi.php:557
+msgid "Registration Date"
+msgstr ""
+
+#: inc/admin/html_outs_allusfi.php:558
+msgid "First Name"
+msgstr ""
+
+#: inc/admin/html_outs_allusfi.php:559
+msgid "Last Name"
+msgstr ""
+
+#: inc/admin/html_outs_allusfi.php:578
+msgid "Include User Meta Fields"
+msgstr ""
+
+#: inc/admin/html_outs_allusfi.php:581
+msgid "Include meta field columns"
+msgstr ""
+
+#: inc/admin/html_outs_allusfi.php:602
+msgid "Active meta filter keys (Advanced & Meta Date Filter tabs):"
+msgstr ""
+
+#: inc/admin/html_outs_allusfi.php:617
+msgid "No active meta filters. Use the Advanced or Meta Date Filter tab to add filters whose keys will appear here as selectable columns."
+msgstr ""
+
+#: inc/admin/html_outs_allusfi.php:622
+msgid "Additional meta key:"
+msgstr ""
+
+#: inc/admin/html_outs_allusfi.php:624
+msgid "Enter any extra user meta key to include as an additional column. Leave blank if not needed."
+msgstr ""
+
+#: inc/admin/html_outs_allusfi.php:630
+msgid "e.g. billing_phone"
+msgstr ""
+
+#: inc/admin/html_outs_allusfi.php:640
+msgid "The export file will include the columns selected above."
+msgstr ""
+
+#: inc/admin/html_outs_allusfi.php:643
+msgid "Tip: switch to the Advanced tab to add meta filters whose values will appear as selectable meta columns here."
+msgstr ""
+
+#: inc/admin/html_outs_allusfi.php:645
 msgid "WooCommerce: If order count filter is enabled, a 'Total Orders' column will be appended."
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:451
+#: inc/admin/html_outs_allusfi.php:675
 msgid "Save Current Filter"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:455
+#: inc/admin/html_outs_allusfi.php:679
 msgid "Enter filter name..."
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:458
+#: inc/admin/html_outs_allusfi.php:682
 msgid "Confirm Save"
 msgstr ""
 
-#: inc/admin/html_outs_allusfi.php:461
+#: inc/admin/html_outs_allusfi.php:685
 msgid "Cancel"
 msgstr ""

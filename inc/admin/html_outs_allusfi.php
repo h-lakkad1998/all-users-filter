@@ -21,27 +21,31 @@ global $wp_roles, $pagenow;
  * Instantiate admin helper
  * ------------------------- */
 $params = array(
-    'secure' => false,
-    'ordr_by' => '',
-    'usr_sort' => '',
-    'one_date' => '',
-    'cstm_dt' => '',
-    'relation' => 'nd',
-    'exclude_roles' => array(),
-    'excl_ids' => array(),
+    'secure'          => false,
+    'ordr_by'         => '',
+    'usr_sort'        => '',
+    'one_date'        => '',
+    'cstm_dt'         => '',
+    'relation'        => 'nd',
+    'exclude_roles'   => array(),
+    'excl_ids'        => array(),
     'multi_from_date' => array(),
-    'multi_to_date' => array(),
-    'meta_keys' => array(),
-    'meta_vals' => array(),
-    'meta_ops' => array(),
-    'meta_tp' => array(),
+    'multi_to_date'   => array(),
+    'meta_keys'       => array(),
+    'meta_vals'       => array(),
+    'meta_ops'        => array(),
+    'meta_tp'         => array(),
+    // Relative-date meta filter rows.
+    'rel_date_keys'   => array(),
+    'rel_date_vals'   => array(),
+    'rel_date_tp'     => array(),
     'wc_order_enabled' => false,
-    'wc_order_count' => 0,
-    'wc_order_op' => '>',
+    'wc_order_count'   => 0,
+    'wc_order_op'      => '>',
 );
 
 if (class_exists('ALLUSFI_Admin')) {
-    $admin = new ALLUSFI_Admin();
+    $admin  = new ALLUSFI_Admin();
     $params = (array) $admin->allusfi_get_query_params();
 }
 
@@ -78,6 +82,8 @@ $allusfi_html_compatible_compares = array('=', '!=', 'IN', 'BETWEEN', 'LIKE', 'R
                     data-id="allusfi-date-filter-settings"><?php esc_html_e("Registered Date Filter", 'all-users-filter'); ?></button>
                 <button type="button" class="tablinks"
                     data-id="allusfi-advanced-settings"><?php esc_html_e("Advanced(Meta filter)", 'all-users-filter'); ?></button>
+                <button type="button" class="tablinks"
+                    data-id="allusfi-meta-date-filter"><?php esc_html_e("Relative/Meta Date Filter", 'all-users-filter'); ?></button>
                 <?php if (class_exists('WooCommerce')): ?>
                     <button type="button" class="tablinks"
                         data-id="allusfi-woocommerce-settings"><?php esc_html_e("WooCommerce", 'all-users-filter'); ?></button>
@@ -238,6 +244,7 @@ $allusfi_html_compatible_compares = array('=', '!=', 'IN', 'BETWEEN', 'LIKE', 'R
                 </div>
             </div>
             <!-- tab content of date setting ends -->
+
             <!-- tab content of advanced setting starts -->
             <div id="allusfi-advanced-settings" class="allusfi-tabcontent allusfi_us_advance" style="display:none;">
                 <div id="LETS-make-POST-Form" class="stng-title">
@@ -357,6 +364,113 @@ $allusfi_html_compatible_compares = array('=', '!=', 'IN', 'BETWEEN', 'LIKE', 'R
                 </div>
             </div>
             <!-- tab content of advanced setting ends-->
+
+            <!-- tab content of meta date filter starts -->
+            <div id="allusfi-meta-date-filter" class="allusfi-tabcontent allusfi_us_meta_date" style="display:none;">
+                <div class="stng-title">
+                    <h2><?php esc_html_e('Relative/Meta Date Filter', 'all-users-filter'); ?></h2>
+                </div>
+                <div class="form-field pad-top-20">
+                    <div>
+                        <p class="description">
+                            <?php
+                            echo wp_kses(
+                                __('Filter users by a meta field containing a date using relative or absolute expressions.<br><strong>Examples:</strong> <code>today</code>, <code>yesterday</code>, <code>last week</code>, <code>this month</code>, <code>last month</code>, <code>last 30 days</code>, <code>30 mins ago</code>, <code>2 months ago</code>, <code>2026-05-01,2026-05-31</code>, <code>2026-07-18</code>', 'all-users-filter'),
+                                array('br' => array(), 'strong' => array(), 'code' => array())
+                            );
+                            ?>
+                        </p>
+                        <button class="button button-primary" type="button" id="allusfi_add_rel_date" style="margin-top:10px;">
+                            <?php esc_html_e('Add Meta Date Filter Row', 'all-users-filter'); ?>
+                        </button>
+                    </div>
+
+                    <?php
+                    // Re-use the $rd_allowed_types_ui variable (may already be set above, redeclare safely).
+                    $rd_allowed_types_ui = array('DATE', 'DATETIME', 'TIME', 'NUMERIC');
+                    $rd_count = max(
+                        count((array) $params['rel_date_keys']),
+                        count((array) $params['rel_date_vals']),
+                        count((array) $params['rel_date_tp'])
+                    );
+                    ?>
+
+                    <table class="meta_filter_table allusfi_meta_append_content allusfi-rel-date-table" style="margin-top:14px;">
+                        <tbody id="rel_date_append_content">
+                            <tr>
+                                <th><?php esc_html_e('Meta Key', 'all-users-filter'); ?></th>
+                                <th><?php esc_html_e('Operator', 'all-users-filter'); ?></th>
+                                <th><?php esc_html_e('Type', 'all-users-filter'); ?></th>
+                                <th><?php esc_html_e('Value (semantic or YYYY-MM-DD)', 'all-users-filter'); ?></th>
+                            </tr>
+                            <?php
+                            if ($rd_count >= 1):
+                                for ($i = 0; $i < $rd_count; $i++):
+                                    $rd_key = isset($params['rel_date_keys'][$i]) ? $params['rel_date_keys'][$i] : '';
+                                    $rd_val = isset($params['rel_date_vals'][$i]) ? $params['rel_date_vals'][$i] : '';
+                                    $rd_tp  = isset($params['rel_date_tp'][$i])   ? $params['rel_date_tp'][$i]   : 'DATE';
+                            ?>
+                                    <tr>
+                                        <td>
+                                            <input type="text" name="rdmq-ky[]" value="<?php echo esc_attr($rd_key); ?>"
+                                                placeholder="<?php esc_attr_e('e.g. last_updated', 'all-users-filter'); ?>">
+                                        </td>
+                                        <td>
+                                            <span class="allusfi-op-label">BETWEEN</span>
+                                            <input type="hidden" name="rdmq-op[]" value="BETWEEN">
+                                        </td>
+                                        <td>
+                                            <select name="rdmq-tp[]">
+                                                <?php foreach ($rd_allowed_types_ui as $single_rdtp): ?>
+                                                    <option value="<?php echo esc_attr($single_rdtp); ?>" <?php selected($rd_tp, $single_rdtp); ?>>
+                                                        <?php echo esc_html($single_rdtp); ?>
+                                                    </option>
+                                                <?php endforeach; ?>
+                                            </select>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="rdmq-vl[]" value="<?php echo esc_attr($rd_val); ?>"
+                                                placeholder="<?php esc_attr_e('e.g. last week, today, 30 mins ago', 'all-users-filter'); ?>">
+                                            <button type="button" class="button remov_rel_date">X</button>
+                                        </td>
+                                    </tr>
+                            <?php
+                                endfor;
+                            endif;
+                            ?>
+                        </tbody>
+                    </table>
+
+                    <template id="allusfi_rel_date_copy_content">
+                        <tr>
+                            <td>
+                                <input type="text" name="rdmq-ky[]"
+                                    placeholder="<?php esc_attr_e('e.g. last_updated', 'all-users-filter'); ?>">
+                            </td>
+                            <td>
+                                <span class="allusfi-op-label">BETWEEN</span>
+                                <input type="hidden" name="rdmq-op[]" value="BETWEEN">
+                            </td>
+                            <td>
+                                <select name="rdmq-tp[]">
+                                    <?php foreach ($rd_allowed_types_ui as $single_rdtp): ?>
+                                        <option value="<?php echo esc_attr($single_rdtp); ?>">
+                                            <?php echo esc_html($single_rdtp); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </td>
+                            <td>
+                                <input type="text" name="rdmq-vl[]"
+                                    placeholder="<?php esc_attr_e('e.g. last week, today, 30 mins ago', 'all-users-filter'); ?>">
+                                <button type="button" class="button remov_rel_date">X</button>
+                            </td>
+                        </tr>
+                    </template>
+                </div>
+            </div>
+            <!-- tab content of meta date filter ends -->
+
             <?php if (class_exists('WooCommerce')): ?>
                 <!-- tab content of woocommerce setting starts -->
                 <div id="allusfi-woocommerce-settings" class="allusfi-tabcontent allusfi_us_woocommerce"
@@ -407,15 +521,126 @@ $allusfi_html_compatible_compares = array('=', '!=', 'IN', 'BETWEEN', 'LIKE', 'R
             <?php endif; ?>
             <!-- tab content of export setting starts -->
             <div id="allusfi-export-settings" class="allusfi-tabcontent allusfi_us_export" style="display:none;">
-                <div class="txt-center export-btn">
+
+                <!-- ── 1. CSV Delimiter ── -->
+                <div class="allusfi-export-section">
+                    <h3 class="allusfi-export-section-title"><?php esc_html_e('CSV Separator / Delimiter', 'all-users-filter'); ?></h3>
+                    <div class="form-field">
+                        <label for="allusfi_csv_sep"><b><?php esc_html_e('Delimiter character:', 'all-users-filter'); ?></b></label>
+                        <div class="tooltip"> ?
+                            <span class="tooltiptext"><?php esc_html_e('Character used to separate columns in the exported CSV file. Default is a comma (,). Common alternatives: semicolon (;) or tab (\t).', 'all-users-filter'); ?></span>
+                        </div>
+                        <div class="pad-top-10">
+                            <input type="text"
+                                id="allusfi_csv_sep"
+                                name="allusfi_csv_sep"
+                                value=","
+                                maxlength="3"
+                                style="width:60px;text-align:center;font-size:1.1em;"
+                                placeholder=",">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── 2. Column Selection ── -->
+                <div class="allusfi-export-section">
+                    <h3 class="allusfi-export-section-title"><?php esc_html_e('Select Columns to Export', 'all-users-filter'); ?></h3>
+                    <p class="description"><?php esc_html_e('Choose which columns to include in the CSV. All are selected by default.', 'all-users-filter'); ?></p>
+                    <?php
+                    $allusfi_std_cols = array(
+                        'user_id'           => __('User ID', 'all-users-filter'),
+                        'user_login'        => __('User Login', 'all-users-filter'),
+                        'user_email'        => __('User Email', 'all-users-filter'),
+                        'user_nicename'     => __('User Nicename', 'all-users-filter'),
+                        'display_name'      => __('Display Name', 'all-users-filter'),
+                        'user_role'         => __('User Role', 'all-users-filter'),
+                        'user_registered'   => __('Registration Date', 'all-users-filter'),
+                        'first_name'        => __('First Name', 'all-users-filter'),
+                        'last_name'         => __('Last Name', 'all-users-filter'),
+                    );
+                    ?>
+                    <div class="allusfi-col-checkboxes pad-top-10">
+                        <?php foreach ($allusfi_std_cols as $col_slug => $col_label): ?>
+                            <label class="fancy-check allusfi-export-col-label">
+                                <input type="checkbox"
+                                    name="allusfi_export_cols[]"
+                                    value="<?php echo esc_attr($col_slug); ?>"
+                                    checked="checked">
+                                <?php echo esc_html($col_label); ?>
+                                <span class="fancy-checkmark button"></span>
+                            </label>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+
+                <!-- ── 3. Meta Field Columns ── -->
+                <div class="allusfi-export-section">
+                    <h3 class="allusfi-export-section-title"><?php esc_html_e('Include User Meta Fields', 'all-users-filter'); ?></h3>
+                    <label class="fancy-check">
+                        <input type="checkbox" id="allusfi_include_meta_toggle" name="allusfi_include_meta" value="1">
+                        <?php esc_html_e('Include meta field columns', 'all-users-filter'); ?>
+                        <span class="fancy-checkmark button"></span>
+                    </label>
+
+                    <div id="allusfi_meta_export_wrap" style="display:none;margin-top:12px;">
+                        <?php
+                        // Advanced-tab meta keys.
+                        $active_meta_keys = !empty($params['meta_keys']) && is_array($params['meta_keys'])
+                            ? array_values(array_filter(array_unique($params['meta_keys'])))
+                            : array();
+
+                        // Rel-date tab meta keys — surface them here too.
+                        $active_rd_keys = !empty($params['rel_date_keys']) && is_array($params['rel_date_keys'])
+                            ? array_values(array_filter(array_unique($params['rel_date_keys'])))
+                            : array();
+
+                        // Merge both sources, de-duplicate.
+                        $all_active_meta_keys = array_values(array_unique(array_merge($active_meta_keys, $active_rd_keys)));
+                        ?>
+
+                        <?php if (!empty($all_active_meta_keys)): ?>
+                            <p class="description"><b><?php esc_html_e('Active meta filter keys (Advanced & Meta Date Filter tabs):', 'all-users-filter'); ?></b></p>
+                            <div class="allusfi-col-checkboxes pad-top-10">
+                                <?php foreach ($all_active_meta_keys as $amk): ?>
+                                    <label class="fancy-check allusfi-export-col-label">
+                                        <input type="checkbox"
+                                            name="allusfi_export_meta_keys[]"
+                                            value="<?php echo esc_attr($amk); ?>"
+                                            checked="checked">
+                                        <?php echo esc_html($amk); ?>
+                                        <span class="fancy-checkmark button"></span>
+                                    </label>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php else: ?>
+                            <p class="description allusfi-no-meta-note">
+                                <?php esc_html_e('No active meta filters. Use the Advanced or Meta Date Filter tab to add filters whose keys will appear here as selectable columns.', 'all-users-filter'); ?>
+                            </p>
+                        <?php endif; ?>
+
+                        <div class="pad-top-10">
+                            <label for="allusfi_export_extra_meta"><b><?php esc_html_e('Additional meta key:', 'all-users-filter'); ?></b></label>
+                            <div class="tooltip"> ?
+                                <span class="tooltiptext"><?php esc_html_e('Enter any extra user meta key to include as an additional column. Leave blank if not needed.', 'all-users-filter'); ?></span>
+                            </div>
+                            <div class="pad-top-10">
+                                <input type="text"
+                                    id="allusfi_export_extra_meta"
+                                    name="allusfi_export_extra_meta"
+                                    placeholder="<?php esc_attr_e('e.g. billing_phone', 'all-users-filter'); ?>"
+                                    style="width:220px;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── 4. Export Button & Progress ── -->
+                <div class="allusfi-export-section txt-center export-btn">
                     <p class="big_p_bold">
-                        <b><?php esc_html_e("The export file will include following things.", 'all-users-filter'); ?></b>
+                        <b><?php esc_html_e('The export file will include the columns selected above.', 'all-users-filter'); ?></b>
                     </p>
                     <p class="big_p">
-                        <?php esc_html_e("User ID, User Login, User Email, User Nicename, Display Name, User Role.", 'all-users-filter'); ?>
-                        <br>
-                        <mark><?php esc_html_e("Note: If filtered with meta key/s(advance filter), meta value/s will be included.", 'all-users-filter'); ?>
-                        </mark>
+                        <?php esc_html_e('Tip: switch to the Advanced tab to add meta filters whose values will appear as selectable meta columns here.', 'all-users-filter'); ?>
                         <?php if (class_exists('WooCommerce')): ?>
                             <br><mark><?php esc_html_e("WooCommerce: If order count filter is enabled, a 'Total Orders' column will be appended.", 'all-users-filter'); ?></mark>
                         <?php endif; ?>
@@ -434,7 +659,6 @@ $allusfi_html_compatible_compares = array('=', '!=', 'IN', 'BETWEEN', 'LIKE', 'R
                     </div>
                 </div>
             </div>
-
             <!-- tab content of export setting ends -->
 
             <!-- tab content of saved filters starts -->
@@ -444,6 +668,7 @@ $allusfi_html_compatible_compares = array('=', '!=', 'IN', 'BETWEEN', 'LIKE', 'R
                 </div>
 
                 <!-- Save current filter form (only shown when allusfi_secure is set) -->
+                <?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Only controls visibility of the Save-filter button; the nonce value itself is verified in the AJAX handler when the form is submitted. ?>
                 <?php if (isset($_GET['allusfi_secure'])): ?>
                     <div class="allusfi-sf-save-wrap">
                         <button type="button" id="allusfi_sf_show_save_form" class="button button-primary">

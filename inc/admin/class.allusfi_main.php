@@ -4,6 +4,9 @@
 if (!defined('ABSPATH'))
 	exit;
 
+// Load the relative-date parser.
+require_once ALLUSFI_DIR . '/inc/admin/class.allusfi_date_parser.php';
+
 if (!class_exists('ALLUSFI_Admin')) {
 
 	class ALLUSFI_Admin
@@ -38,25 +41,30 @@ if (!class_exists('ALLUSFI_Admin')) {
 			}
 
 			$allusfi_local_array = array(
-				'plugin_prefix'           => ALLUSFI_PREFIX,
-				'ajax_url'                => admin_url('admin-ajax.php'),
-				'btn_export_txt'          => __('CLICK HERE TO EXPORT CSV', 'all-users-filter'),
-				'btn_export_finish_txt'   => __('Export complete', 'all-users-filter'),
-				'get_req_txt'             => __('GET REQUEST ENABLED!', 'all-users-filter'),
-				'post_req_txt'            => __('POST REQUEST ENABLED!', 'all-users-filter'),
-				'start_export_process_txt'=> __('Starting export...', 'all-users-filter'),
-				'export_process_txt'      => __('Exporting...', 'all-users-filter'),
-				'export_ongoing_txt'      => __('Currently processing your export... Please keep this browser window open until the process is complete to avoid interrupting it.', 'all-users-filter'),
+				'plugin_prefix'            => ALLUSFI_PREFIX,
+				'ajax_url'                 => admin_url('admin-ajax.php'),
+				'btn_export_txt'           => __('CLICK HERE TO EXPORT CSV', 'all-users-filter'),
+				'btn_export_finish_txt'    => __('Export complete', 'all-users-filter'),
+				'get_req_txt'              => __('GET REQUEST ENABLED!', 'all-users-filter'),
+				'post_req_txt'             => __('POST REQUEST ENABLED!', 'all-users-filter'),
+				'start_export_process_txt' => __('Starting export...', 'all-users-filter'),
+				'export_process_txt'       => __('Exporting...', 'all-users-filter'),
+				'export_ongoing_txt'       => __('Currently processing your export... Please keep this browser window open until the process is complete to avoid interrupting it.', 'all-users-filter'),
 				// Saved filters
-				'saved_filters'           => array_values((array) get_option('allusfi_saved_filters', array())),
-				'sf_duplicate_name_txt'   => __('A filter with that name already exists. Please choose a different name.', 'all-users-filter'),
-				'sf_enter_name_txt'       => __('Please enter a name for this filter.', 'all-users-filter'),
-				'sf_save_error_txt'       => __('Error saving filter. Please try again.', 'all-users-filter'),
-				'sf_delete_confirm_txt'   => __('Are you sure you want to delete this saved filter?', 'all-users-filter'),
-				'sf_delete_error_txt'     => __('Error deleting filter. Please try again.', 'all-users-filter'),
-				'sf_no_filters_txt'       => __('No saved filters yet.', 'all-users-filter'),
-				'sf_apply_txt'            => __('Apply', 'all-users-filter'),
-				'sf_delete_txt'           => __('Delete', 'all-users-filter'),
+				'saved_filters'            => array_values((array) get_option('allusfi_saved_filters', array())),
+				'sf_duplicate_name_txt'    => __('A filter with that name already exists. Please choose a different name.', 'all-users-filter'),
+				'sf_enter_name_txt'        => __('Please enter a name for this filter.', 'all-users-filter'),
+				'sf_save_error_txt'        => __('Error saving filter. Please try again.', 'all-users-filter'),
+				'sf_delete_confirm_txt'    => __('Are you sure you want to delete this saved filter?', 'all-users-filter'),
+				'sf_delete_error_txt'      => __('Error deleting filter. Please try again.', 'all-users-filter'),
+				'sf_no_filters_txt'        => __('No saved filters yet.', 'all-users-filter'),
+				'sf_apply_txt'             => __('Apply', 'all-users-filter'),
+				'sf_delete_txt'            => __('Delete', 'all-users-filter'),
+				'sf_col_name_txt'          => __('Filter Name', 'all-users-filter'),
+				'sf_col_actions_txt'       => __('Actions', 'all-users-filter'),
+				// Export settings
+				'export_meta_include_txt'  => __('Include Meta Fields', 'all-users-filter'),
+				'export_no_meta_txt'       => __('No active meta filters. Use the Advanced tab to add meta filters, or enter an extra meta key below.', 'all-users-filter'),
 			);
 			wp_localize_script(ALLUSFI_PREFIX . '_admin_js', 'allusfi_obj', $allusfi_local_array);
 			wp_enqueue_script(ALLUSFI_PREFIX . '_admin_js');
@@ -160,13 +168,14 @@ if (!class_exists('ALLUSFI_Admin')) {
 				$query->set('date_query', $date_args);
 			}
 
-			// 5) Meta query.
+			// 5) Meta query (standard advanced filters).
+			$meta_query = array('relation' => ('or' === $params['relation']) ? 'OR' : 'AND');
+
 			if (
 				!empty($params['meta_keys']) &&
 				!empty($params['meta_ops']) &&
 				!empty($params['meta_tp'])
 			) {
-				$meta_query = array('relation' => ('or' === $params['relation']) ? 'OR' : 'AND');
 				$len = max(count($params['meta_keys']), count($params['meta_ops']), count($params['meta_tp']));
 
 				for ($i = 0; $i < $len; $i++) {
@@ -178,22 +187,51 @@ if (!class_exists('ALLUSFI_Admin')) {
 
 					// Support "IN" / "BETWEEN" with comma-separated input.
 					if (('BETWEEN' === $params['meta_ops'][$i] || 'IN' === $params['meta_ops'][$i]) && false !== strpos($value, ',')) {
-						$tmp = array_map('trim', explode(',', $value));
-						$value = array_slice($tmp, 0, 2); // ensure at most 2 for BETWEEN; IN can take many but this mirrors your original logic.
+						$tmp   = array_map('trim', explode(',', $value));
+						$value = array_slice($tmp, 0, 2);
 					}
 
 					$meta_query[] = array(
-						'key' => $params['meta_keys'][$i],
-						'value' => $value,
-						'type' => $params['meta_tp'][$i],
+						'key'     => $params['meta_keys'][$i],
+						'value'   => $value,
+						'type'    => $params['meta_tp'][$i],
 						'compare' => $params['meta_ops'][$i],
 					);
 				}
+			}
 
-				if (count($meta_query) > 1) {
-					$query->set('meta_query', $meta_query);
+			// 6) Relative-date meta query (from the Date Filter tab).
+			if (
+				!empty($params['rel_date_keys']) &&
+				!empty($params['rel_date_vals']) &&
+				!empty($params['rel_date_tp'])
+			) {
+				$rd_len = max(
+					count($params['rel_date_keys']),
+					count($params['rel_date_vals']),
+					count($params['rel_date_tp'])
+				);
+
+				for ($i = 0; $i < $rd_len; $i++) {
+					$rd_key = isset($params['rel_date_keys'][$i]) ? $params['rel_date_keys'][$i] : '';
+					$rd_val = isset($params['rel_date_vals'][$i]) ? $params['rel_date_vals'][$i] : '';
+					$rd_tp  = isset($params['rel_date_tp'][$i])   ? $params['rel_date_tp'][$i]   : 'DATE';
+
+					if (empty($rd_key) || empty($rd_val)) {
+						continue;
+					}
+
+					$clause = ALLUSFI_Date_Parser::parse($rd_key, $rd_val, $rd_tp);
+					if (!empty($clause)) {
+						$meta_query[] = $clause;
+					}
 				}
 			}
+
+			if (count($meta_query) > 1) {
+				$query->set('meta_query', $meta_query);
+			}
+
 			return $query;
 		}
 
@@ -210,13 +248,17 @@ if (!class_exists('ALLUSFI_Admin')) {
 				'excl_ids' => array(),
 				'multi_from_date' => array(),
 				'multi_to_date' => array(),
-				'meta_keys' => array(),
-				'meta_vals' => array(),
-				'meta_ops' => array(),
-				'meta_tp' => array(),
+				'meta_keys'       => array(),
+				'meta_vals'       => array(),
+				'meta_ops'        => array(),
+				'meta_tp'         => array(),
+				// Relative-date meta filter rows (Date Filter tab).
+				'rel_date_keys'   => array(),
+				'rel_date_vals'   => array(),
+				'rel_date_tp'     => array(),
 				'wc_order_enabled' => false,
-				'wc_order_count' => 0,
-				'wc_order_op' => '>',
+				'wc_order_count'   => 0,
+				'wc_order_op'      => '>',
 			);
 
 			// 1) Standalone nonce verification.
@@ -320,6 +362,29 @@ if (!class_exists('ALLUSFI_Admin')) {
 			$out['meta_ops'] = array_values($out['meta_ops']);
 			$out['meta_tp'] = array_values($out['meta_tp']);
 
+			// Relative-date meta query params (Date Filter tab).
+			$rd_allowed_types = array('DATE', 'DATETIME', 'TIME', 'NUMERIC');
+
+			$rd_keys = (isset($_REQUEST['rdmq-ky']) && is_array($_REQUEST['rdmq-ky']))
+				? array_map('sanitize_key', wp_unslash($_REQUEST['rdmq-ky']))
+				: array();
+
+			$rd_vals = (isset($_REQUEST['rdmq-vl']) && is_array($_REQUEST['rdmq-vl']))
+				? array_map('sanitize_text_field', wp_unslash($_REQUEST['rdmq-vl']))
+				: array();
+
+			$rd_tps = (isset($_REQUEST['rdmq-tp']) && is_array($_REQUEST['rdmq-tp']))
+				? array_map('sanitize_text_field', wp_unslash($_REQUEST['rdmq-tp']))
+				: array();
+
+			foreach ($rd_tps as $i => $tp) {
+				$rd_tps[$i] = in_array(strtoupper($tp), $rd_allowed_types, true) ? strtoupper($tp) : 'DATE';
+			}
+
+			$out['rel_date_keys'] = $rd_keys;
+			$out['rel_date_vals'] = $rd_vals;
+			$out['rel_date_tp']   = $rd_tps;
+
 			// WooCommerce order count filter params.
 			$out['wc_order_enabled'] = !empty($_REQUEST['wc-ordr-enabled']);
 
@@ -328,7 +393,7 @@ if (!class_exists('ALLUSFI_Admin')) {
 				: 0;
 
 			$allowed_wc_ops = array('>', '<', '=', '!=');
-			$raw_wc_op = isset($_REQUEST['wc-ordr-op'])
+			$raw_wc_op      = isset($_REQUEST['wc-ordr-op'])
 				? $this->re_sanitize_operator(sanitize_text_field(wp_unslash($_REQUEST['wc-ordr-op'])))
 				: '>';
 			$out['wc_order_op'] = in_array($raw_wc_op, $allowed_wc_ops, true) ? $raw_wc_op : '>';
@@ -374,28 +439,41 @@ if (!class_exists('ALLUSFI_Admin')) {
 			if (self::allusfi_is_hpos_enabled()) {
 				// HPOS: orders stored in {prefix}wc_orders.
 				$orders_table = $wpdb->prefix . 'wc_orders';
-				$subquery = "LEFT JOIN (
-						SELECT customer_id, COUNT(*) AS order_count
-						FROM `{$orders_table}`
-						GROUP BY customer_id
-					) AS wc_order_counts ON {$wpdb->users}.ID = wc_order_counts.customer_id";
+				$subquery  = "LEFT JOIN (\n";
+				$subquery .= "\t\t\t\t\t\tSELECT customer_id, COUNT(*) AS order_count\n";
+				$subquery .= "\t\t\t\t\t\tFROM `{$orders_table}`\n";
+				$subquery .= "\t\t\t\t\t\tGROUP BY customer_id\n";
+				// phpcs:ignore WordPressVIPMinimum.Variables.RestrictedVariables.user_meta__wpdb__users -- JOIN on $wpdb->users is unavoidable in pre_user_query for WC order-count filtering; no WP API alternative exists for raw SQL JOIN hooks.
+				$subquery .= "\t\t\t\t\t) AS wc_order_counts ON {$wpdb->users}.ID = wc_order_counts.customer_id";
 			} else {
 				// Legacy: orders stored in {prefix}posts + {prefix}postmeta.
-				$subquery = "LEFT JOIN (
-						SELECT pm.meta_value AS customer_id, COUNT(*) AS order_count
-						FROM {$wpdb->posts} AS p
-						INNER JOIN {$wpdb->postmeta} AS pm ON p.ID = pm.post_id AND pm.meta_key = '_customer_user'
-						GROUP BY pm.meta_value
-					) AS wc_order_counts ON {$wpdb->users}.ID = wc_order_counts.customer_id";
+				$subquery  = "LEFT JOIN (\n";
+				$subquery .= "\t\t\t\t\t\tSELECT pm.meta_value AS customer_id, COUNT(*) AS order_count\n";
+				$subquery .= "\t\t\t\t\t\tFROM {$wpdb->posts} AS p\n";
+				$subquery .= "\t\t\t\t\t\tINNER JOIN {$wpdb->postmeta} AS pm ON p.ID = pm.post_id AND pm.meta_key = '_customer_user'\n";
+				$subquery .= "\t\t\t\t\t\tGROUP BY pm.meta_value\n";
+				// phpcs:ignore WordPressVIPMinimum.Variables.RestrictedVariables.user_meta__wpdb__users -- JOIN on $wpdb->users is unavoidable in pre_user_query for WC order-count filtering; no WP API alternative exists for raw SQL JOIN hooks.
+				$subquery .= "\t\t\t\t\t) AS wc_order_counts ON {$wpdb->users}.ID = wc_order_counts.customer_id";
 			}
 
 			$query->query_from .= " {$subquery}";
 
-			// Use COALESCE so users with no orders get count = 0 instead of NULL.
-			$query->query_where .= $wpdb->prepare(
-				" AND COALESCE(wc_order_counts.order_count, 0) {$op} %d",
-				$count
-			);
+			// $op is validated against an explicit whitelist above; SQL operators cannot be parameterised
+			// via %s — each branch uses a fully-static SQL literal to satisfy WPCS.
+			switch ($op) {
+				case '<':
+					$query->query_where .= $wpdb->prepare(' AND COALESCE(wc_order_counts.order_count, 0) < %d', $count);
+					break;
+				case '=':
+					$query->query_where .= $wpdb->prepare(' AND COALESCE(wc_order_counts.order_count, 0) = %d', $count);
+					break;
+				case '!=':
+					$query->query_where .= $wpdb->prepare(' AND COALESCE(wc_order_counts.order_count, 0) != %d', $count);
+					break;
+				default: // '>'
+					$query->query_where .= $wpdb->prepare(' AND COALESCE(wc_order_counts.order_count, 0) > %d', $count);
+					break;
+			}
 
 			// Prevent duplicate user rows from the JOIN.
 			if (strpos($query->query_fields, 'DISTINCT') === false) {

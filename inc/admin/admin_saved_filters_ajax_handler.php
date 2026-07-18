@@ -49,6 +49,7 @@ function allusfi_save_filter_fun()
 	//    sanitize_url() requires a full URL, so we prepend a dummy base, let WordPress
 	//    sanitize the whole thing (which correctly preserves %xx percent-encoding like
 	//    %5B/%5D for array brackets and %3C for <), then strip the dummy base back off.
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- $raw_params is sanitized on the very next line via sanitize_url() (applied after prepending a dummy base URL to preserve %xx-encoded array brackets like %5B/%5D).
 	$raw_params    = isset($_POST['filter_params']) ? wp_unslash($_POST['filter_params']) : '';
 	$dummy_url     = 'http://x.localhost.x/?' . $raw_params;
 	$clean_url     = sanitize_url($dummy_url);

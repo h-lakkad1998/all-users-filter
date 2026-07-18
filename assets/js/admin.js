@@ -25,6 +25,12 @@ jQuery(document).ready(function ($) {
     });
     $('body').on('click', ".remov_date", function () { $(this).parents('tr').remove(); });
     $('body').on('click', ".remov_meta", function () { $(this).parents('tr').remove(); });
+    $('body').on('click', '.remov_rel_date', function () { $(this).parents('tr').remove(); });
+    $('body').on('click', '#allusfi_add_rel_date', function () {
+        const REL_DATE_COPY = $("#allusfi_rel_date_copy_content").html().trim();
+        // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
+        $("#rel_date_append_content").append(REL_DATE_COPY);
+    });
     $('body').on('click', '#allusfi_add_multi_date', function () {
         const DATE_COPY_CONTENT = $("#allusfi_dt_copy_content").html().trim();
         // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
@@ -44,9 +50,18 @@ jQuery(document).ready(function ($) {
             $fields.css({ 'opacity': '0.5', 'pointer-events': 'none' });
         }
     });
+    // Export: meta-include toggle — show/hide meta columns sub-section.
+    $('body').on('change', '#allusfi_include_meta_toggle', function () {
+        if ($(this).is(':checked')) {
+            $('#allusfi_meta_export_wrap').slideDown(150);
+        } else {
+            $('#allusfi_meta_export_wrap').slideUp(150);
+        }
+    });
     let csvRows = [];
     let totalUsers = 0;
     let processed = 0;
+    let csvSeparator = ',';
 
     $('body').on('click', '#allusfi_EXP-csv-BTN', function (e) {
         e.preventDefault();
@@ -56,6 +71,7 @@ jQuery(document).ready(function ($) {
         csvRows = [];
         processed = 0;
         totalUsers = 0;
+        csvSeparator = ',';
 
         // Collect form data (filters already used in your existing code)
         let queryVars = $('#allusfi_model_options :input').serialize();
@@ -89,9 +105,10 @@ jQuery(document).ready(function ($) {
     // last tab should be opened. 
     $(`button[data-id='allusfi-${allusfi_crnt_tab}']`).click();
     /*common functions that is used by this js*/
-    function allusfi_downloadCSV() {
+    function allusfi_downloadCSV(separator) {
+        separator = separator || ',';
         let csvContent = csvRows.map(
-            row => row.map(v => `"${String(v).replace(/"/g, '""')}"`).join(",")
+            row => row.map(v => `"${String(v).replace(/"/g, '""')}"`).join(separator)
         ).join("\n");
 
         let blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -127,6 +144,8 @@ jQuery(document).ready(function ($) {
                 if (page === 1) {
                     totalUsers = data.total;
                     csvRows = []; // reset
+                    // Capture separator from first batch response.
+                    csvSeparator = (data.separator && data.separator.length) ? data.separator : ',';
                 }
 
                 csvRows = csvRows.concat(data.rows);
@@ -141,7 +160,7 @@ jQuery(document).ready(function ($) {
                 if (processed < totalUsers) {
                     allusfi_fetchBatch(page + 1, queryVars);
                 } else {
-                    allusfi_downloadCSV();
+                    allusfi_downloadCSV(csvSeparator);
                 }
             },
             error: function (xhr) {
@@ -189,47 +208,53 @@ jQuery(document).ready(function ($) {
     /**
      * Render the saved filters list inside #allusfi_sf_list.
      */
+    // phpcs:disable WordPressVIPMinimum.JS.HTMLExecutingFunctions.append -- All .append() calls in this function receive jQuery DOM objects built with .text()/.attr()/.addClass() only; no raw HTML strings are concatenated or passed.
     function allusfi_sf_render_list(filters) {
         var $list = $('#allusfi_sf_list');
         $list.empty();
 
         if (!filters || filters.length === 0) {
-            // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.html
-            $list.html('<p class="allusfi-sf-empty">' + allusfi_obj.sf_no_filters_txt + '</p>');
+            var $emptyMsg = $('<p>').addClass('allusfi-sf-empty').text(allusfi_obj.sf_no_filters_txt);
+            $list.empty().append($emptyMsg);
             return;
         }
 
-        var $table = $('<table class="allusfi-sf-table widefat striped"></table>');
-        var $thead = $('<thead><tr>' +
-            '<th>#</th>' +
-            '<th>Filter Name</th>' +
-            '<th>Actions</th>' +
-            '</tr></thead>');
-        $table.append($thead);
+        var $table = $('<table>').addClass('allusfi-sf-table widefat striped');
 
-        var $tbody = $('<tbody></tbody>');
+        // Build thead using DOM nodes — no HTML string concatenation.
+        var $headRow = $('<tr>');
+        $headRow.append($('<th>').text('#'))
+            .append($('<th>').text(allusfi_obj.sf_col_name_txt))
+            .append($('<th>').text(allusfi_obj.sf_col_actions_txt));
+        $table.append($('<thead>').append($headRow));
+
+        var $tbody = $('<tbody>');
         $.each(filters, function (i, filter) {
             var applyUrl = allusfi_sf_build_apply_url(filter.params);
-            var $row = $('<tr class="allusfi-sf-row"></tr>');
-            $row.append('<td class="allusfi-sf-num">' + (i + 1) + '</td>');
-            $row.append('<td class="allusfi-sf-name">' + $('<span>').text(filter.name).html() + '</td>');
+            var $row = $('<tr>').addClass('allusfi-sf-row');
 
-            var $actions = $('<td class="allusfi-sf-actions"></td>');
-            var $applyBtn = $('<a class="button button-primary allusfi-sf-apply-btn" target="_self"></a>')
-                .attr('href', applyUrl)
+            // Cell values set via .text() — safe against XSS.
+            var $numTd  = $('<td>').addClass('allusfi-sf-num').text(i + 1);
+            var $nameTd = $('<td>').addClass('allusfi-sf-name').text(filter.name);
+
+            var $applyBtn = $('<a>').addClass('button button-primary allusfi-sf-apply-btn')
+                .attr({ href: applyUrl, target: '_self' })
                 .text(allusfi_obj.sf_apply_txt);
-            var $delBtn = $('<button type="button" class="button allusfi-sf-delete-btn"></button>')
-                .text(allusfi_obj.sf_delete_txt)
-                .attr('data-id', i);
+            var $delBtn = $('<button>').attr({ type: 'button', 'data-id': i })
+                .addClass('button allusfi-sf-delete-btn')
+                .text(allusfi_obj.sf_delete_txt);
 
-            $actions.append($applyBtn).append(' ').append($delBtn);
-            $row.append($actions);
+            var $actionsTd = $('<td>').addClass('allusfi-sf-actions');
+            $actionsTd.append($applyBtn).append(document.createTextNode(' ')).append($delBtn);
+
+            $row.append($numTd).append($nameTd).append($actionsTd);
             $tbody.append($row);
         });
 
         $table.append($tbody);
         $list.append($table);
     }
+    // phpcs:enable WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
 
     // Initial render on page load using localized data
     allusfi_sf_render_list(allusfi_obj.saved_filters);
@@ -239,6 +264,7 @@ jQuery(document).ready(function ($) {
         $('#allusfi_sf_name_wrap').slideDown(150);
         $('#allusfi_sf_name_input').focus();
         $(this).hide();
+
     });
 
     $('body').on('click', '#allusfi_sf_cancel_save', function () {
@@ -272,11 +298,12 @@ jQuery(document).ready(function ($) {
         // window.location.search already contains the exact, fully-encoded filter params.
         // This avoids re-serialising the form, which can lose array indices, drop
         // checkboxes that weren't re-ticked, and mis-encode special values like "<".
+        // phpcs:disable WordPressVIPMinimum.JS.Window.VarAssignment, WordPressVIPMinimum.JS.Window.location -- window.location.search is read-only here; its value is sent to the server via AJAX and sanitized server-side. It is never written to the DOM.
         var rawSearch = window.location.search.length > 1
             ? window.location.search.substring(1) // strip leading "?"
             : '';
+        // phpcs:enable WordPressVIPMinimum.JS.Window.VarAssignment, WordPressVIPMinimum.JS.Window.location
         var cleanParams = allusfi_sf_strip_params(rawSearch);
-
         var $btn = $(this).prop('disabled', true);
 
         $.ajax({

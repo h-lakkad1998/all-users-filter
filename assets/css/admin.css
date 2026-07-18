@@ -1221,3 +1221,70 @@
   -webkit-box-shadow: 0 0 0 1px #d63638 !important;
   box-shadow: 0 0 0 1px #d63638 !important;
 }
+
+/* ---------------------------------------------------------
+   Export tab – section blocks
+   --------------------------------------------------------- */
+.allusfi_us_export .allusfi-export-section {
+  border: 1px solid #dcdcdc;
+  border-radius: 6px;
+  padding: 14px 18px 16px;
+  margin-bottom: 16px;
+  background: #fafafa;
+}
+
+.allusfi_us_export .allusfi-export-section-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1d2327;
+  margin: 0 0 10px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+/* Column checkbox grid */
+.allusfi-col-checkboxes {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+}
+
+.allusfi-export-col-label {
+  min-width: 140px;
+}
+
+/* No-meta hint text */
+.allusfi-no-meta-note {
+  color: #777;
+  font-style: italic;
+  margin: 6px 0 10px;
+}
+
+/* ---------------------------------------------------------
+   Relative date filter tab section
+   --------------------------------------------------------- */
+.allusfi-rel-date-section {
+  border-top: 1px solid #e0e0e0;
+  margin-top: 20px;
+  padding-top: 16px;
+}
+
+.allusfi-rel-date-table {
+  margin-top: 10px;
+}
+
+/* Operator badge */
+.allusfi-op-label {
+  display: inline-block;
+  background: #2271b1;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border-radius: 3px;
+  padding: 2px 7px;
+  text-transform: uppercase;
+}
