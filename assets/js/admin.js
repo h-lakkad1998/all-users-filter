@@ -41,6 +41,19 @@ jQuery(document).ready(function ($) {
         // phpcs:ignore WordPressVIPMinimum.JS.HTMLExecutingFunctions.append
         $("#advnce_append_content").append(META_COPY_CONTENT);
     });
+    // Extra meta key repeater — add a new row.
+    $('body').on('click', '#allusfi_add_extra_meta_btn', function () {
+        const EXTRA_META_ROW = document.querySelector('#allusfi_extra_meta_row_tpl');
+        if (!EXTRA_META_ROW) {
+            return;
+        }
+        var clone = document.importNode(EXTRA_META_ROW.content, true);
+        document.querySelector('#allusfi_extra_meta_rows').appendChild(clone);
+    });
+    // Extra meta key repeater — remove a row.
+    $('body').on('click', '.allusfi_remov_extra_meta', function () {
+        $(this).closest('tr').remove();
+    });
     // WooCommerce toggle: enable/disable the order count fields.
     $('body').on('change', '#allusfi_wc_toggle', function () {
         var $fields = $('.allusfi-wc-fields');

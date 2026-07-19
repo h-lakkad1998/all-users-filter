@@ -3,12 +3,12 @@ Contributors: hlakkad1998, akshaykungiri, visualsbyridhi
 Tags: customer-list, export-user, export-users, usermeta, export-customers
 Donate link:    
 Requires at least: 6.1
-Tested up to: 7.2
+Tested up to: 7.0.2
 Requires PHP: 7.4
 License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
-Stable tag: 1.7
-Version: 1.7
+Stable tag: 1.7.1
+Version: 1.7.1
 
 Filter, sort, and export WordPress users to CSV using powerful UI-driven meta queries (roles, dates, numeric ranges, regex, and more).
 
@@ -185,6 +185,8 @@ Yes. Whenever the WooCommerce filter is enabled, your user export file will auto
 Yes. You can save the filter combinations, I released this feature in 1.6 version.
 
 == Changelog ==
+= 1.7.1 =
+* Added support for multiple extra meta key columns in the Export tab (add/edit/delete unlimited extra meta keys).
 = 1.7 =
 * Added support for ralative date range filters (for e.g. "last 30 days", "last month", "last year", "this month", "this year")
 * Added support for changing the delimeter for separating values
@@ -211,8 +213,11 @@ Minor changes for order status count in csv.
 * Initial Release
 
 == Upgrade Notice ==
+= 1.7.1 =
+* Added support for multiple extra meta key columns in the Export tab. You can now add, edit, and delete as many extra meta keys as you want - each becomes an additional column in the exported CSV.
+* 'search' => '*'.esc_attr( $search_term ).'*' resolved the issue where search return 0 users while exporting data.
 = 1.7 =
-* Added support for ralative date range filters (for e.g. "last 30 days", "last month", "last year", "this month", "this year")
+* Added support for relative date range filters (for e.g. "last 30 days", "last month", "last year", "this month", "this year")
 * Added support for changing the delimeter for separating values
 * User can now control the export columns based on selection in the Export Tab including metas columns management
 = 1.6 =

@@ -619,17 +619,36 @@ $allusfi_html_compatible_compares = array('=', '!=', 'IN', 'BETWEEN', 'LIKE', 'R
                         <?php endif; ?>
 
                         <div class="pad-top-10">
-                            <label for="allusfi_export_extra_meta"><b><?php esc_html_e('Additional meta key:', 'all-users-filter'); ?></b></label>
+                            <label><b><?php esc_html_e('Additional Meta Key Columns:', 'all-users-filter'); ?></b></label>
                             <div class="tooltip"> ?
-                                <span class="tooltiptext"><?php esc_html_e('Enter any extra user meta key to include as an additional column. Leave blank if not needed.', 'all-users-filter'); ?></span>
+                                <span class="tooltiptext"><?php esc_html_e('Add one or more extra user meta keys to include as additional columns in the exported CSV. Each key becomes its own column.', 'all-users-filter'); ?></span>
                             </div>
                             <div class="pad-top-10">
-                                <input type="text"
-                                    id="allusfi_export_extra_meta"
-                                    name="allusfi_export_extra_meta"
-                                    placeholder="<?php esc_attr_e('e.g. billing_phone', 'all-users-filter'); ?>"
-                                    style="width:220px;">
+                                <button type="button" class="button button-primary" id="allusfi_add_extra_meta_btn">
+                                    <?php esc_html_e('Add Meta Key', 'all-users-filter'); ?>
+                                </button>
                             </div>
+                            <table class="meta_filter_table allusfi_meta_append_content" style="margin-top:10px;">
+                                <tbody id="allusfi_extra_meta_rows">
+                                    <tr>
+                                        <th><?php esc_html_e('Meta Key', 'all-users-filter'); ?></th>
+                                        <th><?php esc_html_e('Action', 'all-users-filter'); ?></th>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <template id="allusfi_extra_meta_row_tpl">
+                                <tr>
+                                    <td>
+                                        <input type="text"
+                                            name="allusfi_export_extra_meta[]"
+                                            placeholder="<?php esc_attr_e('e.g. billing_phone', 'all-users-filter'); ?>"
+                                            style="width:220px;">
+                                    </td>
+                                    <td>
+                                        <button type="button" class="button allusfi_remov_extra_meta">X</button>
+                                    </td>
+                                </tr>
+                            </template>
                         </div>
                     </div>
                 </div>

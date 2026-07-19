@@ -4,7 +4,7 @@
  * Plugin Name: All Users Filter
  * Plugin URI: https://github.com/h-lakkad1998/all-users-filter
  * Description: This plugin helps the admin to filter the users with various ranges of filters.
- * Version: 1.7
+ * Version: 1.7.1
  * Author: Hardik Lakkad/Patel
  * Author URI: https://www.linkedin.com/in/hardik-patel-lakkad-097b12147/
  * Text Domain: all-users-filter
@@ -26,7 +26,7 @@ if (!defined('ABSPATH'))
  */
 
 if (!defined('ALLUSFI_VERSION')) {
-	define('ALLUSFI_VERSION', '1.7');
+	define('ALLUSFI_VERSION', '1.7.1');
 }
 
 if (!defined('ALLUSFI_FILE')) {

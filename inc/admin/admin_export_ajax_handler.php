@@ -75,14 +75,16 @@ function allusfi_wp_usr_export_csv_fun()
 		? array_values(array_filter(array_map('sanitize_key', wp_unslash($_REQUEST['allusfi_export_meta_keys']))))
 		: array();
 
-	// Additional freeform meta key (only when meta toggle is on).
-	$extra_meta_key = !empty($_REQUEST['allusfi_export_extra_meta'])
-		? sanitize_key(wp_unslash($_REQUEST['allusfi_export_extra_meta']))
-		: '';
+	// Additional freeform meta keys (array — one entry per repeater row).
+	$extra_meta_keys_raw = (isset($_REQUEST['allusfi_export_extra_meta']) && is_array($_REQUEST['allusfi_export_extra_meta']))
+		? wp_unslash($_REQUEST['allusfi_export_extra_meta'])
+		: array();
 
-	// Merge extra key into the meta columns list if provided.
-	if (!empty($extra_meta_key) && !in_array($extra_meta_key, $export_meta_keys, true)) {
-		$export_meta_keys[] = $extra_meta_key;
+	foreach ($extra_meta_keys_raw as $raw_extra_key) {
+		$sanitized_extra_key = sanitize_key($raw_extra_key);
+		if (!empty($sanitized_extra_key) && !in_array($sanitized_extra_key, $export_meta_keys, true)) {
+			$export_meta_keys[] = $sanitized_extra_key;
+		}
 	}
 
 	// Build combined unique meta key list for export (filter active keys + extras).
@@ -138,7 +140,7 @@ function allusfi_wp_usr_export_csv_fun()
 
 	// Search.
 	if (!empty($search)) {
-		$proto->set('search', $search);
+		$proto->set('search', '*' . $search . '*');
 	}
 
 	// Role exclusion.
