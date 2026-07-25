@@ -49,36 +49,80 @@ function allusfi_wp_usr_export_csv_fun()
 		));
 	}
 
-	// 4) Get sanitized params (the method should NOT perform nonce checks).
-	$admin  = new ALLUSFI_Admin();
-	$params = (array) $admin->allusfi_get_query_params();
+	// 4) Resolve filter params — prefer transient/saved-filter over raw $_REQUEST parsing.
+	$params          = null;
+	$allu_filter_id  = isset($_POST['allu_filter_id'])
+		? sanitize_text_field(wp_unslash($_POST['allu_filter_id']))
+		: '';
+
+	if ('allusifi_current_state' === $allu_filter_id) {
+		// Read from the per-user transient saved by allusfi_save_filter_transient_fun.
+		$user_id = get_current_user_id();
+		$stored  = get_transient('allusfi_state_' . $user_id);
+		if (is_array($stored) && !empty($stored)) {
+			$params = $stored;
+		}
+	} elseif (0 === strpos($allu_filter_id, 'saved_filter_')) {
+		// Read from the persisted saved-filters option.
+		$sf_id = substr($allu_filter_id, strlen('saved_filter_'));
+		$saved = (array) get_option('allusfi_saved_filters', array());
+		foreach ($saved as $sf) {
+			if (isset($sf['id'], $sf['filter_array']) && $sf['id'] === $sf_id) {
+				$params = $sf['filter_array'];
+				// export_settings is stored at the top level of the saved record,
+				// not inside filter_array — merge it in so the export fallbacks work.
+				if (isset($sf['export_settings']) && is_array($sf['export_settings'])) {
+					$params['export_settings'] = $sf['export_settings'];
+				}
+				break;
+			}
+		}
+	}
+
+	// Fallback: use the class-based $_REQUEST parser (legacy / direct-URL mode).
+	if (!is_array($params) || empty($params)) {
+		$admin  = new ALLUSFI_Admin();
+		$params = (array) $admin->allusfi_get_query_params();
+	}
+
+	$params = (array) $params;
+
+	// Export settings stored in the transient (set when filter was applied via modal).
+	$transient_export = isset($params['export_settings']) && is_array($params['export_settings'])
+		? $params['export_settings']
+		: array();
 
 	// 5) Lightweight additional request values (sanitized)
 	$paged  = isset($_REQUEST['paged']) ? absint(wp_unslash($_REQUEST['paged'])) : 1;
 	$search = isset($_REQUEST['s'])     ? sanitize_text_field(wp_unslash($_REQUEST['s'])) : '';
 
-	// 5a) New export-specific params.
-	$csv_sep = isset($_REQUEST['allusfi_csv_sep'])
-		? sanitize_text_field(wp_unslash($_REQUEST['allusfi_csv_sep']))
-		: ',';
-	// Guard: only allow single printable chars or \t.
-	$csv_sep = ('' === $csv_sep) ? ',' : $csv_sep;
+	// 5a) Export-specific params — POST values take priority; transient values are the fallback
+	//     so that saved filters with stored export settings work out of the box.
+	$csv_sep_raw = (isset($_POST['allusfi_csv_sep']) && '' !== $_POST['allusfi_csv_sep'])
+		? sanitize_text_field(wp_unslash($_POST['allusfi_csv_sep']))
+		: (isset($transient_export['separator']) ? $transient_export['separator'] : ',');
+	$csv_sep = ('' === $csv_sep_raw) ? ',' : $csv_sep_raw;
 
-	// Standard column slugs the user wants to include.
+	// Standard column slugs.
 	$all_std_slugs = array('user_id', 'user_login', 'user_email', 'user_nicename', 'display_name', 'user_role', 'user_registered', 'first_name', 'last_name');
-	$selected_cols = (isset($_REQUEST['allusfi_export_cols']) && is_array($_REQUEST['allusfi_export_cols']))
-		? array_intersect(array_map('sanitize_key', wp_unslash($_REQUEST['allusfi_export_cols'])), $all_std_slugs)
-		: $all_std_slugs; // fallback to all standard columns when none are explicitly chosen.
+	$selected_cols = (isset($_POST['allusfi_export_cols']) && is_array($_POST['allusfi_export_cols']))
+		? array_intersect(array_map('sanitize_key', wp_unslash($_POST['allusfi_export_cols'])), $all_std_slugs)
+		: (isset($transient_export['cols']) && is_array($transient_export['cols']) ? $transient_export['cols'] : $all_std_slugs);
 
-	// Meta keys to include from the active filter rows (checkbox-selected).
-	$export_meta_keys = (isset($_REQUEST['allusfi_export_meta_keys']) && is_array($_REQUEST['allusfi_export_meta_keys']))
-		? array_values(array_filter(array_map('sanitize_key', wp_unslash($_REQUEST['allusfi_export_meta_keys']))))
-		: array();
+	// Meta keys from active filter rows (checkbox-selected or transient fallback).
+	$export_meta_keys = (isset($_POST['allusfi_export_meta_keys']) && is_array($_POST['allusfi_export_meta_keys']))
+		? array_values(array_filter(array_map('sanitize_key', wp_unslash($_POST['allusfi_export_meta_keys']))))
+		: (isset($transient_export['meta_keys']) && is_array($transient_export['meta_keys']) ? $transient_export['meta_keys'] : array());
 
-	// Additional freeform meta keys (array — one entry per repeater row).
-	$extra_meta_keys_raw = (isset($_REQUEST['allusfi_export_extra_meta']) && is_array($_REQUEST['allusfi_export_extra_meta']))
-		? wp_unslash($_REQUEST['allusfi_export_extra_meta'])
-		: array();
+	// Additional freeform meta keys (repeater rows or transient fallback).
+	$extra_meta_keys_raw = array();
+	if (isset($_POST['allusfi_export_extra_meta']) && is_array($_POST['allusfi_export_extra_meta'])) {
+		// sanitize_text_field applied at point of assignment; sanitize_key() is applied
+		// again in the foreach below before the value is ever stored.
+		$extra_meta_keys_raw = array_map('sanitize_text_field', wp_unslash($_POST['allusfi_export_extra_meta']));
+	} elseif (isset($transient_export['extra_meta']) && is_array($transient_export['extra_meta'])) {
+		$extra_meta_keys_raw = $transient_export['extra_meta'];
+	}
 
 	foreach ($extra_meta_keys_raw as $raw_extra_key) {
 		$sanitized_extra_key = sanitize_key($raw_extra_key);

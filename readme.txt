@@ -7,8 +7,8 @@ Tested up to: 7.0.2
 Requires PHP: 7.4
 License: GPL-3.0-or-later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
-Stable tag: 1.7.1
-Version: 1.7.1
+Stable tag: 1.7.2
+Version: 1.7.2
 
 Filter, sort, and export WordPress users to CSV using powerful UI-driven meta queries (roles, dates, numeric ranges, regex, and more).
 
@@ -182,10 +182,17 @@ Yes! The plugin is fully compatible with modern WooCommerce stores using HPOS, a
 Yes. Whenever the WooCommerce filter is enabled, your user export file will automatically include a new "Total Orders" column containing the exact order count for each filtered user.
 
 = Can I save the filter combinations? =
-Yes. You can save the filter combinations, I released this feature in 1.6 version.
+Yes. You can save the filter combinations. Saved filters now also persist export column preferences, active meta key columns, and any WP search term you had active — restoring the full filter state (including export settings) with a single click.
 
 == Changelog ==
-= 1.7.1 =
+= 1.7.2 =
+* Replaced URL-parameter state with WordPress Transient API — filter URLs are now short and clean (e.g. `?allu_filter_id=allusifi_current_state`) regardless of how many filters are active.
+* Saved filters now store and restore the full export configuration: column selection, meta key columns, additional meta key repeater rows, and CSV separator.
+* Saved filters now persist and restore the active WordPress search term (`?s=`).
+* Pressing Enter inside the filter modal now triggers the same save-then-redirect flow as the "Filter Users" button — no more stray parameters in the URL.
+* WordPress search form submit no longer leaks modal inputs into the URL when a filter is active.
+* Fixed: export settings (Include User Meta, Active meta key columns) were not being restored when applying a saved filter.
+* Removed legacy `$_REQUEST` parameter parsing — all state is now read exclusively from transients or the saved-filter option.
 * Added support for multiple extra meta key columns in the Export tab (add/edit/delete unlimited extra meta keys).
 = 1.7 =
 * Added support for ralative date range filters (for e.g. "last 30 days", "last month", "last year", "this month", "this year")
@@ -213,9 +220,8 @@ Minor changes for order status count in csv.
 * Initial Release
 
 == Upgrade Notice ==
-= 1.7.1 =
-* Added support for multiple extra meta key columns in the Export tab. You can now add, edit, and delete as many extra meta keys as you want - each becomes an additional column in the exported CSV.
-* 'search' => '*'.esc_attr( $search_term ).'*' resolved the issue where search return 0 users while exporting data.
+= 1.7.2 =
+* Major internal change: filter state is now stored in WordPress transients instead of the URL. URLs are now short and clean. Saved filters fully restore export settings and search terms. Enter key inside the modal now works correctly. Recommended upgrade for all users.
 = 1.7 =
 * Added support for relative date range filters (for e.g. "last 30 days", "last month", "last year", "this month", "this year")
 * Added support for changing the delimeter for separating values

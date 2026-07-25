@@ -8,11 +8,22 @@ add_action('wp_ajax_allusfi_save_filter', 'allusfi_save_filter_fun');
 add_action('wp_ajax_allusfi_delete_filter', 'allusfi_delete_filter_fun');
 
 /**
- * AJAX handler: Save a named filter to the options table.
+ * AJAX handler: Save the current filter state as a named saved filter.
  *
- * Capability check mirrors the export handler:
- * - administrators always pass
- * - other users pass only if the 'allusfi_allowed_user_to_filter' filter returns true
+ * Instead of storing a URL query-string (old behaviour) the handler now reads
+ * the current filter state from the per-user transient (or an existing saved
+ * filter identified by allu_filter_id) and persists it as a structured array.
+ * Export column preferences are captured from the additional export_settings
+ * JSON field so they can be restored when the saved filter is later applied.
+ *
+ * Stored record shape:
+ * [
+ *   'id'              => '<8-char hex unique ID>',
+ *   'name'            => '<filter name>',
+ *   'filter_array'    => [ ... same keys as allusfi_get_query_params() ... ],
+ *   'export_settings' => [ 'cols'=>[], 'include_meta'=>bool, 'meta_keys'=>[], 'extra_meta'=>[], 'separator'=>',' ],
+ *   'created_at'      => <unix timestamp>,
+ * ]
  */
 function allusfi_save_filter_fun()
 {
@@ -45,23 +56,79 @@ function allusfi_save_filter_fun()
 		));
 	}
 
-	// 4) Sanitize the params string using sanitize_url() (esc_url_raw).
-	//    sanitize_url() requires a full URL, so we prepend a dummy base, let WordPress
-	//    sanitize the whole thing (which correctly preserves %xx percent-encoding like
-	//    %5B/%5D for array brackets and %3C for <), then strip the dummy base back off.
-	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- $raw_params is sanitized on the very next line via sanitize_url() (applied after prepending a dummy base URL to preserve %xx-encoded array brackets like %5B/%5D).
-	$raw_params    = isset($_POST['filter_params']) ? wp_unslash($_POST['filter_params']) : '';
-	$dummy_url     = 'http://x.localhost.x/?' . $raw_params;
-	$clean_url     = sanitize_url($dummy_url);
-	$filter_params = (strpos($clean_url, '?') !== false)
-		? substr($clean_url, strpos($clean_url, '?') + 1)
+	// 4) Resolve the current filter state from transient or saved-filter option.
+	$allu_filter_id = isset($_POST['allu_filter_id'])
+		? sanitize_text_field(wp_unslash($_POST['allu_filter_id']))
 		: '';
-	$filter_params = substr($filter_params, 0, 4096); // reasonable upper bound
 
-	// 5) Load existing saved filters.
+	$filter_array = null;
+
+	if ('allusifi_current_state' === $allu_filter_id) {
+		$user_id      = get_current_user_id();
+		$stored       = get_transient('allusfi_state_' . $user_id);
+		if (is_array($stored) && !empty($stored)) {
+			$filter_array = $stored;
+		}
+	} elseif (0 === strpos($allu_filter_id, 'saved_filter_')) {
+		// User is re-saving an existing saved filter under a new name.
+		$sf_id          = substr($allu_filter_id, strlen('saved_filter_'));
+		$existing_saved = (array) get_option('allusfi_saved_filters', array());
+		foreach ($existing_saved as $sf) {
+			if (isset($sf['id'], $sf['filter_array']) && $sf['id'] === $sf_id) {
+				$filter_array = $sf['filter_array'];
+				break;
+			}
+		}
+	}
+
+	if (!is_array($filter_array) || empty($filter_array)) {
+		wp_send_json_error(array(
+			'status' => 'failed',
+			'msg'    => esc_html__('No active filter state found. Please apply a filter first before saving.', 'all-users-filter'),
+		));
+	}
+
+	// Strip the export_settings key from the filter_array \u2014 it will be stored at the top level.
+	unset($filter_array['export_settings']);
+	// Always mark as trusted (nonce verified above; this field is internal only).
+	$filter_array['secure'] = true;
+
+	// 5) Decode and validate the export_settings JSON sent by the JS.
+	// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- This is a JSON string; applying a text sanitizer would corrupt it. The value is immediately passed to json_decode() and every resulting sub-field (cols, meta_keys, extra_meta, separator) is individually sanitized with sanitize_key() / sanitize_text_field() in the block below.
+	$raw_export_settings = isset($_POST['export_settings']) ? wp_unslash($_POST['export_settings']) : '';
+	$export_settings     = json_decode($raw_export_settings, true);
+	if (!is_array($export_settings)) {
+		$export_settings = array();
+	}
+
+	// Sanitise export_settings sub-fields defensively.
+	$all_std_slugs = array('user_id', 'user_login', 'user_email', 'user_nicename', 'display_name', 'user_role', 'user_registered', 'first_name', 'last_name');
+
+	$export_settings['cols'] = isset($export_settings['cols']) && is_array($export_settings['cols'])
+		? array_values(array_intersect(array_map('sanitize_key', $export_settings['cols']), $all_std_slugs))
+		: $all_std_slugs;
+
+	$export_settings['include_meta'] = !empty($export_settings['include_meta']);
+
+	$export_settings['meta_keys'] = isset($export_settings['meta_keys']) && is_array($export_settings['meta_keys'])
+		? array_values(array_filter(array_map('sanitize_key', $export_settings['meta_keys'])))
+		: array();
+
+	$export_settings['extra_meta'] = isset($export_settings['extra_meta']) && is_array($export_settings['extra_meta'])
+		? array_values(array_filter(array_map('sanitize_key', $export_settings['extra_meta'])))
+		: array();
+
+	$export_settings['separator'] = isset($export_settings['separator'])
+		? sanitize_text_field($export_settings['separator'])
+		: ',';
+	if ('' === $export_settings['separator']) {
+		$export_settings['separator'] = ',';
+	}
+
+	// 6) Load existing saved filters.
 	$saved = (array) get_option('allusfi_saved_filters', array());
 
-	// 6) Prevent duplicate names (case-insensitive).
+	// 7) Prevent duplicate names (case-insensitive).
 	foreach ($saved as $existing) {
 		if (isset($existing['name']) && strtolower($existing['name']) === strtolower($filter_name)) {
 			wp_send_json_error(array(
@@ -71,15 +138,35 @@ function allusfi_save_filter_fun()
 		}
 	}
 
-	// 7) Append and persist.
+	// 8) Generate a unique 8-character hex ID for this saved filter.
+	//    Used as the allu_filter_id token: saved_filter_<id>.
+	$filter_unique_id = substr(md5(uniqid($filter_name . wp_rand(), true)), 0, 8);
+
+	// 8a) Capture the WP search term the user had active when saving.
+	$search_term = isset($_POST['search_term'])
+		? sanitize_text_field(wp_unslash($_POST['search_term']))
+		: '';
+
+	// 9) Append and persist.
 	$saved[] = array(
-		'name'   => $filter_name,
-		'params' => $filter_params,
+		'id'              => $filter_unique_id,
+		'name'            => $filter_name,
+		'filter_array'    => $filter_array,
+		'export_settings' => $export_settings,
+		'search_term'     => $search_term,
+		'created_at'      => time(),
 	);
 
 	update_option('allusfi_saved_filters', $saved);
 
-	wp_send_json_success(array('saved_filters' => array_values($saved)));
+	// Return only new-format entries to JS (entries without 'id' are legacy and silently excluded).
+	$new_format_saved = array_values(
+		array_filter($saved, static function ($sf) {
+			return isset($sf['id'], $sf['filter_array']);
+		})
+	);
+
+	wp_send_json_success(array('saved_filters' => $new_format_saved));
 }
 
 /**
@@ -104,21 +191,40 @@ function allusfi_delete_filter_fun()
 		));
 	}
 
-	// 3) Validate filter ID.
+	// 3) Validate filter ID (index into the re-indexed new-format list).
 	$filter_id = isset($_POST['filter_id']) ? absint($_POST['filter_id']) : -1;
 
-	$saved = array_values((array) get_option('allusfi_saved_filters', array()));
+	// Work only with new-format entries so the JS index always matches.
+	$all_saved   = (array) get_option('allusfi_saved_filters', array());
+	$new_format  = array_values(
+		array_filter($all_saved, static function ($sf) {
+			return isset($sf['id'], $sf['filter_array']);
+		})
+	);
 
-	if ($filter_id < 0 || !isset($saved[$filter_id])) {
+	if ($filter_id < 0 || !isset($new_format[$filter_id])) {
 		wp_send_json_error(array(
 			'status' => 'failed',
 			'msg'    => esc_html__('Filter not found.', 'all-users-filter'),
 		));
 	}
 
-	// 4) Remove and persist.
-	array_splice($saved, $filter_id, 1);
-	update_option('allusfi_saved_filters', $saved);
+	// 4) Remove from the full array (match by unique ID to be safe across indices).
+	$unique_id_to_delete = $new_format[$filter_id]['id'];
+	$all_saved = array_values(
+		array_filter($all_saved, static function ($sf) use ($unique_id_to_delete) {
+			return !(isset($sf['id']) && $sf['id'] === $unique_id_to_delete);
+		})
+	);
 
-	wp_send_json_success(array('saved_filters' => array_values($saved)));
+	update_option('allusfi_saved_filters', $all_saved);
+
+	// Return only new-format entries.
+	$remaining = array_values(
+		array_filter($all_saved, static function ($sf) {
+			return isset($sf['id'], $sf['filter_array']);
+		})
+	);
+
+	wp_send_json_success(array('saved_filters' => $remaining));
 }

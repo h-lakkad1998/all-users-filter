@@ -247,7 +247,7 @@ $allusfi_html_compatible_compares = array('=', '!=', 'IN', 'BETWEEN', 'LIKE', 'R
 
             <!-- tab content of advanced setting starts -->
             <div id="allusfi-advanced-settings" class="allusfi-tabcontent allusfi_us_advance" style="display:none;">
-                <div id="LETS-make-POST-Form" class="stng-title">
+                <div class="stng-title">
                     <h2><?php esc_html_e("Advanced Filters", 'all-users-filter') ?></h2>
                 </div>
                 <div>
@@ -523,6 +523,15 @@ $allusfi_html_compatible_compares = array('=', '!=', 'IN', 'BETWEEN', 'LIKE', 'R
             <div id="allusfi-export-settings" class="allusfi-tabcontent allusfi_us_export" style="display:none;">
 
                 <!-- ── 1. CSV Delimiter ── -->
+                <?php
+                // Export preferences stored in the active filter state (transient or saved filter).
+                $allusfi_saved_export      = isset($params['export_settings']) && is_array($params['export_settings']) ? $params['export_settings'] : array();
+                $allusfi_saved_export_cols = isset($allusfi_saved_export['cols']) && is_array($allusfi_saved_export['cols']) ? $allusfi_saved_export['cols'] : array();
+                $allusfi_saved_export_incl = !empty($allusfi_saved_export['include_meta']);
+                $allusfi_saved_meta_keys   = isset($allusfi_saved_export['meta_keys']) && is_array($allusfi_saved_export['meta_keys']) ? $allusfi_saved_export['meta_keys'] : array();
+                $allusfi_saved_extra_meta  = isset($allusfi_saved_export['extra_meta']) && is_array($allusfi_saved_export['extra_meta']) ? $allusfi_saved_export['extra_meta'] : array();
+                $allusfi_saved_sep         = isset($allusfi_saved_export['separator']) && '' !== $allusfi_saved_export['separator'] ? $allusfi_saved_export['separator'] : ',';
+                ?>
                 <div class="allusfi-export-section">
                     <h3 class="allusfi-export-section-title"><?php esc_html_e('CSV Separator / Delimiter', 'all-users-filter'); ?></h3>
                     <div class="form-field">
@@ -534,7 +543,7 @@ $allusfi_html_compatible_compares = array('=', '!=', 'IN', 'BETWEEN', 'LIKE', 'R
                             <input type="text"
                                 id="allusfi_csv_sep"
                                 name="allusfi_csv_sep"
-                                value=","
+                                value="<?php echo esc_attr($allusfi_saved_sep); ?>"
                                 maxlength="3"
                                 style="width:60px;text-align:center;font-size:1.1em;"
                                 placeholder=",">
@@ -560,12 +569,15 @@ $allusfi_html_compatible_compares = array('=', '!=', 'IN', 'BETWEEN', 'LIKE', 'R
                     );
                     ?>
                     <div class="allusfi-col-checkboxes pad-top-10">
-                        <?php foreach ($allusfi_std_cols as $col_slug => $col_label): ?>
+                        <?php foreach ($allusfi_std_cols as $col_slug => $col_label):
+                            // If saved export settings exist, honour them; otherwise default to checked.
+                            $col_checked = empty($allusfi_saved_export_cols) || in_array($col_slug, $allusfi_saved_export_cols, true);
+                        ?>
                             <label class="fancy-check allusfi-export-col-label">
                                 <input type="checkbox"
                                     name="allusfi_export_cols[]"
                                     value="<?php echo esc_attr($col_slug); ?>"
-                                    checked="checked">
+                                    <?php echo $col_checked ? 'checked="checked"' : ''; ?>>
                                 <?php echo esc_html($col_label); ?>
                                 <span class="fancy-checkmark button"></span>
                             </label>
@@ -577,12 +589,12 @@ $allusfi_html_compatible_compares = array('=', '!=', 'IN', 'BETWEEN', 'LIKE', 'R
                 <div class="allusfi-export-section">
                     <h3 class="allusfi-export-section-title"><?php esc_html_e('Include User Meta Fields', 'all-users-filter'); ?></h3>
                     <label class="fancy-check">
-                        <input type="checkbox" id="allusfi_include_meta_toggle" name="allusfi_include_meta" value="1">
+                        <input type="checkbox" id="allusfi_include_meta_toggle" name="allusfi_include_meta" value="1" <?php checked($allusfi_saved_export_incl, true); ?>>
                         <?php esc_html_e('Include meta field columns', 'all-users-filter'); ?>
                         <span class="fancy-checkmark button"></span>
                     </label>
 
-                    <div id="allusfi_meta_export_wrap" style="display:none;margin-top:12px;">
+                    <div id="allusfi_meta_export_wrap" style="<?php echo $allusfi_saved_export_incl ? '' : 'display:none;'; ?>margin-top:12px;">
                         <?php
                         // Advanced-tab meta keys.
                         $active_meta_keys = !empty($params['meta_keys']) && is_array($params['meta_keys'])
@@ -599,14 +611,16 @@ $allusfi_html_compatible_compares = array('=', '!=', 'IN', 'BETWEEN', 'LIKE', 'R
                         ?>
 
                         <?php if (!empty($all_active_meta_keys)): ?>
-                            <p class="description"><b><?php esc_html_e('Active meta filter keys (Advanced & Meta Date Filter tabs):', 'all-users-filter'); ?></b></p>
+                            <p class="description"><b><?php esc_html_e('Active meta filter keys (Advanced &amp; Meta Date Filter tabs):', 'all-users-filter'); ?></b></p>
                             <div class="allusfi-col-checkboxes pad-top-10">
-                                <?php foreach ($all_active_meta_keys as $amk): ?>
+                                <?php foreach ($all_active_meta_keys as $amk):
+                                    $amk_checked = empty($allusfi_saved_meta_keys) || in_array($amk, $allusfi_saved_meta_keys, true);
+                                ?>
                                     <label class="fancy-check allusfi-export-col-label">
                                         <input type="checkbox"
                                             name="allusfi_export_meta_keys[]"
                                             value="<?php echo esc_attr($amk); ?>"
-                                            checked="checked">
+                                            <?php echo $amk_checked ? 'checked="checked"' : ''; ?>>
                                         <?php echo esc_html($amk); ?>
                                         <span class="fancy-checkmark button"></span>
                                     </label>
@@ -634,6 +648,26 @@ $allusfi_html_compatible_compares = array('=', '!=', 'IN', 'BETWEEN', 'LIKE', 'R
                                         <th><?php esc_html_e('Meta Key', 'all-users-filter'); ?></th>
                                         <th><?php esc_html_e('Action', 'all-users-filter'); ?></th>
                                     </tr>
+                                    <?php
+                                    // Pre-populate extra meta rows from saved export settings.
+                                    if (!empty($allusfi_saved_extra_meta)):
+                                        foreach ($allusfi_saved_extra_meta as $extra_meta_key):
+                                    ?>
+                                            <tr>
+                                                <td>
+                                                    <input type="text"
+                                                        name="allusfi_export_extra_meta[]"
+                                                        value="<?php echo esc_attr($extra_meta_key); ?>"
+                                                        style="width:220px;">
+                                                </td>
+                                                <td>
+                                                    <button type="button" class="button allusfi_remov_extra_meta">X</button>
+                                                </td>
+                                            </tr>
+                                    <?php
+                                        endforeach;
+                                    endif;
+                                    ?>
                                 </tbody>
                             </table>
                             <template id="allusfi_extra_meta_row_tpl">
@@ -686,9 +720,8 @@ $allusfi_html_compatible_compares = array('=', '!=', 'IN', 'BETWEEN', 'LIKE', 'R
                     <h2><?php esc_html_e("Saved Filters", 'all-users-filter'); ?></h2>
                 </div>
 
-                <!-- Save current filter form (only shown when allusfi_secure is set) -->
-                <?php // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Only controls visibility of the Save-filter button; the nonce value itself is verified in the AJAX handler when the form is submitted. ?>
-                <?php if (isset($_GET['allusfi_secure'])): ?>
+                <!-- Save current filter form (only shown when a filter is currently active) -->
+                <?php if (isset($_GET['allu_filter_id'])): // phpcs:ignore WordPress.Security.NonceVerification.Recommended -- Controls visibility of the Save button only; no capability action is taken. The nonce is verified in the AJAX handler when the form is actually submitted. ?>
                     <div class="allusfi-sf-save-wrap">
                         <button type="button" id="allusfi_sf_show_save_form" class="button button-primary">
                             <span class="dashicons dashicons-cloud-upload"></span>

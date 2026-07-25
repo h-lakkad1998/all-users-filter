@@ -40,21 +40,38 @@ if (!class_exists('ALLUSFI_Admin')) {
 				wp_enqueue_style(ALLUSFI_PREFIX . '_admin_css_wp70');
 			}
 
+			// phpcs:disable WordPress.Security.NonceVerification.Recommended -- allu_filter_id is a plugin-internal routing token, not a nonce; it is only used to pass the current filter token into the JS context for AJAX calls. No capability action is taken based on this value here.
+			$allu_filter_id_current = isset($_GET['allu_filter_id'])
+				? sanitize_text_field(wp_unslash($_GET['allu_filter_id']))
+				: '';
+			// phpcs:enable WordPress.Security.NonceVerification.Recommended
+
 			$allusfi_local_array = array(
 				'plugin_prefix'            => ALLUSFI_PREFIX,
 				'ajax_url'                 => admin_url('admin-ajax.php'),
+				// Fresh nonce for JS-initiated requests (filter save, export, saved-filter apply).
+				'nonce'                    => wp_create_nonce('allusfi_secure'),
+				// Current filter state identifier so JS can include it in AJAX payloads.
+				'allu_filter_id'           => $allu_filter_id_current,
+				'users_page_url'           => admin_url('users.php'),
 				'btn_export_txt'           => __('CLICK HERE TO EXPORT CSV', 'all-users-filter'),
 				'btn_export_finish_txt'    => __('Export complete', 'all-users-filter'),
-				'get_req_txt'              => __('GET REQUEST ENABLED!', 'all-users-filter'),
-				'post_req_txt'             => __('POST REQUEST ENABLED!', 'all-users-filter'),
 				'start_export_process_txt' => __('Starting export...', 'all-users-filter'),
 				'export_process_txt'       => __('Exporting...', 'all-users-filter'),
 				'export_ongoing_txt'       => __('Currently processing your export... Please keep this browser window open until the process is complete to avoid interrupting it.', 'all-users-filter'),
-				// Saved filters
-				'saved_filters'            => array_values((array) get_option('allusfi_saved_filters', array())),
+				// Saved filters — only expose new-format entries (those with an 'id' key).
+				'saved_filters'            => array_values(
+					array_filter(
+						(array) get_option('allusfi_saved_filters', array()),
+						static function ($sf) {
+							return isset($sf['id'], $sf['filter_array']);
+						}
+					)
+				),
 				'sf_duplicate_name_txt'    => __('A filter with that name already exists. Please choose a different name.', 'all-users-filter'),
 				'sf_enter_name_txt'        => __('Please enter a name for this filter.', 'all-users-filter'),
 				'sf_save_error_txt'        => __('Error saving filter. Please try again.', 'all-users-filter'),
+				'sf_no_active_state_txt'   => __('No active filter found. Please apply a filter before saving.', 'all-users-filter'),
 				'sf_delete_confirm_txt'    => __('Are you sure you want to delete this saved filter?', 'all-users-filter'),
 				'sf_delete_error_txt'      => __('Error deleting filter. Please try again.', 'all-users-filter'),
 				'sf_no_filters_txt'        => __('No saved filters yet.', 'all-users-filter'),
@@ -238,166 +255,82 @@ if (!class_exists('ALLUSFI_Admin')) {
 		function allusfi_get_query_params()
 		{
 			$out = array(
-				'secure' => false,
-				'ordr_by' => '',
-				'usr_sort' => '',
-				'one_date' => '',
-				'cstm_dt' => '',
-				'relation' => 'nd',
-				'exclude_roles' => array(),
-				'excl_ids' => array(),
-				'multi_from_date' => array(),
-				'multi_to_date' => array(),
-				'meta_keys'       => array(),
-				'meta_vals'       => array(),
-				'meta_ops'        => array(),
-				'meta_tp'         => array(),
+				'secure'           => false,
+				'ordr_by'          => '',
+				'usr_sort'         => '',
+				'one_date'         => '',
+				'cstm_dt'          => '',
+				'relation'         => 'nd',
+				'exclude_roles'    => array(),
+				'excl_ids'         => array(),
+				'multi_from_date'  => array(),
+				'multi_to_date'    => array(),
+				'meta_keys'        => array(),
+				'meta_vals'        => array(),
+				'meta_ops'         => array(),
+				'meta_tp'          => array(),
 				// Relative-date meta filter rows (Date Filter tab).
-				'rel_date_keys'   => array(),
-				'rel_date_vals'   => array(),
-				'rel_date_tp'     => array(),
+				'rel_date_keys'    => array(),
+				'rel_date_vals'    => array(),
+				'rel_date_tp'      => array(),
 				'wc_order_enabled' => false,
 				'wc_order_count'   => 0,
 				'wc_order_op'      => '>',
 			);
 
-			// 1) Standalone nonce verification.
-			$out['secure'] = empty($_REQUEST['allusfi_secure']) ? false : wp_verify_nonce(sanitize_text_field(wp_unslash($_REQUEST['allusfi_secure'])), 'allusfi_secure');
-			if (!$out['secure']) {
-				return $out;
-			}
-
-			if (isset($_REQUEST['excl-ids'])) {
-				$raw_ids = wp_kses_post(wp_unslash($_REQUEST['excl-ids']));
-				$ids = array_filter(array_map('absint', explode('-', $raw_ids)));
-				$out['excl_ids'] = array_values($ids);
-			}
-
-			$out['usr_sort'] = isset($_REQUEST['usr_srt'])
-				? sanitize_text_field(wp_unslash($_REQUEST['usr_srt']))
-				: '';
-
-			$out['ordr_by'] = isset($_REQUEST['ordr-by'])
-				? sanitize_text_field(wp_unslash($_REQUEST['ordr-by']))
-				: '';
-
-			if (isset($_REQUEST['rl-excld']) && is_array($_REQUEST['rl-excld'])) {
-				$out['exclude_roles'] = array_values(
-					array_filter(
-						array_map('sanitize_text_field', wp_unslash($_REQUEST['rl-excld']))
+			// ============================================================
+			// NEW BRANCH: Transient / saved-filter lookup.
+			// When allu_filter_id is present in the GET string we resolve
+			// the stored state instead of parsing 20+ individual params.
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- nonce is checked immediately below.
+			if (isset($_GET['allu_filter_id'])) {
+				// Verify nonce carried in the short URL.
+				$nonce_ok = (
+					!empty($_GET['allusfi_secure']) &&
+					wp_verify_nonce(
+						sanitize_text_field(wp_unslash($_GET['allusfi_secure'])),
+						'allusfi_secure'
 					)
 				);
-			}
 
-			$out['cstm_dt'] = isset($_REQUEST['cstm-dt'])
-				? sanitize_text_field(wp_unslash($_REQUEST['cstm-dt']))
-				: '';
-
-			// Multi date ranges.
-			if (
-				isset($_REQUEST['mlt-f-dt'], $_REQUEST['mlt-t-dt']) &&
-				is_array($_REQUEST['mlt-f-dt']) &&
-				is_array($_REQUEST['mlt-t-dt'])
-			) {
-				$from = array_map('sanitize_text_field', wp_unslash($_REQUEST['mlt-f-dt']));
-				$to = array_map('sanitize_text_field', wp_unslash($_REQUEST['mlt-t-dt']));
-
-				$from = array_filter($from);
-				$to = array_filter($to);
-
-				$out['multi_from_date'] = $from;
-				$out['multi_to_date'] = $to;
-			}
-
-			$out['one_date'] = (
-				isset($_REQUEST['one-dt']) &&
-				!empty($_REQUEST['one-dt']) &&
-				empty($out['multi_from_date'])
-			)
-				? sanitize_textarea_field(sanitize_text_field(wp_unslash($_REQUEST['one-dt'])))
-				: '';
-
-			$out['relation'] = (isset($_REQUEST['rltn']) && 'or' === $_REQUEST['rltn']) ? 'or' : 'nd';
-
-			// Meta arrays.
-			$keys = (isset($_REQUEST['mta-ky']) && is_array($_REQUEST['mta-ky']))
-				? array_map('sanitize_key', wp_unslash($_REQUEST['mta-ky']))
-				: array();
-
-			$vals = (isset($_REQUEST['mta-vl']) && is_array($_REQUEST['mta-vl']))
-				? array_map('sanitize_textarea_field', wp_unslash($_REQUEST['mta-vl']))
-				: array();
-
-			$tps = (isset($_REQUEST['mta-tp']) && is_array($_REQUEST['mta-tp']))
-				? array_map('sanitize_text_field', wp_unslash($_REQUEST['mta-tp']))
-				: array();
-
-			$ops = (isset($_REQUEST['mta-op']) && is_array($_REQUEST['mta-op'])) ? array_map('sanitize_text_field', wp_unslash($_REQUEST['mta-op'])) : array();
-
-			$ops = (!empty($ops) && is_array($ops)) ? array_map(array($this, 're_sanitize_operator'), $ops) : array();
-
-			$allowed_types = array('CHAR', 'NUMERIC', 'BINARY', 'DATE', 'DATETIME', 'DECIMAL', 'SIGNED', 'UNSIGNED', 'TIME');
-
-			// Normalize types/operators to allowed sets.
-			foreach ($tps as $i => $tp) {
-				$tps[$i] = in_array($tp, $allowed_types, true) ? $tp : 'CHAR';
-			}
-
-			$out['meta_keys'] = $keys;
-			$out['meta_vals'] = $vals;
-			$out['meta_ops'] = $ops;
-			$out['meta_tp'] = $tps;
-
-			foreach ($out['meta_keys'] as $index => $key) {
-				if (empty(trim($key))) {
-					unset($out['meta_keys'][$index]);
-					unset($out['meta_vals'][$index]);
-					unset($out['meta_ops'][$index]);
-					unset($out['meta_tp'][$index]);
+				if (!$nonce_ok) {
+					return $out; // nonce invalid — returns with secure flag set to false
 				}
+
+				// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- already verified above.
+				$filter_id = sanitize_text_field(wp_unslash($_GET['allu_filter_id']));
+				$stored    = null;
+
+				if ('allusifi_current_state' === $filter_id) {
+					// Per-user transient (set by allusfi_save_filter_transient_fun).
+					$user_id = get_current_user_id();
+					$stored  = get_transient('allusfi_state_' . $user_id);
+				} elseif (0 === strpos($filter_id, 'saved_filter_')) {
+					// Resolve from the saved-filters option by unique ID.
+					$sf_id = substr($filter_id, strlen('saved_filter_'));
+					$saved = (array) get_option('allusfi_saved_filters', array());
+					foreach ($saved as $sf) {
+						if (isset($sf['id'], $sf['filter_array']) && $sf['id'] === $sf_id) {
+							$stored = $sf['filter_array'];
+							// export_settings is stored at the top level of the saved record,
+							// not inside filter_array — merge it in so $params['export_settings'] works.
+							if (isset($sf['export_settings']) && is_array($sf['export_settings'])) {
+								$stored['export_settings'] = $sf['export_settings'];
+							}
+							break;
+						}
+					}
+				}
+
+				if (is_array($stored) && !empty($stored)) {
+					$stored['secure'] = true; // nonce already verified above
+					return $stored;
+				}
+
+				// Transient expired / saved filter not found → no filter active.
+				return $out;
 			}
-
-			$out['meta_keys'] = array_values($out['meta_keys']);
-			$out['meta_vals'] = array_values($out['meta_vals']);
-			$out['meta_ops'] = array_values($out['meta_ops']);
-			$out['meta_tp'] = array_values($out['meta_tp']);
-
-			// Relative-date meta query params (Date Filter tab).
-			$rd_allowed_types = array('DATE', 'DATETIME', 'TIME', 'NUMERIC');
-
-			$rd_keys = (isset($_REQUEST['rdmq-ky']) && is_array($_REQUEST['rdmq-ky']))
-				? array_map('sanitize_key', wp_unslash($_REQUEST['rdmq-ky']))
-				: array();
-
-			$rd_vals = (isset($_REQUEST['rdmq-vl']) && is_array($_REQUEST['rdmq-vl']))
-				? array_map('sanitize_text_field', wp_unslash($_REQUEST['rdmq-vl']))
-				: array();
-
-			$rd_tps = (isset($_REQUEST['rdmq-tp']) && is_array($_REQUEST['rdmq-tp']))
-				? array_map('sanitize_text_field', wp_unslash($_REQUEST['rdmq-tp']))
-				: array();
-
-			foreach ($rd_tps as $i => $tp) {
-				$rd_tps[$i] = in_array(strtoupper($tp), $rd_allowed_types, true) ? strtoupper($tp) : 'DATE';
-			}
-
-			$out['rel_date_keys'] = $rd_keys;
-			$out['rel_date_vals'] = $rd_vals;
-			$out['rel_date_tp']   = $rd_tps;
-
-			// WooCommerce order count filter params.
-			$out['wc_order_enabled'] = !empty($_REQUEST['wc-ordr-enabled']);
-
-			$out['wc_order_count'] = isset($_REQUEST['wc-ordr-cnt'])
-				? absint(wp_unslash($_REQUEST['wc-ordr-cnt']))
-				: 0;
-
-			$allowed_wc_ops = array('>', '<', '=', '!=');
-			$raw_wc_op      = isset($_REQUEST['wc-ordr-op'])
-				? $this->re_sanitize_operator(sanitize_text_field(wp_unslash($_REQUEST['wc-ordr-op'])))
-				: '>';
-			$out['wc_order_op'] = in_array($raw_wc_op, $allowed_wc_ops, true) ? $raw_wc_op : '>';
-
+			// No allu_filter_id in GET — no filter is active.
 			return $out;
 		}
 

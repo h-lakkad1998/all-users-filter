@@ -349,17 +349,6 @@
 }
 
 /* ---------------------------------------------------------
-   15. ADVANCED – LETS-MAKE-POST-FORM TITLE
-   --------------------------------------------------------- */
-.allusfi_modal-content #LETS-make-POST-Form {
-  cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-/* ---------------------------------------------------------
    16. CUSTOM CHECKBOX  (.fancy-check)
    --------------------------------------------------------- */
 .allusfi_modal-content .fancy-check {
